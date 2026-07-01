@@ -3,9 +3,9 @@ import type { Content } from "./types";
 export const tr: Content = {
   htmlLang: "tr",
   meta: {
-    title: "Muhammed Maksut Çakmaktaş | Bilgisayar Mühendisi & Cybersecurity Enthusiast",
+    title: "Muhammed Maksut Çakmaktaş | Bilgisayar Mühendisi & Siber Güvenlik Uzmanı",
     description:
-      "Siber güvenlik ve yazılım geliştirme süreçlerinde proaktif çözümler üreten Bilgisayar Mühendisi Muhammed Maksut Çakmaktaş'ın kişisel portfolyo sitesi.",
+      "Muhammed Maksut Çakmaktaş (Maksut Çakmaktaş) — İstanbul merkezli Bilgisayar Mühendisi; Siber Güvenlik, Penetrasyon Testi ve DevSecOps alanlarında projeler geliştiriyor. Portfolyo, yetenekler ve iletişim.",
   },
   nav: {
     about: "Hakkımda",
