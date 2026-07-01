@@ -2,18 +2,30 @@
 
 import Image from "next/image";
 import { motion } from "framer-motion";
-import { ArrowRight, Download } from "lucide-react";
+import { ArrowRight, MapPin } from "lucide-react";
 import { KineticText } from "./KineticText";
 import { SectionBackground } from "./SectionBackground";
-import { personalInfo } from "@/lib/data";
+import { AmbientGlow } from "./AmbientGlow";
+import { CvDownload } from "./CvDownload";
+import { FollowMenu } from "./FollowMenu";
+import { ambientAssets } from "@/lib/data";
+import { useLanguage } from "@/lib/i18n/LanguageProvider";
 
 export function Hero() {
+  const { t } = useLanguage();
+
   return (
     <section
       id="top"
       className="relative flex min-h-screen items-center overflow-hidden px-6 pt-28 pb-16"
     >
       <SectionBackground variant="hero" />
+      <AmbientGlow
+        src={ambientAssets.day.src}
+        glow={ambientAssets.day.glow}
+        eager
+        className="hidden right-[-3.5rem] top-8 lg:block lg:h-32 lg:w-52"
+      />
 
       <div className="mx-auto grid w-full max-w-6xl grid-cols-1 items-center gap-12 lg:grid-cols-[1.15fr_0.85fr]">
         <div>
@@ -23,11 +35,11 @@ export function Hero() {
             transition={{ duration: 0.6 }}
             className="mb-4 text-sm font-medium tracking-[0.2em] text-muted uppercase"
           >
-            Merhaba, ben
+            {t.hero.greeting}
           </motion.p>
 
           <KineticText
-            text={personalInfo.name}
+            text={t.personalInfo.name}
             className="font-display text-5xl font-semibold leading-[1.05] tracking-tight sm:text-6xl md:text-7xl"
           />
 
@@ -37,13 +49,23 @@ export function Hero() {
             transition={{ duration: 0.6, delay: 0.9 }}
             className="mt-5 max-w-xl text-sm text-muted sm:text-base"
           >
-            {personalInfo.title}
+            {t.personalInfo.title}
+          </motion.p>
+
+          <motion.p
+            initial={{ opacity: 0, y: 10 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.6, delay: 1 }}
+            className="mt-2 flex items-center gap-1.5 text-xs text-muted"
+          >
+            <MapPin size={13} className="text-accent" />
+            {t.personalInfo.location}
           </motion.p>
 
           <motion.div
             initial={{ opacity: 0, y: 10 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.6, delay: 1.05 }}
+            transition={{ duration: 0.6, delay: 1.1 }}
             className="mt-9 flex flex-wrap items-center gap-4"
           >
             <motion.a
@@ -52,23 +74,22 @@ export function Hero() {
               whileTap={{ scale: 0.97 }}
               className="group flex items-center gap-2 rounded-full bg-foreground px-6 py-3 text-sm font-medium text-background shadow-[0_0_0_0_rgba(109,91,255,0)] transition-shadow duration-300 hover:shadow-[0_0_28px_2px_rgb(var(--surface-border)/0.25)]"
             >
-              İletişime Geç
+              {t.hero.ctaPrimary}
               <ArrowRight
                 size={16}
                 className="transition-transform duration-300 group-hover:translate-x-1"
               />
             </motion.a>
+          </motion.div>
 
-            <motion.button
-              type="button"
-              disabled
-              whileHover={{ scale: 1.03 }}
-              className="glass flex cursor-not-allowed items-center gap-2 rounded-full px-6 py-3 text-sm font-medium text-muted opacity-70"
-              title="CV yakında eklenecek"
-            >
-              <Download size={16} />
-              CV İndir
-            </motion.button>
+          <motion.div
+            initial={{ opacity: 0, y: 10 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.6, delay: 1.25 }}
+            className="mt-4 flex flex-wrap items-center gap-3"
+          >
+            <CvDownload />
+            <FollowMenu />
           </motion.div>
         </div>
 
@@ -83,7 +104,7 @@ export function Hero() {
             <div className="relative h-full w-full overflow-hidden rounded-[1.5rem]">
               <Image
                 src="/profil-fotografi.jpg"
-                alt={personalInfo.name}
+                alt={t.personalInfo.name}
                 fill
                 priority
                 quality={95}

@@ -38,18 +38,20 @@ export function KineticText({
         variants={container}
         aria-label={text}
       >
-        {words.map((word, wi) => (
-          <span key={wi} className="inline-block whitespace-nowrap">
-            <span className="inline-flex overflow-hidden pb-[0.1em]">
-              {word.split("").map((char, ci) => (
-                <motion.span key={ci} variants={letter} className="inline-block">
-                  {char}
-                </motion.span>
-              ))}
+        <span aria-hidden="true">
+          {words.map((word, wi) => (
+            <span key={wi} className="inline-block whitespace-nowrap">
+              <span className="inline-flex overflow-hidden pb-[0.1em]">
+                {word.split("").map((char, ci) => (
+                  <motion.span key={ci} variants={letter} className="inline-block">
+                    {char}
+                  </motion.span>
+                ))}
+              </span>
+              {wi < words.length - 1 ? " " : ""}
             </span>
-            {wi < words.length - 1 ? " " : ""}
-          </span>
-        ))}
+          ))}
+        </span>
       </motion.span>
     </Tag>
   );

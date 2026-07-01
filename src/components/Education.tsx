@@ -6,14 +6,17 @@ import { GraduationCap } from "lucide-react";
 import { Reveal, RevealGroup, revealItem } from "./Reveal";
 import { SectionBackground } from "./SectionBackground";
 import { SectionHeading } from "./SectionHeading";
-import { education, graduationPhotos } from "@/lib/data";
+import { useLanguage } from "@/lib/i18n/LanguageProvider";
+import { educationPhotosMeta } from "@/lib/data";
 
 export function Education() {
+  const { t } = useLanguage();
+
   return (
     <section id="education" className="relative overflow-hidden px-6 py-28 sm:py-32">
       <SectionBackground variant="warm" />
       <div className="mx-auto max-w-2xl">
-        <SectionHeading kicker="Eğitim" title="Akademik altyapı" />
+        <SectionHeading kicker={t.education.kicker} title={t.education.title} />
 
         <Reveal delay={0.1} className="mt-10">
           <div className="glass flex flex-col items-center gap-4 rounded-3xl p-8 text-center sm:flex-row sm:text-left">
@@ -22,11 +25,11 @@ export function Education() {
             </div>
             <div>
               <h3 className="font-display text-lg font-semibold">
-                {education.school}
+                {t.education.school}
               </h3>
-              <p className="text-sm text-muted">{education.department}</p>
+              <p className="text-sm text-muted">{t.education.department}</p>
               <p className="mt-1 text-xs uppercase tracking-widest text-accent">
-                Mezuniyet: {education.graduation}
+                {t.education.graduationLabel}: {t.education.graduation}
               </p>
             </div>
           </div>
@@ -36,8 +39,8 @@ export function Education() {
           stagger={0.18}
           className="mt-16 flex flex-wrap items-center justify-center gap-8 sm:gap-10"
         >
-          {graduationPhotos.map((photo, i) => (
-            <motion.div key={photo.src} variants={revealItem}>
+          {t.education.photos.map((photo, i) => (
+            <motion.div key={photo.id} variants={revealItem}>
               <motion.div
                 initial={{ rotate: i % 2 === 0 ? -3 : 3 }}
                 whileHover={{ rotate: 0, y: -6 }}
@@ -46,7 +49,7 @@ export function Education() {
               >
                 <div className="relative aspect-square overflow-hidden rounded-xl">
                   <Image
-                    src={photo.src}
+                    src={educationPhotosMeta[photo.id].src}
                     alt={photo.alt}
                     fill
                     quality={90}

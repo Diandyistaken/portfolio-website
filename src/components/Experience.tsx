@@ -5,22 +5,25 @@ import { Briefcase } from "lucide-react";
 import { RevealGroup, revealItem } from "./Reveal";
 import { SectionBackground } from "./SectionBackground";
 import { SectionHeading } from "./SectionHeading";
-import { experiences } from "@/lib/data";
+import { useLanguage } from "@/lib/i18n/LanguageProvider";
+import { experienceMeta } from "@/lib/data";
 
 export function Experience() {
+  const { t } = useLanguage();
+
   return (
     <section id="experience" className="relative overflow-hidden px-6 py-28 sm:py-32">
       <SectionBackground variant="mesh" />
       <div className="mx-auto max-w-3xl">
-        <SectionHeading kicker="Deneyim" title="Saha tecrübesi" />
+        <SectionHeading kicker={t.experience.kicker} title={t.experience.title} />
 
         <RevealGroup stagger={0.15} className="relative mt-16">
           <div className="absolute left-[0.7rem] top-2 bottom-2 w-px bg-gradient-to-b from-accent via-white/10 to-transparent" />
 
           <div className="flex flex-col gap-8">
-            {experiences.map((exp) => (
+            {t.experience.items.map((exp) => (
               <motion.div
-                key={exp.company}
+                key={exp.id}
                 variants={revealItem}
                 className="relative pl-12"
               >
@@ -39,7 +42,7 @@ export function Experience() {
                   <h3 className="font-display mt-2 text-lg font-semibold">
                     {exp.role}
                   </h3>
-                  <p className="text-sm text-muted">{exp.company}</p>
+                  <p className="text-sm text-muted">{experienceMeta[exp.id].company}</p>
                   <p className="mt-3 text-sm leading-relaxed text-muted">
                     {exp.description}
                   </p>

@@ -2,19 +2,22 @@
 
 import { useState } from "react";
 import { motion } from "framer-motion";
-import { Check, Copy, Mail } from "lucide-react";
+import { Check, Copy } from "lucide-react";
 import { Reveal } from "./Reveal";
 import { SectionBackground } from "./SectionBackground";
 import { SectionHeading } from "./SectionHeading";
-import { GithubIcon, LinkedinIcon } from "./icons";
-import { personalInfo } from "@/lib/data";
+import { AmbientGlow } from "./AmbientGlow";
+import { GithubIcon, LinkedinIcon, InstagramIcon } from "./icons";
+import { ambientAssets } from "@/lib/data";
+import { useLanguage } from "@/lib/i18n/LanguageProvider";
 
 export function Contact() {
+  const { t } = useLanguage();
   const [copied, setCopied] = useState(false);
 
   const handleCopy = async () => {
     try {
-      await navigator.clipboard.writeText(personalInfo.email);
+      await navigator.clipboard.writeText(t.personalInfo.email);
       setCopied(true);
       setTimeout(() => setCopied(false), 1800);
     } catch {
@@ -25,34 +28,38 @@ export function Contact() {
   return (
     <section id="contact" className="relative overflow-hidden px-6 py-28 sm:py-32">
       <SectionBackground variant="beacon" />
+      <AmbientGlow
+        src={ambientAssets.sunset.src}
+        glow={ambientAssets.sunset.glow}
+        className="hidden h-40 w-56 -left-10 bottom-10 md:block lg:h-48 lg:w-64"
+      />
       <div className="mx-auto max-w-2xl">
         <SectionHeading
-          kicker="İletişim"
-          title="Hadi konuşalım"
-          description="Bir fikri, bir fırsatı ya da sadece merhaba demeyi konuşmak için."
+          kicker={t.contact.kicker}
+          title={t.contact.title}
+          description={t.contact.description}
         />
 
         <Reveal delay={0.1} className="mt-12">
-          <div className="glass-strong flex flex-col items-center gap-6 rounded-3xl p-8 sm:p-10">
+          <div className="glass-strong flex flex-col items-center gap-6 rounded-3xl p-8 text-center sm:p-10">
             <motion.button
               type="button"
               onClick={handleCopy}
-              whileHover={{ scale: 1.03 }}
-              whileTap={{ scale: 0.97 }}
-              className="flex w-full items-center justify-between gap-3 rounded-2xl border border-white/10 bg-white/5 px-5 py-4 text-left"
+              whileHover={{ scale: 1.02 }}
+              whileTap={{ scale: 0.98 }}
+              className="group flex flex-col items-center gap-2"
             >
-              <span className="flex items-center gap-3 text-sm sm:text-base">
-                <Mail size={18} className="text-accent" />
-                {personalInfo.email}
+              <span className="font-display text-gradient text-2xl font-semibold tracking-tight sm:text-3xl md:text-4xl">
+                {t.personalInfo.email}
               </span>
-              <span className="flex items-center gap-1.5 text-xs text-muted">
+              <span className="flex items-center gap-1.5 text-xs text-muted transition-colors group-hover:text-foreground">
                 {copied ? (
                   <>
-                    <Check size={14} className="text-accent" /> Kopyalandı
+                    <Check size={14} className="text-accent" /> {t.contact.copiedLabel}
                   </>
                 ) : (
                   <>
-                    <Copy size={14} /> Kopyala
+                    <Copy size={14} /> {t.contact.copyLabel}
                   </>
                 )}
               </span>
@@ -60,7 +67,7 @@ export function Contact() {
 
             <div className="flex items-center gap-4">
               <motion.a
-                href={personalInfo.linkedin}
+                href={t.personalInfo.linkedin}
                 target="_blank"
                 rel="noopener noreferrer"
                 aria-label="LinkedIn"
@@ -71,7 +78,18 @@ export function Contact() {
                 <LinkedinIcon className="h-5 w-5" />
               </motion.a>
               <motion.a
-                href={personalInfo.github}
+                href={t.personalInfo.instagram}
+                target="_blank"
+                rel="noopener noreferrer"
+                aria-label="Instagram"
+                whileHover={{ scale: 1.1, y: -3 }}
+                whileTap={{ scale: 0.95 }}
+                className="glass flex h-12 w-12 items-center justify-center rounded-full text-foreground transition-shadow hover:shadow-[0_0_24px_rgb(var(--surface-border)/0.15)]"
+              >
+                <InstagramIcon className="h-5 w-5" />
+              </motion.a>
+              <motion.a
+                href={t.personalInfo.github}
                 target="_blank"
                 rel="noopener noreferrer"
                 aria-label="GitHub"

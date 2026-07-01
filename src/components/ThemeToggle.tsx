@@ -3,9 +3,11 @@
 import { Moon, Sun } from "lucide-react";
 import { motion } from "framer-motion";
 import { useTheme } from "./ThemeProvider";
+import { useLanguage } from "@/lib/i18n/LanguageProvider";
 
 export function ThemeToggle() {
   const { theme, toggleTheme } = useTheme();
+  const { t } = useLanguage();
   const isDark = theme === "dark";
 
   return (
@@ -14,7 +16,7 @@ export function ThemeToggle() {
       onClick={toggleTheme}
       whileHover={{ scale: 1.08 }}
       whileTap={{ scale: 0.92 }}
-      aria-label={isDark ? "Açık temaya geç" : "Koyu temaya geç"}
+      aria-label={isDark ? t.common.themeToLight : t.common.themeToDark}
       className="relative flex h-10 w-10 items-center justify-center rounded-full glass text-foreground transition-shadow hover:shadow-[0_0_20px_rgb(var(--surface-border)/0.15)]"
     >
       <motion.span

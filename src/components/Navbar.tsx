@@ -1,22 +1,26 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useId, useState } from "react";
 import { AnimatePresence, motion } from "framer-motion";
 import { Menu, X } from "lucide-react";
 import { ThemeToggle } from "./ThemeToggle";
-
-const navLinks = [
-  { label: "Hakkımda", href: "#about" },
-  { label: "Yetenekler", href: "#skills" },
-  { label: "Deneyim", href: "#experience" },
-  { label: "Projeler", href: "#projects" },
-  { label: "Hedefler", href: "#goals" },
-  { label: "İletişim", href: "#contact" },
-];
+import { LanguageSwitcher } from "./LanguageSwitcher";
+import { useLanguage } from "@/lib/i18n/LanguageProvider";
 
 export function Navbar() {
   const [open, setOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
+  const { t } = useLanguage();
+  const mobileMenuId = useId();
+
+  const navLinks = [
+    { label: t.nav.about, href: "#about" },
+    { label: t.nav.skills, href: "#skills" },
+    { label: t.nav.experience, href: "#experience" },
+    { label: t.nav.projects, href: "#projects" },
+    { label: t.nav.goals, href: "#goals" },
+    { label: t.nav.contact, href: "#contact" },
+  ];
 
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 12);
@@ -24,6 +28,15 @@ export function Navbar() {
     window.addEventListener("scroll", onScroll, { passive: true });
     return () => window.removeEventListener("scroll", onScroll);
   }, []);
+
+  useEffect(() => {
+    if (!open) return;
+    const onKey = (e: KeyboardEvent) => {
+      if (e.key === "Escape") setOpen(false);
+    };
+    document.addEventListener("keydown", onKey);
+    return () => document.removeEventListener("keydown", onKey);
+  }, [open]);
 
   return (
     <header className="fixed inset-x-0 top-0 z-50 flex justify-center px-4 pt-4">
@@ -53,11 +66,14 @@ export function Navbar() {
         </ul>
 
         <div className="flex items-center gap-2">
+          <LanguageSwitcher />
           <ThemeToggle />
           <button
             type="button"
             onClick={() => setOpen((v) => !v)}
-            aria-label="Menüyü aç/kapat"
+            aria-label={open ? t.common.closeMenu : t.common.openMenu}
+            aria-expanded={open}
+            aria-controls={mobileMenuId}
             className="flex h-10 w-10 items-center justify-center rounded-full glass md:hidden"
           >
             {open ? <X size={18} /> : <Menu size={18} />}
@@ -68,6 +84,7 @@ export function Navbar() {
       <AnimatePresence>
         {open && (
           <motion.div
+            id={mobileMenuId}
             initial={{ opacity: 0, y: -12 }}
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: -12 }}

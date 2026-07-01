@@ -7,7 +7,8 @@ type Variant =
   | "mesh"
   | "warm"
   | "grid"
-  | "beacon";
+  | "beacon"
+  | "circuit";
 
 const lineStyle: CSSProperties = {
   backgroundImage:
@@ -93,6 +94,24 @@ export function SectionBackground({ variant }: { variant: Variant }) {
         <div className="pointer-events-none absolute inset-0 -z-10 overflow-hidden">
           <div className="bg-anim absolute left-1/2 top-1/2 h-[30rem] w-[30rem] -translate-x-1/2 -translate-y-1/2 rounded-full bg-accent/20 blur-[110px] animate-[pulse-soft_7s_ease-in-out_infinite]" />
           <div className="bg-anim absolute left-1/2 top-1/2 h-[18rem] w-[18rem] -translate-x-1/2 -translate-y-1/2 rounded-full bg-accent-2/20 blur-[80px] animate-[pulse-soft_7s_ease-in-out_infinite_1.5s]" />
+        </div>
+      );
+
+    case "circuit":
+      return (
+        <div className="pointer-events-none absolute inset-0 -z-10 overflow-hidden">
+          <div
+            className="bg-anim absolute -inset-16 opacity-25 animate-[pan-grid_24s_linear_infinite]"
+            style={{
+              backgroundImage:
+                "linear-gradient(rgb(var(--accent-2-rgb) / 0.28) 1px, transparent 1px), linear-gradient(90deg, rgb(var(--accent-2-rgb) / 0.28) 1px, transparent 1px)",
+              backgroundSize: "64px 64px",
+            }}
+          />
+          <div className="bg-anim absolute left-[15%] top-1/4 h-2 w-2 rounded-full bg-accent-2/70 shadow-[0_0_12px_2px_rgb(var(--accent-2-rgb)/0.6)] animate-[pulse-soft_5s_ease-in-out_infinite]" />
+          <div className="bg-anim absolute right-[20%] top-[62%] h-2 w-2 rounded-full bg-accent/70 shadow-[0_0_12px_2px_rgb(var(--accent-rgb)/0.6)] animate-[pulse-soft_6s_ease-in-out_infinite_1s]" />
+          <div className="bg-anim absolute left-[55%] top-[18%] h-1.5 w-1.5 rounded-full bg-accent-2/60 shadow-[0_0_10px_2px_rgb(var(--accent-2-rgb)/0.5)] animate-[pulse-soft_7s_ease-in-out_infinite_2s]" />
+          <div className="absolute left-1/2 top-1/2 h-72 w-72 -translate-x-1/2 -translate-y-1/2 rounded-full bg-accent-2/10 blur-[100px]" />
         </div>
       );
 

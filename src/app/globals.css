@@ -7,10 +7,13 @@
   --foreground: #0b0e14;
   --surface: 255 255 255;
   --surface-border: 15 23 42;
-  --accent: #6d5bff;
-  --accent-2: #22d3ee;
-  --accent-rgb: 109 91 255;
-  --accent-2-rgb: 34 211 238;
+  /* Darkened from the raw brand hues (#6d5bff / #1fc2dc) so text and icons set
+     in these colors clear WCAG AA (4.5:1) against the light background. The
+     dark theme's brighter tints already pass comfortably and are untouched. */
+  --accent: #6350f0;
+  --accent-2: #0d8095;
+  --accent-rgb: 99 80 240;
+  --accent-2-rgb: 13 128 149;
   --muted: #5b6172;
 }
 
@@ -20,9 +23,9 @@
   --surface: 15 20 32;
   --surface-border: 255 255 255;
   --accent: #8b7bff;
-  --accent-2: #2fe3ff;
+  --accent-2: #29d9f2;
   --accent-rgb: 139 123 255;
-  --accent-2-rgb: 47 227 255;
+  --accent-2-rgb: 41 217 242;
   --muted: #9aa2b8;
 }
 
@@ -75,6 +78,14 @@ body {
 ::selection {
   background: var(--accent);
   color: white;
+}
+
+/* Modern browsers already trace the outline along each element's own
+   border-radius, so this stays shape-agnostic across pill buttons, cards,
+   and plain links without fighting their existing rounding. */
+:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 3px;
 }
 
 ::-webkit-scrollbar {
