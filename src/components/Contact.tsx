@@ -4,6 +4,7 @@ import { useState } from "react";
 import { motion } from "framer-motion";
 import { Check, Copy, Mail } from "lucide-react";
 import { Reveal } from "./Reveal";
+import { SectionBackground } from "./SectionBackground";
 import { SectionHeading } from "./SectionHeading";
 import { GithubIcon, LinkedinIcon } from "./icons";
 import { personalInfo } from "@/lib/data";
@@ -22,7 +23,8 @@ export function Contact() {
   };
 
   return (
-    <section id="contact" className="relative px-6 py-28 sm:py-32">
+    <section id="contact" className="relative overflow-hidden px-6 py-28 sm:py-32">
+      <SectionBackground variant="beacon" />
       <div className="mx-auto max-w-2xl">
         <SectionHeading
           kicker="İletişim"

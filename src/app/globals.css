@@ -9,6 +9,8 @@
   --surface-border: 15 23 42;
   --accent: #6d5bff;
   --accent-2: #22d3ee;
+  --accent-rgb: 109 91 255;
+  --accent-2-rgb: 34 211 238;
   --muted: #5b6172;
 }
 
@@ -19,6 +21,8 @@
   --surface-border: 255 255 255;
   --accent: #8b7bff;
   --accent-2: #2fe3ff;
+  --accent-rgb: 139 123 255;
+  --accent-2-rgb: 47 227 255;
   --muted: #9aa2b8;
 }
 
@@ -84,4 +88,56 @@ body {
 ::-webkit-scrollbar-thumb {
   background: rgb(var(--surface-border) / 0.25);
   border-radius: 999px;
+}
+
+@keyframes drift-a {
+  0%, 100% { transform: translate(0, 0) scale(1); }
+  50% { transform: translate(5%, -6%) scale(1.08); }
+}
+
+@keyframes drift-b {
+  0%, 100% { transform: translate(0, 0) scale(1); }
+  50% { transform: translate(-6%, 5%) scale(1.06); }
+}
+
+@keyframes float-y {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-16px); }
+}
+
+@keyframes float-y-slow {
+  0%, 100% { transform: translateY(0) translateX(0); }
+  50% { transform: translateY(14px) translateX(-8px); }
+}
+
+@keyframes pan-lines {
+  0% { background-position: 0 0; }
+  100% { background-position: 160px 160px; }
+}
+
+@keyframes pan-grid {
+  0% { background-position: 0 0; }
+  100% { background-position: 0 -48px; }
+}
+
+@keyframes spin-slow {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+
+@keyframes pulse-soft {
+  0%, 100% { opacity: 0.45; transform: scale(1); }
+  50% { opacity: 0.8; transform: scale(1.12); }
+}
+
+@keyframes beam-sweep {
+  0% { transform: translateX(-20%) rotate(12deg); opacity: 0.25; }
+  50% { transform: translateX(20%) rotate(12deg); opacity: 0.5; }
+  100% { transform: translateX(-20%) rotate(12deg); opacity: 0.25; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .bg-anim {
+    animation: none !important;
+  }
 }

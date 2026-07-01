@@ -1,15 +1,11 @@
 "use client";
 
-import dynamic from "next/dynamic";
 import Image from "next/image";
 import { motion } from "framer-motion";
 import { ArrowRight, Download } from "lucide-react";
 import { KineticText } from "./KineticText";
+import { SectionBackground } from "./SectionBackground";
 import { personalInfo } from "@/lib/data";
-
-const HeroParticles = dynamic(() => import("./HeroParticles"), {
-  ssr: false,
-});
 
 export function Hero() {
   return (
@@ -17,14 +13,7 @@ export function Hero() {
       id="top"
       className="relative flex min-h-screen items-center overflow-hidden px-6 pt-28 pb-16"
     >
-      <div className="pointer-events-none absolute inset-0 -z-20">
-        <div className="absolute left-1/2 top-1/3 h-[36rem] w-[36rem] -translate-x-1/2 -translate-y-1/2 rounded-full bg-accent/25 blur-[120px]" />
-        <div className="absolute right-0 bottom-0 h-[24rem] w-[24rem] rounded-full bg-accent-2/20 blur-[110px]" />
-      </div>
-
-      <div className="pointer-events-none absolute inset-0 -z-10 opacity-70">
-        <HeroParticles />
-      </div>
+      <SectionBackground variant="hero" />
 
       <div className="mx-auto grid w-full max-w-6xl grid-cols-1 items-center gap-12 lg:grid-cols-[1.15fr_0.85fr]">
         <div>
@@ -87,18 +76,19 @@ export function Hero() {
           initial={{ opacity: 0, scale: 0.9 }}
           animate={{ opacity: 1, scale: 1 }}
           transition={{ duration: 0.8, delay: 0.4, ease: [0.16, 1, 0.3, 1] }}
-          className="relative mx-auto aspect-square w-56 sm:w-72 lg:w-full lg:max-w-sm"
+          className="relative mx-auto aspect-[4/5] w-64 sm:w-80 lg:w-full lg:max-w-sm"
         >
           <div className="absolute inset-0 rounded-[2rem] bg-gradient-to-br from-accent/40 to-accent-2/30 blur-2xl" />
-          <div className="glass-strong relative aspect-square overflow-hidden rounded-[2rem] p-2">
+          <div className="glass-strong relative aspect-[4/5] overflow-hidden rounded-[2rem] p-2">
             <div className="relative h-full w-full overflow-hidden rounded-[1.5rem]">
               <Image
-                src="/profil-fotografi.png"
+                src="/profil-fotografi.jpg"
                 alt={personalInfo.name}
                 fill
                 priority
-                sizes="(min-width: 1024px) 24rem, 18rem"
-                className="object-cover"
+                quality={95}
+                sizes="(min-width: 1024px) 24rem, 20rem"
+                className="object-cover object-[center_25%]"
               />
             </div>
           </div>

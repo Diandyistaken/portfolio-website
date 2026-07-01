@@ -3,12 +3,14 @@
 import { motion } from "framer-motion";
 import { Briefcase } from "lucide-react";
 import { RevealGroup, revealItem } from "./Reveal";
+import { SectionBackground } from "./SectionBackground";
 import { SectionHeading } from "./SectionHeading";
 import { experiences } from "@/lib/data";
 
 export function Experience() {
   return (
-    <section id="experience" className="relative px-6 py-28 sm:py-32">
+    <section id="experience" className="relative overflow-hidden px-6 py-28 sm:py-32">
+      <SectionBackground variant="mesh" />
       <div className="mx-auto max-w-3xl">
         <SectionHeading kicker="Deneyim" title="Saha tecrübesi" />
 

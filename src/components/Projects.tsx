@@ -3,12 +3,14 @@
 import { motion } from "framer-motion";
 import { ExternalLink } from "lucide-react";
 import { RevealGroup, revealItem } from "./Reveal";
+import { SectionBackground } from "./SectionBackground";
 import { SectionHeading } from "./SectionHeading";
 import { projects } from "@/lib/data";
 
 export function Projects() {
   return (
-    <section id="projects" className="relative px-6 py-28 sm:py-32">
+    <section id="projects" className="relative overflow-hidden px-6 py-28 sm:py-32">
+      <SectionBackground variant="grid" />
       <div className="mx-auto max-w-6xl">
         <SectionHeading
           kicker="Projeler"

@@ -103,6 +103,28 @@ export const education = {
   graduation: "Ocak 2026",
 };
 
+export type GraduationPhoto = {
+  src: string;
+  alt: string;
+  caption: string;
+  rotate: string;
+};
+
+export const graduationPhotos: GraduationPhoto[] = [
+  {
+    src: "/mezuniyet-anne.jpg",
+    alt: "Muhammed Maksut Çakmaktaş annesiyle mezuniyet töreninde",
+    caption: "Annemle",
+    rotate: "-rotate-3",
+  },
+  {
+    src: "/mezuniyet-kardes.jpg",
+    alt: "Muhammed Maksut Çakmaktaş kardeşiyle mezuniyet töreninde",
+    caption: "Kardeşimle",
+    rotate: "rotate-3",
+  },
+];
+
 export type Project = {
   title: string;
   description: string;

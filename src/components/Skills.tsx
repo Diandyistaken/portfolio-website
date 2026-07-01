@@ -3,6 +3,7 @@
 import { motion } from "framer-motion";
 import { Gamepad2, Network, Shield } from "lucide-react";
 import { RevealGroup, revealItem } from "./Reveal";
+import { SectionBackground } from "./SectionBackground";
 import { SectionHeading } from "./SectionHeading";
 import { skillCategories } from "@/lib/data";
 
@@ -14,7 +15,8 @@ const icons = {
 
 export function Skills() {
   return (
-    <section id="skills" className="relative px-6 py-28 sm:py-32">
+    <section id="skills" className="relative overflow-hidden px-6 py-28 sm:py-32">
+      <SectionBackground variant="lines" />
       <div className="mx-auto max-w-6xl">
         <SectionHeading
           kicker="Yetenekler"
