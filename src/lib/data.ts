@@ -3,19 +3,11 @@ export const cvFiles = {
   en: "/cv/cv-en.pdf",
 };
 
-export const ambientAssets = {
-  day: {
-    src: "/ambient/bosphorus-day.webp",
-    width: 960,
-    height: 536,
-    glow: "#4cbeda",
-  },
-  sunset: {
-    src: "/ambient/bosphorus-sunset.webp",
-    width: 960,
-    height: 524,
-    glow: "#f2a33c",
-  },
+// Warm accent glows placed behind existing site photos (profile photo,
+// graduation photos) instead of separate decorative stock imagery.
+export const photoGlows = {
+  mother: "#f2a33c",
+  sibling: "#e8748f",
 };
 
 // Structural data that doesn't change across locales (ids, links, tags, numbers,
@@ -25,6 +17,16 @@ export const skillsMeta: Record<string, { size: "lg" | "md"; tools?: string[] }>
   cyber: { size: "lg", tools: ["Kali Linux", "Nmap", "Metasploit", "Wireshark", "Bettercap"] },
   gamedev: { size: "md" },
   corporate: { size: "md" },
+  other: { size: "lg", tools: ["Next.js", "React", "Raspberry Pi", "Swift", "Kotlin"] },
+};
+
+export const servicesMeta: Record<string, { icon: "home" | "globe" | "bug" | "gamepad" | "smartphone" | "monitor" }> = {
+  "smart-home": { icon: "home" },
+  "web-dev": { icon: "globe" },
+  pentest: { icon: "bug" },
+  "game-dev": { icon: "gamepad" },
+  "mobile-design": { icon: "smartphone" },
+  "cross-platform": { icon: "monitor" },
 };
 
 export const experienceMeta: Record<string, { company: string }> = {

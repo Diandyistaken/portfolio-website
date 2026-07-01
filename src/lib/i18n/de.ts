@@ -10,6 +10,7 @@ export const de: Content = {
   nav: {
     about: "Über mich",
     skills: "Fähigkeiten",
+    services: "Dienstleistungen",
     experience: "Erfahrung",
     education: "Ausbildung",
     projects: "Projekte",
@@ -100,6 +101,69 @@ export const de: Content = {
               "Algorithmendesign, durchgängiger Softwarelebenszyklus und Codeoptimierung mit informatischem Hintergrund",
           },
         ],
+      },
+      {
+        id: "other",
+        title: "Weitere Fähigkeiten",
+        items: [
+          {
+            label: "IoT-basierte Automatisierung",
+            description:
+              "Einrichtung von Smart-Home-Systemen, Sensorintegration und Hausautomatisierungslösungen",
+          },
+          {
+            label: "Webentwicklung",
+            description:
+              "Design und Entwicklung moderner, responsiver Unternehmens- und privater Websites",
+          },
+          {
+            label: "Entwicklung mobiler Apps",
+            description:
+              "UX-orientiertes Design und Entwicklung mobiler Apps für iOS und Android",
+          },
+        ],
+      },
+    ],
+  },
+  services: {
+    kicker: "Dienstleistungen",
+    title: "Wie ich helfen kann",
+    description:
+      "Von der Idee zum fertigen Produkt – durchgängige Unterstützung von Automatisierung bis Sicherheit.",
+    items: [
+      {
+        id: "smart-home",
+        title: "Smart-Home-Automatisierung",
+        description: "Einrichtung und Automatisierung IoT-basierter Smart-Home-Systeme.",
+      },
+      {
+        id: "web-dev",
+        title: "Webseitenentwicklung",
+        description:
+          "Design und Entwicklung moderner, responsiver Unternehmens-/privater Websites.",
+      },
+      {
+        id: "pentest",
+        title: "Penetrationstests",
+        description:
+          "Schwachstellenanalyse und Penetrationstests für System- und Netzwerksicherheit.",
+      },
+      {
+        id: "game-dev",
+        title: "Spieleprogrammierung",
+        description: "Unity-basierte Spieleentwicklung und Gameplay-Mechanik-Design.",
+      },
+      {
+        id: "mobile-design",
+        title: "Design mobiler Apps",
+        description:
+          "UX-orientiertes Design und Entwicklung mobiler Apps für iOS/Android.",
+      },
+      {
+        id: "cross-platform",
+        title: "Desktop- und App-Entwicklung",
+        description:
+          "Durchgängige Softwareentwicklung für Desktop- und mobile Plattformen.",
       },
     ],
   },

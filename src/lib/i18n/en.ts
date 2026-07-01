@@ -10,6 +10,7 @@ export const en: Content = {
   nav: {
     about: "About",
     skills: "Skills",
+    services: "Services",
     experience: "Experience",
     education: "Education",
     projects: "Projects",
@@ -100,6 +101,69 @@ export const en: Content = {
               "Algorithm design, end-to-end software lifecycle, and code optimization grounded in Computer Engineering",
           },
         ],
+      },
+      {
+        id: "other",
+        title: "Other Skills",
+        items: [
+          {
+            label: "IoT-based Automation",
+            description:
+              "Smart home system setup, sensor integration, and home automation solutions",
+          },
+          {
+            label: "Web Development",
+            description:
+              "Designing and building modern, responsive corporate and personal websites",
+          },
+          {
+            label: "Mobile App Development",
+            description:
+              "UX-focused mobile app design and development for iOS and Android",
+          },
+        ],
+      },
+    ],
+  },
+  services: {
+    kicker: "Services",
+    title: "How I can help",
+    description:
+      "From idea to working product — end-to-end support across automation and security.",
+    items: [
+      {
+        id: "smart-home",
+        title: "Smart Home Automation",
+        description: "IoT-based smart home system setup and automation.",
+      },
+      {
+        id: "web-dev",
+        title: "Website Development",
+        description:
+          "Design and development of modern, responsive corporate/personal websites.",
+      },
+      {
+        id: "pentest",
+        title: "Penetration Testing",
+        description:
+          "Vulnerability analysis and penetration testing for systems and network security.",
+      },
+      {
+        id: "game-dev",
+        title: "Game Programming",
+        description: "Unity-based game development and gameplay mechanics design.",
+      },
+      {
+        id: "mobile-design",
+        title: "Mobile App Design",
+        description:
+          "UX-focused mobile app design and development for iOS/Android.",
+      },
+      {
+        id: "cross-platform",
+        title: "Desktop & Mobile App Development",
+        description:
+          "End-to-end software development for desktop and mobile platforms.",
       },
     ],
   },

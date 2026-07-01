@@ -6,9 +6,7 @@ import { Check, Copy } from "lucide-react";
 import { Reveal } from "./Reveal";
 import { SectionBackground } from "./SectionBackground";
 import { SectionHeading } from "./SectionHeading";
-import { AmbientGlow } from "./AmbientGlow";
 import { GithubIcon, LinkedinIcon, InstagramIcon } from "./icons";
-import { ambientAssets } from "@/lib/data";
 import { useLanguage } from "@/lib/i18n/LanguageProvider";
 
 export function Contact() {
@@ -28,11 +26,6 @@ export function Contact() {
   return (
     <section id="contact" className="relative overflow-hidden px-6 py-28 sm:py-32">
       <SectionBackground variant="beacon" />
-      <AmbientGlow
-        src={ambientAssets.sunset.src}
-        glow={ambientAssets.sunset.glow}
-        className="hidden h-40 w-56 -left-10 bottom-10 md:block lg:h-48 lg:w-64"
-      />
       <div className="mx-auto max-w-2xl">
         <SectionHeading
           kicker={t.contact.kicker}

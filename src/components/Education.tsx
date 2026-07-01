@@ -7,7 +7,7 @@ import { Reveal, RevealGroup, revealItem } from "./Reveal";
 import { SectionBackground } from "./SectionBackground";
 import { SectionHeading } from "./SectionHeading";
 import { useLanguage } from "@/lib/i18n/LanguageProvider";
-import { educationPhotosMeta } from "@/lib/data";
+import { educationPhotosMeta, photoGlows } from "@/lib/data";
 
 export function Education() {
   const { t } = useLanguage();
@@ -45,8 +45,14 @@ export function Education() {
                 initial={{ rotate: i % 2 === 0 ? -3 : 3 }}
                 whileHover={{ rotate: 0, y: -6 }}
                 transition={{ type: "spring", stiffness: 300, damping: 22 }}
-                className="glass-strong w-52 rounded-2xl p-3 shadow-xl shadow-black/10 transition-shadow duration-300 hover:shadow-2xl sm:w-60"
+                className="relative w-52 rounded-2xl p-3 shadow-xl shadow-black/10 transition-shadow duration-300 hover:shadow-2xl sm:w-60"
               >
+                <div
+                  className="absolute -inset-4 -z-10 rounded-full opacity-50 blur-2xl"
+                  style={{ backgroundColor: photoGlows[photo.id as keyof typeof photoGlows] }}
+                  aria-hidden="true"
+                />
+                <div className="glass-strong absolute inset-0 -z-10 rounded-2xl" aria-hidden="true" />
                 <div className="relative aspect-square overflow-hidden rounded-xl">
                   <Image
                     src={educationPhotosMeta[photo.id].src}

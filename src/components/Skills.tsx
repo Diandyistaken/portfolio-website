@@ -1,7 +1,7 @@
 "use client";
 
 import { motion } from "framer-motion";
-import { Gamepad2, Network, Shield } from "lucide-react";
+import { Gamepad2, Layers, Network, Shield } from "lucide-react";
 import { RevealGroup, revealItem } from "./Reveal";
 import { SectionBackground } from "./SectionBackground";
 import { SectionHeading } from "./SectionHeading";
@@ -12,6 +12,7 @@ const icons = {
   cyber: Shield,
   gamedev: Gamepad2,
   corporate: Network,
+  other: Layers,
 } as const;
 
 export function Skills() {

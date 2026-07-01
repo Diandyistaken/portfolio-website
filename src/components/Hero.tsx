@@ -5,10 +5,8 @@ import { motion } from "framer-motion";
 import { ArrowRight, MapPin } from "lucide-react";
 import { KineticText } from "./KineticText";
 import { SectionBackground } from "./SectionBackground";
-import { AmbientGlow } from "./AmbientGlow";
 import { CvDownload } from "./CvDownload";
 import { FollowMenu } from "./FollowMenu";
-import { ambientAssets } from "@/lib/data";
 import { useLanguage } from "@/lib/i18n/LanguageProvider";
 
 export function Hero() {
@@ -20,12 +18,6 @@ export function Hero() {
       className="relative flex min-h-screen items-center overflow-hidden px-6 pt-28 pb-16"
     >
       <SectionBackground variant="hero" />
-      <AmbientGlow
-        src={ambientAssets.day.src}
-        glow={ambientAssets.day.glow}
-        eager
-        className="hidden right-[-3.5rem] top-8 lg:block lg:h-32 lg:w-52"
-      />
 
       <div className="mx-auto grid w-full max-w-6xl grid-cols-1 items-center gap-12 lg:grid-cols-[1.15fr_0.85fr]">
         <div>

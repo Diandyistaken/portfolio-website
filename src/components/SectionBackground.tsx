@@ -8,7 +8,8 @@ type Variant =
   | "warm"
   | "grid"
   | "beacon"
-  | "circuit";
+  | "circuit"
+  | "orbit";
 
 const lineStyle: CSSProperties = {
   backgroundImage:
@@ -112,6 +113,17 @@ export function SectionBackground({ variant }: { variant: Variant }) {
           <div className="bg-anim absolute right-[20%] top-[62%] h-2 w-2 rounded-full bg-accent/70 shadow-[0_0_12px_2px_rgb(var(--accent-rgb)/0.6)] animate-[pulse-soft_6s_ease-in-out_infinite_1s]" />
           <div className="bg-anim absolute left-[55%] top-[18%] h-1.5 w-1.5 rounded-full bg-accent-2/60 shadow-[0_0_10px_2px_rgb(var(--accent-2-rgb)/0.5)] animate-[pulse-soft_7s_ease-in-out_infinite_2s]" />
           <div className="absolute left-1/2 top-1/2 h-72 w-72 -translate-x-1/2 -translate-y-1/2 rounded-full bg-accent-2/10 blur-[100px]" />
+        </div>
+      );
+
+    case "orbit":
+      return (
+        <div className="pointer-events-none absolute inset-0 -z-10 overflow-hidden">
+          <div className="bg-anim absolute left-1/2 top-1/2 h-[26rem] w-[26rem] -translate-x-1/2 -translate-y-1/2 rounded-full border border-accent/15 animate-[spin-slow_50s_linear_infinite]" />
+          <div className="bg-anim absolute left-1/2 top-1/2 h-[38rem] w-[38rem] -translate-x-1/2 -translate-y-1/2 rounded-full border border-accent-2/10 animate-[spin-slow_70s_linear_infinite]" />
+          <div className="bg-anim absolute right-[18%] top-1/4 h-2 w-2 rounded-full bg-accent shadow-[0_0_14px_2px_rgb(var(--accent-rgb)/0.6)] animate-[pulse-soft_6s_ease-in-out_infinite]" />
+          <div className="bg-anim absolute left-[20%] bottom-1/4 h-2 w-2 rounded-full bg-accent-2 shadow-[0_0_14px_2px_rgb(var(--accent-2-rgb)/0.6)] animate-[pulse-soft_8s_ease-in-out_infinite_1s]" />
+          <div className="absolute left-1/2 top-1/2 h-80 w-80 -translate-x-1/2 -translate-y-1/2 rounded-full bg-accent/10 blur-[110px]" />
         </div>
       );
 

@@ -10,6 +10,7 @@ export const tr: Content = {
   nav: {
     about: "Hakkımda",
     skills: "Yetenekler",
+    services: "Hizmetler",
     experience: "Deneyim",
     education: "Eğitim",
     projects: "Projeler",
@@ -101,6 +102,69 @@ export const tr: Content = {
               "Bilgisayar Mühendisliği disipliniyle algoritma tasarımı, uçtan uca yazılım yaşam döngüsü ve kod optimizasyonu",
           },
         ],
+      },
+      {
+        id: "other",
+        title: "Diğer Yetkinlikler",
+        items: [
+          {
+            label: "IoT Tabanlı Otomasyon",
+            description:
+              "Akıllı ev sistemleri kurulumu, sensör entegrasyonu ve ev otomasyonu çözümleri",
+          },
+          {
+            label: "Web Geliştirme",
+            description:
+              "Modern, responsive kurumsal ve kişisel web siteleri tasarımı ve geliştirmesi",
+          },
+          {
+            label: "Mobil Uygulama Geliştirme",
+            description:
+              "iOS ve Android için kullanıcı deneyimi odaklı mobil uygulama tasarımı ve geliştirmesi",
+          },
+        ],
+      },
+    ],
+  },
+  services: {
+    kicker: "Hizmetler",
+    title: "Nasıl yardımcı olabilirim",
+    description:
+      "Fikirden çalışan ürüne; otomasyondan güvenliğe uçtan uca destek.",
+    items: [
+      {
+        id: "smart-home",
+        title: "Akıllı Ev Otomasyonu",
+        description: "IoT tabanlı akıllı ev sistemleri kurulumu ve otomasyonu.",
+      },
+      {
+        id: "web-dev",
+        title: "Web Sitesi Geliştirme",
+        description:
+          "Modern, responsive kurumsal/kişisel web siteleri tasarımı ve geliştirmesi.",
+      },
+      {
+        id: "pentest",
+        title: "Sızma Testi (Pentesting)",
+        description:
+          "Sistem ve ağ güvenliği için zafiyet analizi ve sızma testi hizmetleri.",
+      },
+      {
+        id: "game-dev",
+        title: "Oyun Programlama",
+        description: "Unity tabanlı oyun geliştirme ve oyun mekaniği tasarımı.",
+      },
+      {
+        id: "mobile-design",
+        title: "Mobil Uygulama Tasarımı",
+        description:
+          "iOS/Android için kullanıcı deneyimi odaklı mobil uygulama tasarımı ve geliştirmesi.",
+      },
+      {
+        id: "cross-platform",
+        title: "PC ve Mobil Uygulama Geliştirme",
+        description:
+          "Masaüstü ve mobil platformlar için uçtan uca yazılım geliştirme.",
       },
     ],
   },

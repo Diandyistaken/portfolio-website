@@ -31,6 +31,12 @@ export type GoalContent = {
   description: string;
 };
 
+export type ServiceContent = {
+  id: string;
+  title: string;
+  description: string;
+};
+
 export type Content = {
   htmlLang: string;
   meta: {
@@ -40,6 +46,7 @@ export type Content = {
   nav: {
     about: string;
     skills: string;
+    services: string;
     experience: string;
     education: string;
     projects: string;
@@ -83,6 +90,12 @@ export type Content = {
     title: string;
     description: string;
     categories: SkillCategoryContent[];
+  };
+  services: {
+    kicker: string;
+    title: string;
+    description: string;
+    items: ServiceContent[];
   };
   experience: {
     kicker: string;
