@@ -1,6 +1,5 @@
 "use client";
 
-import { motion } from "framer-motion";
 import { ChevronDown, UserPlus } from "lucide-react";
 import { Dropdown } from "./Dropdown";
 import { LinkedinIcon, InstagramIcon } from "./icons";
@@ -12,20 +11,18 @@ export function FollowMenu() {
   return (
     <Dropdown
       trigger={({ toggle, open }) => (
-        <motion.button
+        <button
           type="button"
           onClick={toggle}
-          whileHover={{ scale: 1.03 }}
-          whileTap={{ scale: 0.97 }}
-          className="glass flex items-center gap-2 rounded-full px-5 py-2.5 text-sm font-medium text-foreground transition-shadow hover:shadow-[0_0_20px_rgb(var(--surface-border)/0.12)]"
+          className="flex items-center gap-2 rounded-md border border-foreground/15 px-4 py-2 font-mono text-xs text-foreground transition-colors hover:border-foreground/30"
         >
-          <UserPlus size={15} />
+          <UserPlus size={14} />
           {t.hero.followLabel}
           <ChevronDown
-            size={14}
+            size={13}
             className={`text-muted transition-transform duration-200 ${open ? "rotate-180" : ""}`}
           />
-        </motion.button>
+        </button>
       )}
     >
       {(close) => (
@@ -36,7 +33,7 @@ export function FollowMenu() {
             rel="noopener noreferrer"
             role="menuitem"
             onClick={close}
-            className="flex items-center gap-2.5 rounded-xl px-3 py-2.5 text-sm text-muted outline-none transition-colors hover:bg-white/5 hover:text-foreground focus-visible:bg-white/5 focus-visible:text-foreground"
+            className="flex items-center gap-2.5 rounded-sm px-3 py-2 text-sm text-muted outline-none transition-colors hover:bg-foreground/5 hover:text-foreground focus-visible:bg-foreground/5 focus-visible:text-foreground"
           >
             <LinkedinIcon className="h-4 w-4 text-accent" />
             {t.hero.followLinkedin}
@@ -47,9 +44,9 @@ export function FollowMenu() {
             rel="noopener noreferrer"
             role="menuitem"
             onClick={close}
-            className="flex items-center gap-2.5 rounded-xl px-3 py-2.5 text-sm text-muted outline-none transition-colors hover:bg-white/5 hover:text-foreground focus-visible:bg-white/5 focus-visible:text-foreground"
+            className="flex items-center gap-2.5 rounded-sm px-3 py-2 text-sm text-muted outline-none transition-colors hover:bg-foreground/5 hover:text-foreground focus-visible:bg-foreground/5 focus-visible:text-foreground"
           >
-            <InstagramIcon className="h-4 w-4 text-accent-2" />
+            <InstagramIcon className="h-4 w-4 text-accent" />
             {t.hero.followInstagram}
           </a>
         </div>

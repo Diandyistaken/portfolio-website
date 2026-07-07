@@ -1,31 +1,27 @@
 "use client";
 
-import { motion } from "framer-motion";
-import { ExternalLink } from "lucide-react";
+import { ArrowUpRight } from "lucide-react";
 import { RevealGroup, revealItem } from "./Reveal";
-import { SectionBackground } from "./SectionBackground";
 import { SectionHeading } from "./SectionHeading";
 import { useLanguage } from "@/lib/i18n/LanguageProvider";
 import { projectsMeta } from "@/lib/data";
+import { motion } from "framer-motion";
 
 export function Projects() {
   const { t } = useLanguage();
 
   return (
-    <section id="projects" className="relative overflow-hidden px-6 py-28 sm:py-32">
-      <SectionBackground variant="grid" />
+    <section id="projects" className="px-6 py-24 sm:py-28">
       <div className="mx-auto max-w-6xl">
         <SectionHeading
+          index="06"
           kicker={t.projects.kicker}
           title={t.projects.title}
           description={t.projects.description}
         />
 
-        <RevealGroup
-          stagger={0.12}
-          className="mt-14 grid grid-cols-1 gap-5 sm:grid-cols-2"
-        >
-          {t.projects.items.map((project) => {
+        <RevealGroup stagger={0.06} className="mt-14 flex flex-col">
+          {t.projects.items.map((project, i) => {
             const meta = projectsMeta[project.id];
             return (
               <motion.a
@@ -34,34 +30,34 @@ export function Projects() {
                 target="_blank"
                 rel="noopener noreferrer"
                 variants={revealItem}
-                whileHover={{ y: -8 }}
-                transition={{ type: "spring", stiffness: 300, damping: 22 }}
-                className={`group glass relative flex flex-col justify-between overflow-hidden rounded-3xl p-7 transition-shadow duration-300 hover:shadow-2xl hover:shadow-accent/10 ${
-                  meta.size === "lg" ? "sm:col-span-2 sm:min-h-[14rem]" : "sm:min-h-[14rem]"
-                }`}
+                className={`group grid grid-cols-1 items-center gap-3 py-6 transition-colors hover:bg-foreground/[0.03] sm:grid-cols-[3rem_1fr_auto] sm:gap-6 sm:px-4 ${
+                  i === 0 ? "border-t border-foreground/10" : ""
+                } border-b border-foreground/10`}
               >
-                <div className="pointer-events-none absolute -right-10 -top-10 h-40 w-40 rounded-full bg-accent/10 blur-3xl transition-opacity duration-300 group-hover:opacity-100 opacity-0" />
+                <span className="font-mono hidden text-sm text-muted sm:block">
+                  {String(i + 1).padStart(2, "0")}
+                </span>
 
                 <div>
-                  <div className="flex items-start justify-between gap-4">
-                    <h3 className="font-display text-xl font-semibold">
+                  <div className="flex items-center gap-2">
+                    <h3 className="font-display text-lg font-semibold sm:text-xl">
                       {project.title}
                     </h3>
-                    <ExternalLink
-                      size={18}
-                      className="mt-1 shrink-0 text-muted transition-transform duration-300 group-hover:-translate-y-0.5 group-hover:translate-x-0.5 group-hover:text-accent"
+                    <ArrowUpRight
+                      size={16}
+                      className="shrink-0 text-muted transition-all duration-200 group-hover:-translate-y-0.5 group-hover:translate-x-0.5 group-hover:text-accent"
                     />
                   </div>
-                  <p className="mt-3 text-sm leading-relaxed text-muted">
+                  <p className="mt-1.5 max-w-xl text-sm leading-relaxed text-muted">
                     {project.description}
                   </p>
                 </div>
 
-                <div className="mt-6 flex flex-wrap gap-2">
+                <div className="flex flex-wrap gap-2 sm:justify-end">
                   {meta.tags.map((tag) => (
                     <span
                       key={tag}
-                      className="rounded-full border border-white/10 bg-white/5 px-3 py-1 text-xs text-muted"
+                      className="font-mono rounded-sm border border-foreground/12 px-2.5 py-1 text-[0.7rem] text-muted"
                     >
                       {tag}
                     </span>

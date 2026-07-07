@@ -3,13 +3,6 @@ export const cvFiles = {
   en: "/cv/cv-en.pdf",
 };
 
-// Warm accent glows placed behind existing site photos (profile photo,
-// graduation photos) instead of separate decorative stock imagery.
-export const photoGlows = {
-  mother: "#f2a33c",
-  sibling: "#e8748f",
-};
-
 // Structural data that doesn't change across locales (ids, links, tags, numbers,
 // tool/company names). Keeping it here means src/lib/i18n/{tr,en,de}.ts only ever
 // hold translated copy, so adding a locale never risks drifting non-text fields.
@@ -41,10 +34,30 @@ export const educationPhotosMeta: Record<string, { src: string }> = {
 };
 
 export const projectsMeta: Record<string, { url: string; size: "lg" | "md"; tags: string[] }> = {
+  "daily-ai-researcher": {
+    url: "https://github.com/Diandyistaken/daily-ai-researcher",
+    size: "lg",
+    tags: ["Python", "Claude API", "Automation"],
+  },
+  "emotion-ai": {
+    url: "https://github.com/Diandyistaken/emotion-detection-using-AI",
+    size: "lg",
+    tags: ["AI", "CNN", "Computer Vision"],
+  },
   rpg: {
     url: "https://github.com/Diandyistaken/2.5d-rpg-unity",
     size: "lg",
     tags: ["Unity", "C#", "Game Dev"],
+  },
+  "career-tracker": {
+    url: "https://github.com/Diandyistaken/udemy-kariyer-takip",
+    size: "md",
+    tags: ["Chrome Extension", "JavaScript", "SVG"],
+  },
+  "gmail-agent": {
+    url: "https://github.com/Diandyistaken/gmail-ozet-ajani",
+    size: "md",
+    tags: ["Node.js", "Gmail API", "Automation"],
   },
   "image-cleaner": {
     url: "https://github.com/Diandyistaken/image-cleaner",
@@ -55,11 +68,6 @@ export const projectsMeta: Record<string, { url: string; size: "lg" | "md"; tags
     url: "https://github.com/Diandyistaken/dosya-isim-kaydedici",
     size: "md",
     tags: ["Python", "CLI"],
-  },
-  "emotion-ai": {
-    url: "https://github.com/Diandyistaken/emotion-detection-using-AI",
-    size: "lg",
-    tags: ["AI", "CNN", "Computer Vision"],
   },
 };
 

@@ -1,12 +1,11 @@
 "use client";
 
-import { motion } from "framer-motion";
 import { Gamepad2, Layers, Network, Shield } from "lucide-react";
 import { RevealGroup, revealItem } from "./Reveal";
-import { SectionBackground } from "./SectionBackground";
 import { SectionHeading } from "./SectionHeading";
 import { useLanguage } from "@/lib/i18n/LanguageProvider";
 import { skillsMeta } from "@/lib/data";
+import { motion } from "framer-motion";
 
 const icons = {
   cyber: Shield,
@@ -19,18 +18,18 @@ export function Skills() {
   const { t } = useLanguage();
 
   return (
-    <section id="skills" className="relative overflow-hidden px-6 py-28 sm:py-32">
-      <SectionBackground variant="lines" />
+    <section id="skills" className="px-6 py-24 sm:py-28">
       <div className="mx-auto max-w-6xl">
         <SectionHeading
+          index="02"
           kicker={t.skills.kicker}
           title={t.skills.title}
           description={t.skills.description}
         />
 
         <RevealGroup
-          stagger={0.12}
-          className="mt-14 grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-3"
+          stagger={0.08}
+          className="mt-14 grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3"
         >
           {t.skills.categories.map((category) => {
             const Icon = icons[category.id as keyof typeof icons];
@@ -39,14 +38,12 @@ export function Skills() {
               <motion.div
                 key={category.id}
                 variants={revealItem}
-                whileHover={{ y: -6 }}
-                transition={{ type: "spring", stiffness: 300, damping: 22 }}
-                className={`glass rounded-3xl p-7 transition-shadow duration-300 hover:shadow-2xl hover:shadow-accent/10 ${
+                className={`surface surface-hover rounded-lg p-6 ${
                   meta.size === "lg" ? "sm:col-span-2" : ""
                 }`}
               >
-                <div className="mb-5 flex h-11 w-11 items-center justify-center rounded-2xl bg-accent/15 text-accent">
-                  <Icon size={20} />
+                <div className="mb-5 flex h-10 w-10 items-center justify-center rounded-md border border-foreground/12 text-accent">
+                  <Icon size={18} />
                 </div>
                 <h3 className="font-display text-lg font-semibold">
                   {category.title}
@@ -68,7 +65,7 @@ export function Skills() {
                     {meta.tools.map((tool) => (
                       <span
                         key={tool}
-                        className="rounded-full border border-white/10 bg-white/5 px-3 py-1 text-xs text-muted"
+                        className="font-mono rounded-sm border border-foreground/12 px-2.5 py-1 text-[0.7rem] text-muted"
                       >
                         {tool}
                       </span>

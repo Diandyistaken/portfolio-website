@@ -220,9 +220,33 @@ export const en: Content = {
     description: "From game development to automation, from AI to system tooling.",
     items: [
       {
+        id: "daily-ai-researcher",
+        title: "Daily AI Researcher",
+        description:
+          "A Windows tray app that wakes up every morning, reads GitHub Trending and 20+ tech news sources, and uses the Claude API to write a bilingual HTML morning briefing — with dedup memory to keep token costs flat.",
+      },
+      {
+        id: "emotion-ai",
+        title: "Emotion Detection Using AI",
+        description:
+          "A real-time facial emotion recognition system built with a Convolutional Neural Network (CNN).",
+      },
+      {
         id: "rpg",
         title: "2.5D RPG (Unity)",
         description: "A Unity-based 2.5D RPG game project built in C#.",
+      },
+      {
+        id: "career-tracker",
+        title: "Udemy Career Tracker",
+        description:
+          "A Chrome extension that reads Udemy course progress and a companion web dashboard that turns it into a visual, gamified career-skill tree.",
+      },
+      {
+        id: "gmail-agent",
+        title: "Gmail Summary Agent",
+        description:
+          "A personal agent that pulls in the day's Gmail, auto-categorizes and drafts replies, and delivers a daily summary with desktop notifications.",
       },
       {
         id: "image-cleaner",
@@ -235,12 +259,6 @@ export const en: Content = {
         title: "File Name Logger",
         description:
           "A Python tool that exports file names and extensions from a folder into a .txt file.",
-      },
-      {
-        id: "emotion-ai",
-        title: "Emotion Detection Using AI",
-        description:
-          "A real-time facial emotion recognition system built with a Convolutional Neural Network (CNN).",
       },
     ],
   },

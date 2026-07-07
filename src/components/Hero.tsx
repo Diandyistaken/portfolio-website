@@ -3,8 +3,7 @@
 import Image from "next/image";
 import { motion } from "framer-motion";
 import { ArrowRight, MapPin } from "lucide-react";
-import { KineticText } from "./KineticText";
-import { SectionBackground } from "./SectionBackground";
+import { Reveal } from "./Reveal";
 import { CvDownload } from "./CvDownload";
 import { FollowMenu } from "./FollowMenu";
 import { useLanguage } from "@/lib/i18n/LanguageProvider";
@@ -15,85 +14,64 @@ export function Hero() {
   return (
     <section
       id="top"
-      className="relative flex min-h-screen items-center overflow-hidden px-6 pt-28 pb-16"
+      className="relative flex min-h-screen items-center px-6 pt-28 pb-16"
     >
-      <SectionBackground variant="hero" />
-
       <div className="mx-auto grid w-full max-w-6xl grid-cols-1 items-center gap-12 lg:grid-cols-[1.15fr_0.85fr]">
         <div>
-          <motion.p
-            initial={{ opacity: 0, y: 12 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.6 }}
-            className="mb-4 text-sm font-medium tracking-[0.2em] text-muted uppercase"
-          >
-            {t.hero.greeting}
-          </motion.p>
+          <Reveal>
+            <span className="kicker">{t.hero.greeting}</span>
+          </Reveal>
 
-          <KineticText
-            text={t.personalInfo.name}
-            className="font-display text-5xl font-semibold leading-[1.05] tracking-tight sm:text-6xl md:text-7xl"
-          />
+          <Reveal delay={0.05}>
+            <h1 className="font-display mt-4 text-5xl font-semibold leading-[1.05] tracking-tight sm:text-6xl md:text-7xl">
+              {t.personalInfo.name}
+            </h1>
+          </Reveal>
 
-          <motion.p
-            initial={{ opacity: 0, y: 10 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.6, delay: 0.9 }}
-            className="mt-5 max-w-xl text-sm text-muted sm:text-base"
-          >
-            {t.personalInfo.title}
-          </motion.p>
+          <Reveal delay={0.1}>
+            <p className="mt-5 max-w-xl text-sm text-muted sm:text-base">
+              {t.personalInfo.title}
+            </p>
+          </Reveal>
 
-          <motion.p
-            initial={{ opacity: 0, y: 10 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.6, delay: 1 }}
-            className="mt-2 flex items-center gap-1.5 text-xs text-muted"
-          >
-            <MapPin size={13} className="text-accent" />
-            {t.personalInfo.location}
-          </motion.p>
+          <Reveal delay={0.15}>
+            <p className="mt-2 flex items-center gap-1.5 text-xs text-muted">
+              <MapPin size={13} className="text-accent" />
+              {t.personalInfo.location}
+            </p>
+          </Reveal>
 
-          <motion.div
-            initial={{ opacity: 0, y: 10 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.6, delay: 1.1 }}
-            className="mt-9 flex flex-wrap items-center gap-4"
-          >
-            <motion.a
-              href="#contact"
-              whileHover={{ scale: 1.04 }}
-              whileTap={{ scale: 0.97 }}
-              className="group flex items-center gap-2 rounded-full bg-foreground px-6 py-3 text-sm font-medium text-background shadow-[0_0_0_0_rgba(109,91,255,0)] transition-shadow duration-300 hover:shadow-[0_0_28px_2px_rgb(var(--surface-border)/0.25)]"
-            >
-              {t.hero.ctaPrimary}
-              <ArrowRight
-                size={16}
-                className="transition-transform duration-300 group-hover:translate-x-1"
-              />
-            </motion.a>
-          </motion.div>
+          <Reveal delay={0.2}>
+            <div className="mt-9 flex flex-wrap items-center gap-4">
+              <a
+                href="#contact"
+                className="group flex items-center gap-2 rounded-md bg-foreground px-6 py-3 text-sm font-medium text-background transition-opacity hover:opacity-85"
+              >
+                {t.hero.ctaPrimary}
+                <ArrowRight
+                  size={16}
+                  className="transition-transform duration-200 group-hover:translate-x-1"
+                />
+              </a>
+            </div>
+          </Reveal>
 
-          <motion.div
-            initial={{ opacity: 0, y: 10 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.6, delay: 1.25 }}
-            className="mt-4 flex flex-wrap items-center gap-3"
-          >
-            <CvDownload />
-            <FollowMenu />
-          </motion.div>
+          <Reveal delay={0.25}>
+            <div className="mt-4 flex flex-wrap items-center gap-3">
+              <CvDownload />
+              <FollowMenu />
+            </div>
+          </Reveal>
         </div>
 
         <motion.div
-          initial={{ opacity: 0, scale: 0.9 }}
-          animate={{ opacity: 1, scale: 1 }}
-          transition={{ duration: 0.8, delay: 0.4, ease: [0.16, 1, 0.3, 1] }}
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ duration: 0.6, delay: 0.2 }}
           className="relative mx-auto aspect-[4/5] w-64 sm:w-80 lg:w-full lg:max-w-sm"
         >
-          <div className="absolute inset-0 rounded-[2rem] bg-gradient-to-br from-accent/40 to-accent-2/30 blur-2xl" />
-          <div className="glass-strong relative aspect-[4/5] overflow-hidden rounded-[2rem] p-2">
-            <div className="relative h-full w-full overflow-hidden rounded-[1.5rem]">
+          <div className="surface relative aspect-[4/5] overflow-hidden rounded-lg p-2">
+            <div className="relative h-full w-full overflow-hidden rounded-md">
               <Image
                 src="/profil-fotografi.jpg"
                 alt={t.personalInfo.name}
@@ -101,10 +79,13 @@ export function Hero() {
                 priority
                 quality={95}
                 sizes="(min-width: 1024px) 24rem, 20rem"
-                className="object-cover object-[center_25%]"
+                className="object-cover object-[center_25%] grayscale-[0.15]"
               />
             </div>
           </div>
+          <span className="font-mono absolute -bottom-3 -right-3 rounded-md border border-foreground/15 bg-background px-2.5 py-1 text-[0.65rem] tracking-wide text-muted">
+            Istanbul, TR
+          </span>
         </motion.div>
       </div>
     </section>

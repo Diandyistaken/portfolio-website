@@ -222,9 +222,33 @@ export const tr: Content = {
       "Oyun geliştirmeden otomasyona, yapay zekadan sistem araçlarına kadar.",
     items: [
       {
+        id: "daily-ai-researcher",
+        title: "Daily AI Researcher",
+        description:
+          "Her sabah GitHub Trending ve 20'den fazla teknoloji haber kaynağını tarayıp Claude API ile iki dilli bir HTML sabah bülteni yazan bir Windows tray uygulaması — tekrarları önleyen hafıza sistemiyle token maliyetini sabit tutar.",
+      },
+      {
+        id: "emotion-ai",
+        title: "Emotion Detection Using AI",
+        description:
+          "CNN (Convolutional Neural Network) kullanılarak gerçek zamanlı yüz ifadesinden duygu tanıma sistemi.",
+      },
+      {
         id: "rpg",
         title: "2.5D RPG (Unity)",
         description: "C# ile geliştirilmiş Unity tabanlı 2.5D RPG oyun projesi.",
+      },
+      {
+        id: "career-tracker",
+        title: "Udemy Kariyer Takip",
+        description:
+          "Udemy kurs ilerlemesini okuyan bir Chrome uzantısı ve bu veriyi görsel, oyunlaştırılmış bir kariyer/beceri ağacına dönüştüren web paneli.",
+      },
+      {
+        id: "gmail-agent",
+        title: "Gmail Özet Ajanı",
+        description:
+          "Günlük Gmail trafiğini çeken, otomatik kategorize edip cevap taslağı hazırlayan ve masaüstü bildirimiyle günlük özet sunan kişisel ajan.",
       },
       {
         id: "image-cleaner",
@@ -237,12 +261,6 @@ export const tr: Content = {
         title: "Dosya İsim Kaydedici",
         description:
           "Klasördeki dosya adlarını/uzantılarını .txt formatında dışa aktaran Python aracı.",
-      },
-      {
-        id: "emotion-ai",
-        title: "Emotion Detection Using AI",
-        description:
-          "CNN (Convolutional Neural Network) kullanılarak gerçek zamanlı yüz ifadesinden duygu tanıma sistemi.",
       },
     ],
   },

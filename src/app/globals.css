@@ -3,40 +3,33 @@
 @custom-variant dark (&:where(.dark, .dark *));
 
 :root {
-  --background: #f7f8fb;
-  --foreground: #0b0e14;
+  --background: #f5f3ee;
+  --foreground: #17160f;
   --surface: 255 255 255;
-  --surface-border: 15 23 42;
-  /* Darkened from the raw brand hues (#6d5bff / #1fc2dc) so text and icons set
-     in these colors clear WCAG AA (4.5:1) against the light background. The
-     dark theme's brighter tints already pass comfortably and are untouched. */
-  --accent: #6350f0;
-  --accent-2: #0d8095;
-  --accent-rgb: 99 80 240;
-  --accent-2-rgb: 13 128 149;
-  --muted: #5b6172;
+  --surface-border: 23 22 15;
+  --accent: #a8420f;
+  --accent-rgb: 168 66 15;
+  --muted: #5f5b4e;
 }
 
 .dark {
-  --background: #05070c;
-  --foreground: #eef1f8;
-  --surface: 15 20 32;
-  --surface-border: 255 255 255;
-  --accent: #8b7bff;
-  --accent-2: #29d9f2;
-  --accent-rgb: 139 123 255;
-  --accent-2-rgb: 41 217 242;
-  --muted: #9aa2b8;
+  --background: #0a0a08;
+  --foreground: #f2efe6;
+  --surface: 22 21 17;
+  --surface-border: 242 239 230;
+  --accent: #ff8a42;
+  --accent-rgb: 255 138 66;
+  --muted: #a29c8b;
 }
 
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
   --color-accent: var(--accent);
-  --color-accent-2: var(--accent-2);
   --color-muted: var(--muted);
   --font-sans: var(--font-inter);
   --font-display: var(--font-space-grotesk);
+  --font-mono: var(--font-jetbrains-mono);
 }
 
 * {
@@ -47,42 +40,46 @@ body {
   background: var(--background);
   color: var(--foreground);
   font-family: var(--font-sans);
-  transition: background-color 0.4s ease, color 0.4s ease;
+  transition: background-color 0.3s ease, color 0.3s ease;
+  background-image: radial-gradient(rgb(var(--surface-border) / 0.16) 1px, transparent 1px);
+  background-size: 28px 28px;
 }
 
 .font-display {
   font-family: var(--font-display);
 }
 
-.glass {
-  background: rgb(var(--surface) / 0.55);
-  border: 1px solid rgb(var(--surface-border) / 0.1);
-  backdrop-filter: blur(20px) saturate(160%);
-  -webkit-backdrop-filter: blur(20px) saturate(160%);
+.font-mono {
+  font-family: var(--font-mono);
 }
 
-.glass-strong {
-  background: rgb(var(--surface) / 0.7);
+/* Flat bordered surface used by every card/panel in place of the old
+   blurred-glass look — a single hairline keeps edges precise at any zoom. */
+.surface {
+  background: rgb(var(--surface) / 1);
   border: 1px solid rgb(var(--surface-border) / 0.12);
-  backdrop-filter: blur(28px) saturate(180%);
-  -webkit-backdrop-filter: blur(28px) saturate(180%);
 }
 
-.text-gradient {
-  background: linear-gradient(120deg, var(--accent), var(--accent-2));
-  -webkit-background-clip: text;
-  background-clip: text;
-  color: transparent;
+.surface-hover {
+  transition: border-color 0.2s ease, transform 0.2s ease;
+}
+
+.surface-hover:hover {
+  border-color: rgb(var(--surface-border) / 0.28);
+}
+
+.kicker {
+  font-family: var(--font-mono);
+  font-size: 0.75rem;
+  letter-spacing: 0.08em;
+  color: var(--accent);
 }
 
 ::selection {
   background: var(--accent);
-  color: white;
+  color: var(--background);
 }
 
-/* Modern browsers already trace the outline along each element's own
-   border-radius, so this stays shape-agnostic across pill buttons, cards,
-   and plain links without fighting their existing rounding. */
 :focus-visible {
   outline: 2px solid var(--accent);
   outline-offset: 3px;
@@ -101,54 +98,20 @@ body {
   border-radius: 999px;
 }
 
-@keyframes drift-a {
-  0%, 100% { transform: translate(0, 0) scale(1); }
-  50% { transform: translate(5%, -6%) scale(1.08); }
-}
-
-@keyframes drift-b {
-  0%, 100% { transform: translate(0, 0) scale(1); }
-  50% { transform: translate(-6%, 5%) scale(1.06); }
-}
-
-@keyframes float-y {
-  0%, 100% { transform: translateY(0); }
-  50% { transform: translateY(-16px); }
-}
-
-@keyframes float-y-slow {
-  0%, 100% { transform: translateY(0) translateX(0); }
-  50% { transform: translateY(14px) translateX(-8px); }
-}
-
-@keyframes pan-lines {
-  0% { background-position: 0 0; }
-  100% { background-position: 160px 160px; }
-}
-
-@keyframes pan-grid {
-  0% { background-position: 0 0; }
-  100% { background-position: 0 -48px; }
-}
-
-@keyframes spin-slow {
-  from { transform: rotate(0deg); }
-  to { transform: rotate(360deg); }
-}
-
-@keyframes pulse-soft {
-  0%, 100% { opacity: 0.45; transform: scale(1); }
-  50% { opacity: 0.8; transform: scale(1.12); }
-}
-
-@keyframes beam-sweep {
-  0% { transform: translateX(-20%) rotate(12deg); opacity: 0.25; }
-  50% { transform: translateX(20%) rotate(12deg); opacity: 0.5; }
-  100% { transform: translateX(-20%) rotate(12deg); opacity: 0.25; }
+@keyframes fade-up {
+  from {
+    opacity: 0;
+    transform: translateY(14px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .bg-anim {
-    animation: none !important;
+  * {
+    animation-duration: 0.01ms !important;
+    transition-duration: 0.01ms !important;
   }
 }

@@ -106,11 +106,11 @@ export function Dropdown({
             role="menu"
             aria-labelledby={triggerId}
             onKeyDown={onMenuKeyDown}
-            initial={{ opacity: 0, y: -8, scale: 0.96 }}
-            animate={{ opacity: 1, y: 0, scale: 1 }}
-            exit={{ opacity: 0, y: -8, scale: 0.96 }}
-            transition={{ duration: 0.18, ease: "easeOut" }}
-            className={`glass-strong absolute top-full z-50 mt-2 min-w-[12rem] overflow-hidden rounded-2xl p-1.5 ${
+            initial={{ opacity: 0, y: -6 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: -6 }}
+            transition={{ duration: 0.15, ease: "easeOut" }}
+            className={`surface absolute top-full z-50 mt-2 min-w-[12rem] overflow-hidden rounded-md p-1 shadow-sm ${
               align === "right" ? "right-0" : "left-0"
             }`}
           >

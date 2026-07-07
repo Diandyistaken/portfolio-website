@@ -8,26 +8,18 @@ type RevealProps = {
   delay?: number;
   className?: string;
   y?: number;
-  scale?: number;
 };
 
-export function Reveal({
-  children,
-  delay = 0,
-  className,
-  y = 32,
-  scale = 0.96,
-}: RevealProps) {
+export function Reveal({ children, delay = 0, className, y = 16 }: RevealProps) {
   const variants: Variants = {
-    hidden: { opacity: 0, y, scale },
+    hidden: { opacity: 0, y },
     visible: {
       opacity: 1,
       y: 0,
-      scale: 1,
       transition: {
-        duration: 0.7,
+        duration: 0.5,
         delay,
-        ease: [0.16, 1, 0.3, 1],
+        ease: [0.22, 1, 0.36, 1],
       },
     },
   };
@@ -48,7 +40,7 @@ export function Reveal({
 export function RevealGroup({
   children,
   className,
-  stagger = 0.1,
+  stagger = 0.08,
 }: {
   children: ReactNode;
   className?: string;
@@ -77,11 +69,10 @@ export function RevealGroup({
 }
 
 export const revealItem: Variants = {
-  hidden: { opacity: 0, y: 28, scale: 0.96 },
+  hidden: { opacity: 0, y: 16 },
   visible: {
     opacity: 1,
     y: 0,
-    scale: 1,
-    transition: { duration: 0.6, ease: [0.16, 1, 0.3, 1] },
+    transition: { duration: 0.45, ease: [0.22, 1, 0.36, 1] },
   },
 };

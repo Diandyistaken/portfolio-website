@@ -220,9 +220,33 @@ export const de: Content = {
     description: "Von der Spieleentwicklung über Automatisierung bis hin zu KI und Systemtools.",
     items: [
       {
+        id: "daily-ai-researcher",
+        title: "Daily AI Researcher",
+        description:
+          "Eine Windows-Tray-App, die jeden Morgen GitHub Trending und über 20 Tech-News-Quellen liest und mit der Claude API einen zweisprachigen HTML-Morgenbrief schreibt — mit Dedup-Speicher, der die Token-Kosten stabil hält.",
+      },
+      {
+        id: "emotion-ai",
+        title: "Emotionserkennung mit KI",
+        description:
+          "Ein Echtzeitsystem zur Erkennung von Gesichtsausdrücken mittels eines Convolutional Neural Network (CNN).",
+      },
+      {
         id: "rpg",
         title: "2.5D-RPG (Unity)",
         description: "Ein mit C# entwickeltes 2.5D-RPG-Spieleprojekt auf Unity-Basis.",
+      },
+      {
+        id: "career-tracker",
+        title: "Udemy Career Tracker",
+        description:
+          "Eine Chrome-Erweiterung, die den Udemy-Kursfortschritt ausliest, gepaart mit einem Web-Dashboard, das daraus einen visuellen, spielerischen Karriere-Skill-Baum macht.",
+      },
+      {
+        id: "gmail-agent",
+        title: "Gmail-Zusammenfassungsagent",
+        description:
+          "Ein persönlicher Agent, der die täglichen Gmail-Nachrichten abruft, automatisch kategorisiert, Antwortentwürfe erstellt und eine tägliche Zusammenfassung per Desktop-Benachrichtigung liefert.",
       },
       {
         id: "image-cleaner",
@@ -235,12 +259,6 @@ export const de: Content = {
         title: "Dateinamen-Exporter",
         description:
           "Ein Python-Tool, das Dateinamen und -endungen eines Ordners als .txt-Datei exportiert.",
-      },
-      {
-        id: "emotion-ai",
-        title: "Emotionserkennung mit KI",
-        description:
-          "Ein Echtzeitsystem zur Erkennung von Gesichtsausdrücken mittels eines Convolutional Neural Network (CNN).",
       },
     ],
   },

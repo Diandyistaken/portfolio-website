@@ -1,6 +1,5 @@
 "use client";
 
-import { motion } from "framer-motion";
 import { ChevronDown, Download, FileText } from "lucide-react";
 import { Dropdown } from "./Dropdown";
 import { cvFiles } from "@/lib/data";
@@ -12,20 +11,18 @@ export function CvDownload() {
   return (
     <Dropdown
       trigger={({ toggle, open }) => (
-        <motion.button
+        <button
           type="button"
           onClick={toggle}
-          whileHover={{ scale: 1.03 }}
-          whileTap={{ scale: 0.97 }}
-          className="glass flex items-center gap-2 rounded-full px-5 py-2.5 text-sm font-medium text-foreground transition-shadow hover:shadow-[0_0_20px_rgb(var(--surface-border)/0.12)]"
+          className="flex items-center gap-2 rounded-md border border-foreground/15 px-4 py-2 font-mono text-xs text-foreground transition-colors hover:border-foreground/30"
         >
-          <Download size={15} />
+          <Download size={14} />
           {t.hero.cvLabel}
           <ChevronDown
-            size={14}
+            size={13}
             className={`text-muted transition-transform duration-200 ${open ? "rotate-180" : ""}`}
           />
-        </motion.button>
+        </button>
       )}
     >
       {(close) => (
@@ -35,7 +32,7 @@ export function CvDownload() {
             download
             role="menuitem"
             onClick={close}
-            className="flex items-center gap-2.5 rounded-xl px-3 py-2.5 text-sm text-muted outline-none transition-colors hover:bg-white/5 hover:text-foreground focus-visible:bg-white/5 focus-visible:text-foreground"
+            className="flex items-center gap-2.5 rounded-sm px-3 py-2 text-sm text-muted outline-none transition-colors hover:bg-foreground/5 hover:text-foreground focus-visible:bg-foreground/5 focus-visible:text-foreground"
           >
             <FileText size={15} className="text-accent" />
             {t.hero.cvOptionTr}
@@ -45,9 +42,9 @@ export function CvDownload() {
             download
             role="menuitem"
             onClick={close}
-            className="flex items-center gap-2.5 rounded-xl px-3 py-2.5 text-sm text-muted outline-none transition-colors hover:bg-white/5 hover:text-foreground focus-visible:bg-white/5 focus-visible:text-foreground"
+            className="flex items-center gap-2.5 rounded-sm px-3 py-2 text-sm text-muted outline-none transition-colors hover:bg-foreground/5 hover:text-foreground focus-visible:bg-foreground/5 focus-visible:text-foreground"
           >
-            <FileText size={15} className="text-accent-2" />
+            <FileText size={15} className="text-accent" />
             {t.hero.cvOptionEn}
           </a>
         </div>
