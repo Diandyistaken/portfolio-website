@@ -5,7 +5,7 @@ import { RevealGroup, revealItem } from "./Reveal";
 import { SectionHeading } from "./SectionHeading";
 import { useLanguage } from "@/lib/i18n/LanguageProvider";
 import { skillsMeta } from "@/lib/data";
-import { motion } from "framer-motion";
+import { m } from "framer-motion";
 
 const icons = {
   cyber: Shield,
@@ -35,7 +35,7 @@ export function Skills() {
             const Icon = icons[category.id as keyof typeof icons];
             const meta = skillsMeta[category.id];
             return (
-              <motion.div
+              <m.div
                 key={category.id}
                 variants={revealItem}
                 className={`surface surface-hover rounded-lg p-6 ${
@@ -72,7 +72,7 @@ export function Skills() {
                     ))}
                   </div>
                 )}
-              </motion.div>
+              </m.div>
             );
           })}
         </RevealGroup>

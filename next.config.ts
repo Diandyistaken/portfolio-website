@@ -2,7 +2,7 @@ import type { NextConfig } from "next";
 
 // Next.js statically prerenders this site (no proxy/middleware, so no
 // per-request nonce is available - see Next's CSP guide, "Without Nonces").
-// script-src therefore needs 'unsafe-inline': besides our own theme-init
+// script-src therefore needs 'unsafe-inline': besides our own JSON-LD
 // snippet, Next's App Router injects its own inline RSC hydration payload
 // scripts (`__next_f.push(...)`) whose content isn't stable across builds,
 // so a static hash allowlist can't cover them without breaking hydration.
@@ -24,6 +24,9 @@ const csp = [
 ].join("; ");
 
 const nextConfig: NextConfig = {
+  turbopack: {
+    root: __dirname,
+  },
   images: {
     qualities: [75, 90, 95, 100],
   },
@@ -39,6 +42,17 @@ const nextConfig: NextConfig = {
           {
             key: "Strict-Transport-Security",
             value: "max-age=63072000; includeSubDomains; preload",
+          },
+        ],
+      },
+      {
+        // scrub frames never change without a redesign; let browsers and
+        // the CDN keep them for a year so repeat visits scrub instantly
+        source: "/scrub/:path*",
+        headers: [
+          {
+            key: "Cache-Control",
+            value: "public, max-age=31536000, immutable",
           },
         ],
       },

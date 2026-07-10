@@ -3,9 +3,10 @@
 import { Bug, Gamepad2, Globe, Home, MonitorSmartphone, Smartphone } from "lucide-react";
 import { RevealGroup, revealItem } from "./Reveal";
 import { SectionHeading } from "./SectionHeading";
+import { TiltCard } from "./TiltCard";
 import { useLanguage } from "@/lib/i18n/LanguageProvider";
 import { servicesMeta } from "@/lib/data";
-import { motion } from "framer-motion";
+import { m } from "framer-motion";
 
 const icons = {
   home: Home,
@@ -36,19 +37,20 @@ export function Services() {
           {t.services.items.map((service) => {
             const Icon = icons[servicesMeta[service.id].icon];
             return (
-              <motion.div
-                key={service.id}
-                variants={revealItem}
-                className="surface surface-hover rounded-lg p-6"
-              >
-                <Icon size={18} className="text-accent" />
-                <h3 className="font-display mt-4 text-lg font-semibold">
-                  {service.title}
-                </h3>
-                <p className="mt-2 text-sm leading-relaxed text-muted">
-                  {service.description}
-                </p>
-              </motion.div>
+              <m.div key={service.id} variants={revealItem}>
+                <TiltCard
+                  maxTilt={5}
+                  className="surface surface-hover h-full rounded-lg p-6"
+                >
+                  <Icon size={18} className="text-accent" />
+                  <h3 className="font-display mt-4 text-lg font-semibold">
+                    {service.title}
+                  </h3>
+                  <p className="mt-2 text-sm leading-relaxed text-muted">
+                    {service.description}
+                  </p>
+                </TiltCard>
+              </m.div>
             );
           })}
         </RevealGroup>

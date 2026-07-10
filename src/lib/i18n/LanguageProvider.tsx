@@ -4,12 +4,11 @@ import {
   createContext,
   useContext,
   useEffect,
+  useRef,
   useState,
   type ReactNode,
 } from "react";
 import { tr } from "./tr";
-import { en } from "./en";
-import { de } from "./de";
 import type { Content, Locale } from "./types";
 
 export const locales: Locale[] = ["tr", "en", "de"];
@@ -20,7 +19,24 @@ export const localeLabels: Record<Locale, string> = {
   de: "DE",
 };
 
-const dictionaries: Record<Locale, Content> = { tr, en, de };
+export const localeNames: Record<Locale, string> = {
+  tr: "Türkçe",
+  en: "English",
+  de: "Deutsch",
+};
+
+// tr ships in the main bundle (it's the SSR default); en/de are code-split
+// and fetched only when the visitor actually switches language.
+const loadDictionary = (locale: Locale): Promise<Content> => {
+  switch (locale) {
+    case "en":
+      return import("./en").then((mod) => mod.en);
+    case "de":
+      return import("./de").then((mod) => mod.de);
+    default:
+      return Promise.resolve(tr);
+  }
+};
 
 type LanguageContextValue = {
   locale: Locale;
@@ -32,6 +48,8 @@ const LanguageContext = createContext<LanguageContextValue | null>(null);
 
 export function LanguageProvider({ children }: { children: ReactNode }) {
   const [locale, setLocaleState] = useState<Locale>("tr");
+  const [dict, setDict] = useState<Content>(tr);
+  const requestRef = useRef<Locale>("tr");
 
   useEffect(() => {
     const stored = window.localStorage.getItem("lang");
@@ -42,12 +60,20 @@ export function LanguageProvider({ children }: { children: ReactNode }) {
   }, []);
 
   useEffect(() => {
-    document.documentElement.lang = locale;
-    document.title = dictionaries[locale].meta.title;
+    requestRef.current = locale;
+    loadDictionary(locale).then((d) => {
+      // ignore stale loads if the user switched again mid-flight
+      if (requestRef.current === locale) setDict(d);
+    });
+  }, [locale]);
+
+  useEffect(() => {
+    document.documentElement.lang = dict.htmlLang;
+    document.title = dict.meta.title;
     document
       .querySelector('meta[name="description"]')
-      ?.setAttribute("content", dictionaries[locale].meta.description);
-  }, [locale]);
+      ?.setAttribute("content", dict.meta.description);
+  }, [dict]);
 
   const setLocale = (next: Locale) => {
     setLocaleState(next);
@@ -55,7 +81,7 @@ export function LanguageProvider({ children }: { children: ReactNode }) {
   };
 
   return (
-    <LanguageContext.Provider value={{ locale, setLocale, t: dictionaries[locale] }}>
+    <LanguageContext.Provider value={{ locale, setLocale, t: dict }}>
       {children}
     </LanguageContext.Provider>
   );

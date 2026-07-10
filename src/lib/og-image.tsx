@@ -10,27 +10,34 @@ export function OgImageContent() {
         flexDirection: "column",
         justifyContent: "center",
         padding: "90px",
-        background: "#0a0a08",
-        color: "#f2efe6",
+        background: "#05070c",
+        color: "#e9eef6",
       }}
     >
       <div
         style={{
           display: "flex",
           alignItems: "center",
-          gap: 16,
+          gap: 18,
         }}
       >
-        <div
-          style={{
-            display: "flex",
-            width: 44,
-            height: 44,
-            borderRadius: 12,
-            background: "#f2efe6",
-          }}
-        />
-        <div style={{ display: "flex", fontSize: 26, letterSpacing: 4, color: "#ff8a42" }}>
+        <svg width="52" height="52" viewBox="0 0 32 32" fill="none">
+          <path
+            d="M16 2L27.5 6.8V15.2C27.5 21.8 22.9 27.5 16 30C9.1 27.5 4.5 21.8 4.5 15.2V6.8L16 2Z"
+            fill="rgba(79, 224, 141, 0.14)"
+            stroke="#4fe08d"
+            strokeWidth="1.8"
+            strokeLinejoin="round"
+          />
+          <path
+            d="M10.5 20.5V12L16 17L21.5 12V20.5"
+            stroke="#e9eef6"
+            strokeWidth="2.2"
+            strokeLinecap="round"
+            strokeLinejoin="round"
+          />
+        </svg>
+        <div style={{ display: "flex", fontSize: 26, letterSpacing: 4, color: "#4fe08d" }}>
           BİLGİSAYAR MÜHENDİSİ
         </div>
       </div>
@@ -50,7 +57,7 @@ export function OgImageContent() {
           display: "flex",
           fontSize: 32,
           marginTop: 26,
-          color: "#a29c8b",
+          color: "#94a0b3",
         }}
       >
         Siber Güvenlik Uzmanı · Penetrasyon Testi · DevSecOps
@@ -60,7 +67,7 @@ export function OgImageContent() {
           display: "flex",
           fontSize: 24,
           marginTop: 44,
-          color: "#ff8a42",
+          color: "#4fe08d",
         }}
       >
         maksutcakmaktas.com

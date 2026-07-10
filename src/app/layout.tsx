@@ -1,8 +1,6 @@
 import type { Metadata } from "next";
 import { Inter, JetBrains_Mono, Space_Grotesk } from "next/font/google";
 import "./globals.css";
-import { ThemeProvider } from "@/components/ThemeProvider";
-import { themeInitScript } from "@/lib/theme-init-script";
 import { LanguageProvider } from "@/lib/i18n/LanguageProvider";
 import { MotionProvider } from "@/components/MotionProvider";
 import { tr } from "@/lib/i18n/tr";
@@ -10,16 +8,19 @@ import { tr } from "@/lib/i18n/tr";
 const inter = Inter({
   variable: "--font-inter",
   subsets: ["latin"],
+  display: "swap",
 });
 
 const spaceGrotesk = Space_Grotesk({
   variable: "--font-space-grotesk",
   subsets: ["latin"],
+  display: "swap",
 });
 
 const jetbrainsMono = JetBrains_Mono({
   variable: "--font-jetbrains-mono",
   subsets: ["latin"],
+  display: "swap",
 });
 
 const siteUrl = "https://maksutcakmaktas.com";
@@ -127,7 +128,13 @@ export default function RootLayout({
       className={`${inter.variable} ${spaceGrotesk.variable} ${jetbrainsMono.variable} h-full antialiased`}
     >
       <head>
-        <script dangerouslySetInnerHTML={{ __html: themeInitScript }} />
+        {/* first video frame: paints the background before the JS bundle lands */}
+        <link
+          rel="preload"
+          as="image"
+          href="/scrub/000.webp"
+          fetchPriority="high"
+        />
         <script
           type="application/ld+json"
           dangerouslySetInnerHTML={{ __html: JSON.stringify(personJsonLd) }}
@@ -135,9 +142,7 @@ export default function RootLayout({
       </head>
       <body className="min-h-full flex flex-col overflow-x-hidden">
         <MotionProvider>
-          <ThemeProvider>
-            <LanguageProvider>{children}</LanguageProvider>
-          </ThemeProvider>
+          <LanguageProvider>{children}</LanguageProvider>
         </MotionProvider>
       </body>
     </html>

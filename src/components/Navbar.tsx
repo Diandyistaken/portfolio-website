@@ -1,10 +1,9 @@
 "use client";
 
 import { useEffect, useId, useState } from "react";
-import { AnimatePresence, motion } from "framer-motion";
+import { AnimatePresence, m } from "framer-motion";
 import { Menu, X } from "lucide-react";
 import { Logo } from "./Logo";
-import { ThemeToggle } from "./ThemeToggle";
 import { LanguageSwitcher } from "./LanguageSwitcher";
 import { useLanguage } from "@/lib/i18n/LanguageProvider";
 
@@ -44,7 +43,7 @@ export function Navbar() {
     <header
       className={`fixed inset-x-0 top-0 z-50 border-b transition-colors duration-300 ${
         scrolled
-          ? "border-foreground/10 bg-background/90 backdrop-blur-sm"
+          ? "border-white/10 bg-[#05070c]/65 backdrop-blur-md"
           : "border-transparent"
       }`}
     >
@@ -59,7 +58,7 @@ export function Navbar() {
             <li key={link.href}>
               <a
                 href={link.href}
-                className="transition-colors hover:text-foreground"
+                className="nav-link transition-colors hover:text-foreground"
               >
                 {link.label}
               </a>
@@ -69,7 +68,6 @@ export function Navbar() {
 
         <div className="flex items-center gap-1">
           <LanguageSwitcher />
-          <ThemeToggle />
           <button
             type="button"
             onClick={() => setOpen((v) => !v)}
@@ -85,13 +83,13 @@ export function Navbar() {
 
       <AnimatePresence>
         {open && (
-          <motion.div
+          <m.div
             id={mobileMenuId}
             initial={{ opacity: 0, height: 0 }}
             animate={{ opacity: 1, height: "auto" }}
             exit={{ opacity: 0, height: 0 }}
             transition={{ duration: 0.2, ease: "easeOut" }}
-            className="overflow-hidden border-b border-foreground/10 bg-background md:hidden"
+            className="overflow-hidden border-b border-white/10 bg-[#05070c]/90 backdrop-blur-md md:hidden"
           >
             <ul className="flex flex-col gap-1 px-6 py-3 font-mono text-sm uppercase tracking-[0.06em]">
               {navLinks.map((link) => (
@@ -106,7 +104,7 @@ export function Navbar() {
                 </li>
               ))}
             </ul>
-          </motion.div>
+          </m.div>
         )}
       </AnimatePresence>
     </header>

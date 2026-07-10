@@ -11,7 +11,7 @@ import {
   type ReactElement,
   type ReactNode,
 } from "react";
-import { AnimatePresence, motion } from "framer-motion";
+import { AnimatePresence, m } from "framer-motion";
 
 export function Dropdown({
   trigger,
@@ -100,7 +100,7 @@ export function Dropdown({
       {triggerElement}
       <AnimatePresence>
         {open && (
-          <motion.div
+          <m.div
             ref={menuRef}
             id={menuId}
             role="menu"
@@ -115,7 +115,7 @@ export function Dropdown({
             }`}
           >
             {children(close)}
-          </motion.div>
+          </m.div>
         )}
       </AnimatePresence>
     </div>

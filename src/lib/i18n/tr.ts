@@ -30,7 +30,7 @@ export const tr: Content = {
     title: "Bilgisayar Mühendisi | Cybersecurity Enthusiast",
     bio: "Siber güvenlik ve yazılım geliştirme süreçlerinde proaktif çözümler üreten yenilikçi bir Bilgisayar Mühendisiyim. Ağ güvenliğinden sistem otomasyonlarına kadar geniş bir yelpazede edindiğim saha tecrübelerini, güçlü bir analitik zekâ ve tavizsiz bir çalışma disipliniyle harmanlıyorum. Teknolojiye olan tutkumla, değer yaratan ve sınırları zorlayan profesyonel ekiplerin kalıcı bir parçası olmayı hedefliyorum. Eğitimim boyunca farklı disiplinlerde uygulamalı projeler geliştirdim; bunlar arasında yapay zekâ ve büyük dil modelleri üzerine akademik çalışmalar da yer alıyor ve bu alanda kendimi aktif biçimde geliştirmeye devam ediyorum.",
     location: "İstanbul, Türkiye",
-    email: "mo_maksut@gmail.com",
+    email: "mo.maksut@gmail.com",
     linkedin: "https://www.linkedin.com/in/muhammed-maksut-çakmaktaş-967502365/",
     github: "https://github.com/diandyistaken",
     instagram: "https://www.instagram.com/diandyistaken/",

@@ -1,18 +1,24 @@
 import type { SVGProps } from "react";
 
 /**
- * Abstract signal-pulse mark instead of literal initials: initials don't
- * hold up at favicon size, a single-stroke pulse line does. Doubles as the
- * cybersecurity "live signal" motif that ties to the rest of the brand.
+ * Shield + "M" monogram: the shield carries the cybersecurity brand, the M
+ * anchors the name. Strokes use the live --accent variable, so the mark
+ * shifts green → red → blue → gold in sync with the scroll-driven video.
  */
 export function Logo(props: SVGProps<SVGSVGElement>) {
   return (
     <svg viewBox="0 0 32 32" fill="none" {...props}>
-      <rect x="1" y="1" width="30" height="30" rx="7" fill="currentColor" />
       <path
-        d="M5.5 17.5H10L13 7.5L17.5 24.5L20.5 14.5H26.5"
-        stroke="var(--background)"
-        strokeWidth="2"
+        d="M16 2L27.5 6.8V15.2C27.5 21.8 22.9 27.5 16 30C9.1 27.5 4.5 21.8 4.5 15.2V6.8L16 2Z"
+        fill="rgb(var(--accent-rgb) / 0.12)"
+        stroke="var(--accent)"
+        strokeWidth="1.8"
+        strokeLinejoin="round"
+      />
+      <path
+        d="M10.5 20.5V12L16 17L21.5 12V20.5"
+        stroke="currentColor"
+        strokeWidth="2.2"
         strokeLinecap="round"
         strokeLinejoin="round"
       />

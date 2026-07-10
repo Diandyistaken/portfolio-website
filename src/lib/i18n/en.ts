@@ -30,7 +30,7 @@ export const en: Content = {
     title: "Computer Engineer | Cybersecurity Enthusiast",
     bio: "I'm an innovative Computer Engineer who builds proactive solutions across cybersecurity and software development. I combine hands-on field experience, ranging from network security to system automation, with sharp analytical thinking and uncompromising work discipline. Driven by a genuine passion for technology, my goal is to become a lasting part of professional teams that create value and push boundaries. Throughout my studies I've built hands-on projects across several disciplines, including academic work in AI and large language models — an area I'm continuing to actively grow in.",
     location: "Istanbul, Türkiye",
-    email: "mo_maksut@gmail.com",
+    email: "mo.maksut@gmail.com",
     linkedin: "https://www.linkedin.com/in/muhammed-maksut-çakmaktaş-967502365/",
     github: "https://github.com/diandyistaken",
     instagram: "https://www.instagram.com/diandyistaken/",

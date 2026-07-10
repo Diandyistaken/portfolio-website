@@ -30,7 +30,7 @@ export const de: Content = {
     title: "Informatiker | Cybersecurity-Enthusiast",
     bio: "Ich bin ein innovativer Informatiker, der proaktive Lösungen in den Bereichen Cybersicherheit und Softwareentwicklung entwickelt. Meine praktischen Erfahrungen, von Netzwerksicherheit bis hin zu Systemautomatisierung, verbinde ich mit ausgeprägtem analytischem Denken und einer konsequenten Arbeitsdisziplin. Mit meiner Leidenschaft für Technologie möchte ich langfristig Teil professioneller Teams werden, die echten Mehrwert schaffen und Grenzen verschieben. Während meines Studiums habe ich praxisnahe Projekte in verschiedenen Bereichen umgesetzt, darunter auch akademische Arbeiten im Bereich KI und große Sprachmodelle – ein Feld, in dem ich mich kontinuierlich weiterentwickle.",
     location: "Istanbul, Türkei",
-    email: "mo_maksut@gmail.com",
+    email: "mo.maksut@gmail.com",
     linkedin: "https://www.linkedin.com/in/muhammed-maksut-çakmaktaş-967502365/",
     github: "https://github.com/diandyistaken",
     instagram: "https://www.instagram.com/diandyistaken/",

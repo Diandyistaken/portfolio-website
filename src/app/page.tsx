@@ -10,24 +10,35 @@ import { Projects } from "@/components/Projects";
 import { Goals } from "@/components/Goals";
 import { Contact } from "@/components/Contact";
 import { Footer } from "@/components/Footer";
+import { ScrollVideoProvider } from "@/components/scrub/ScrollVideoProvider";
+import { VideoScrubCanvas } from "@/components/scrub/VideoScrubCanvas";
+import { PhaseHud } from "@/components/scrub/PhaseHud";
+import { ClickSparks } from "@/components/ClickSparks";
+import { TechMarquee } from "@/components/TechMarquee";
 
 export default function Home() {
   return (
-    <>
+    <ScrollVideoProvider>
+      <VideoScrubCanvas />
+      <PhaseHud />
+      <ClickSparks />
       <SkipLink />
       <Navbar />
-      <main id="main-content" className="flex-1">
-        <Hero />
-        <About />
-        <Skills />
-        <Services />
-        <Experience />
-        <Education />
-        <Projects />
-        <Goals />
-        <Contact />
-      </main>
-      <Footer />
-    </>
+      <div className="relative z-10 flex flex-1 flex-col">
+        <main id="main-content" className="flex-1">
+          <Hero />
+          <TechMarquee />
+          <About />
+          <Skills />
+          <Services />
+          <Experience />
+          <Education />
+          <Projects />
+          <Goals />
+          <Contact />
+        </main>
+        <Footer />
+      </div>
+    </ScrollVideoProvider>
   );
 }

@@ -5,7 +5,7 @@ import { RevealGroup, revealItem } from "./Reveal";
 import { SectionHeading } from "./SectionHeading";
 import { useLanguage } from "@/lib/i18n/LanguageProvider";
 import { projectsMeta } from "@/lib/data";
-import { motion } from "framer-motion";
+import { m } from "framer-motion";
 
 export function Projects() {
   const { t } = useLanguage();
@@ -20,19 +20,17 @@ export function Projects() {
           description={t.projects.description}
         />
 
-        <RevealGroup stagger={0.06} className="mt-14 flex flex-col">
+        <RevealGroup stagger={0.06} className="surface mt-14 flex flex-col rounded-lg px-6 sm:px-8">
           {t.projects.items.map((project, i) => {
             const meta = projectsMeta[project.id];
             return (
-              <motion.a
+              <m.a
                 key={project.id}
                 href={meta.url}
                 target="_blank"
                 rel="noopener noreferrer"
                 variants={revealItem}
-                className={`group grid grid-cols-1 items-center gap-3 py-6 transition-colors hover:bg-foreground/[0.03] sm:grid-cols-[3rem_1fr_auto] sm:gap-6 sm:px-4 ${
-                  i === 0 ? "border-t border-foreground/10" : ""
-                } border-b border-foreground/10`}
+                className="group grid grid-cols-1 items-center gap-3 border-b border-foreground/10 py-6 transition-colors last:border-b-0 hover:bg-foreground/[0.04] sm:grid-cols-[3rem_1fr_auto] sm:gap-6 sm:px-2"
               >
                 <span className="font-mono hidden text-sm text-muted sm:block">
                   {String(i + 1).padStart(2, "0")}
@@ -63,7 +61,7 @@ export function Projects() {
                     </span>
                   ))}
                 </div>
-              </motion.a>
+              </m.a>
             );
           })}
         </RevealGroup>

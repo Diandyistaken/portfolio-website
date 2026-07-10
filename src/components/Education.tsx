@@ -6,7 +6,7 @@ import { Reveal, RevealGroup, revealItem } from "./Reveal";
 import { SectionHeading } from "./SectionHeading";
 import { useLanguage } from "@/lib/i18n/LanguageProvider";
 import { educationPhotosMeta } from "@/lib/data";
-import { motion } from "framer-motion";
+import { m } from "framer-motion";
 
 export function Education() {
   const { t } = useLanguage();
@@ -38,7 +38,7 @@ export function Education() {
           className="mt-10 flex flex-wrap items-center justify-center gap-6 sm:justify-start"
         >
           {t.education.photos.map((photo) => (
-            <motion.div key={photo.id} variants={revealItem} className="surface w-48 rounded-lg p-2 sm:w-56">
+            <m.div key={photo.id} variants={revealItem} className="surface w-48 rounded-lg p-2 sm:w-56">
               <div className="relative aspect-square overflow-hidden rounded-md">
                 <Image
                   src={educationPhotosMeta[photo.id].src}
@@ -52,7 +52,7 @@ export function Education() {
               <p className="font-mono mt-2.5 pb-1 text-center text-xs text-muted">
                 {photo.caption}
               </p>
-            </motion.div>
+            </m.div>
           ))}
         </RevealGroup>
       </div>

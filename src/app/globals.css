@@ -2,24 +2,19 @@
 
 @custom-variant dark (&:where(.dark, .dark *));
 
-:root {
-  --background: #f5f3ee;
-  --foreground: #17160f;
-  --surface: 255 255 255;
-  --surface-border: 23 22 15;
-  --accent: #a8420f;
-  --accent-rgb: 168 66 15;
-  --muted: #5f5b4e;
-}
-
+/* Dark-only cinematic theme: the scroll-scrubbed video is the real background,
+   so both :root and .dark share one palette. --accent / --accent-rgb are
+   animated at runtime by ScrollVideoProvider to follow the video's phases
+   (green → red → blue → gold). */
+:root,
 .dark {
-  --background: #0a0a08;
-  --foreground: #f2efe6;
-  --surface: 22 21 17;
-  --surface-border: 242 239 230;
-  --accent: #ff8a42;
-  --accent-rgb: 255 138 66;
-  --muted: #a29c8b;
+  --background: #05070c;
+  --foreground: #e9eef6;
+  --surface: 10 14 22;
+  --surface-border: 233 238 246;
+  --accent: rgb(79 224 141);
+  --accent-rgb: 79 224 141;
+  --muted: #94a0b3;
 }
 
 @theme inline {
@@ -40,9 +35,6 @@ body {
   background: var(--background);
   color: var(--foreground);
   font-family: var(--font-sans);
-  transition: background-color 0.3s ease, color 0.3s ease;
-  background-image: radial-gradient(rgb(var(--surface-border) / 0.16) 1px, transparent 1px);
-  background-size: 28px 28px;
 }
 
 .font-display {
@@ -53,19 +45,65 @@ body {
   font-family: var(--font-mono);
 }
 
-/* Flat bordered surface used by every card/panel in place of the old
-   blurred-glass look — a single hairline keeps edges precise at any zoom. */
+/* Glass panel floating over the video; accent glow answers the current phase. */
 .surface {
-  background: rgb(var(--surface) / 1);
-  border: 1px solid rgb(var(--surface-border) / 0.12);
+  background: linear-gradient(
+    165deg,
+    rgb(var(--surface) / 0.78),
+    rgb(var(--surface) / 0.55)
+  );
+  border: 1px solid rgb(255 255 255 / 0.09);
+  /* only the standard property: Lightning CSS adds the -webkit- prefix
+     itself; hand-writing both makes it collapse to prefix-only output */
+  backdrop-filter: blur(12px);
+  box-shadow: 0 10px 36px rgb(0 0 0 / 0.4);
+}
+
+/* Low-end / small-screen fast path: backdrop-filter over an animating canvas
+   is the single most expensive effect on weak GPUs, so phones and perf-lite
+   devices trade the glass blur for a more opaque panel. Same for the
+   decorative glows and the scanline sweep. */
+@media (max-width: 767px) {
+  .surface {
+    backdrop-filter: none;
+    background: rgb(var(--surface) / 0.9);
+  }
+}
+
+.perf-lite .surface {
+  backdrop-filter: none;
+  background: rgb(var(--surface) / 0.9);
+  box-shadow: none;
+}
+
+.perf-lite .glow-text,
+.perf-lite .kicker {
+  text-shadow: none;
+}
+
+.perf-lite .scanline::after,
+.perf-lite .hud-dot {
+  animation: none;
+}
+
+.perf-lite .surface-hover:hover {
+  box-shadow: none;
+  transform: none;
 }
 
 .surface-hover {
-  transition: border-color 0.2s ease, transform 0.2s ease;
+  transition:
+    border-color 0.25s ease,
+    box-shadow 0.25s ease,
+    transform 0.25s ease;
 }
 
 .surface-hover:hover {
-  border-color: rgb(var(--surface-border) / 0.28);
+  border-color: rgb(var(--accent-rgb) / 0.5);
+  box-shadow:
+    0 10px 44px rgb(0 0 0 / 0.45),
+    0 0 32px rgb(var(--accent-rgb) / 0.14);
+  transform: translateY(-3px);
 }
 
 .kicker {
@@ -73,6 +111,181 @@ body {
   font-size: 0.75rem;
   letter-spacing: 0.08em;
   color: var(--accent);
+  text-shadow: 0 0 20px rgb(var(--accent-rgb) / 0.55);
+}
+
+.glow-text {
+  text-shadow:
+    0 0 30px rgb(var(--accent-rgb) / 0.35),
+    0 2px 24px rgb(0 0 0 / 0.6);
+}
+
+/* HUD corner brackets for framed media (hero portrait, photos) */
+.hud-corners {
+  position: relative;
+}
+
+.hud-corners::before,
+.hud-corners::after {
+  content: "";
+  position: absolute;
+  width: 22px;
+  height: 22px;
+  border: 2px solid rgb(var(--accent-rgb) / 0.9);
+  filter: drop-shadow(0 0 6px rgb(var(--accent-rgb) / 0.6));
+  pointer-events: none;
+  z-index: 2;
+}
+
+.hud-corners::before {
+  top: -2px;
+  left: -2px;
+  border-right: none;
+  border-bottom: none;
+}
+
+.hud-corners::after {
+  bottom: -2px;
+  right: -2px;
+  border-left: none;
+  border-top: none;
+}
+
+@keyframes hud-pulse {
+  0%,
+  100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.35;
+  }
+}
+
+.hud-dot {
+  animation: hud-pulse 1.6s ease-in-out infinite;
+}
+
+@keyframes scanline {
+  0% {
+    top: -10%;
+  }
+  100% {
+    top: 110%;
+  }
+}
+
+.scanline::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  right: 0;
+  height: 18%;
+  top: -10%;
+  background: linear-gradient(
+    to bottom,
+    transparent,
+    rgb(var(--accent-rgb) / 0.14),
+    transparent
+  );
+  animation: scanline 4.5s linear infinite;
+  pointer-events: none;
+  z-index: 1;
+}
+
+/* tactile press feedback used across all clickable chrome */
+.tap-pop {
+  transition: transform 0.15s ease;
+}
+
+.tap-pop:active {
+  transform: scale(0.95);
+}
+
+/* navbar links: accent underline sweeps in from the left */
+.nav-link {
+  position: relative;
+}
+
+.nav-link::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: -4px;
+  height: 1px;
+  background: var(--accent);
+  transform: scaleX(0);
+  transform-origin: left;
+  transition: transform 0.25s ease;
+}
+
+.nav-link:hover::after {
+  transform: scaleX(1);
+}
+
+/* infinite tool ticker (GPU transform only) */
+@keyframes marquee {
+  from {
+    transform: translateX(0);
+  }
+  to {
+    transform: translateX(-50%);
+  }
+}
+
+.marquee {
+  mask-image: linear-gradient(
+    to right,
+    transparent,
+    black 12%,
+    black 88%,
+    transparent
+  );
+}
+
+.marquee-track {
+  animation: marquee 32s linear infinite;
+}
+
+.marquee:hover .marquee-track {
+  animation-play-state: paused;
+}
+
+.perf-lite .marquee-track {
+  animation: none;
+}
+
+/* one-shot identity scan sweep over the hero portrait */
+@keyframes id-scan {
+  0% {
+    top: -12%;
+    opacity: 1;
+  }
+  85% {
+    opacity: 1;
+  }
+  100% {
+    top: 104%;
+    opacity: 0;
+  }
+}
+
+.id-scan::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  right: 0;
+  height: 10%;
+  top: -12%;
+  background: linear-gradient(
+    to bottom,
+    transparent,
+    rgb(var(--accent-rgb) / 0.5),
+    transparent
+  );
+  animation: id-scan 0.7s ease-in-out forwards;
+  pointer-events: none;
+  z-index: 3;
 }
 
 ::selection {
@@ -94,19 +307,8 @@ body {
 }
 
 ::-webkit-scrollbar-thumb {
-  background: rgb(var(--surface-border) / 0.25);
+  background: rgb(var(--accent-rgb) / 0.35);
   border-radius: 999px;
-}
-
-@keyframes fade-up {
-  from {
-    opacity: 0;
-    transform: translateY(14px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
 }
 
 @media (prefers-reduced-motion: reduce) {
