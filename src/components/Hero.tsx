@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import Image from "next/image";
-import { AnimatePresence, m } from "framer-motion";
+import { AnimatePresence, m, useReducedMotion } from "framer-motion";
 import { ArrowRight, ChevronDown, MapPin, ShieldCheck } from "lucide-react";
 import { Reveal } from "./Reveal";
 import { TiltCard } from "./TiltCard";
@@ -13,6 +13,9 @@ import { useLanguage } from "@/lib/i18n/LanguageProvider";
 
 export function Hero() {
   const { t } = useLanguage();
+  const reduceMotion = useReducedMotion();
+  const nameWords = t.personalInfo.name.split(" ");
+  const titleWords = t.personalInfo.title.split(" ");
   // increments per click so the scan CSS animation can re-trigger via key
   const [scanRun, setScanRun] = useState(0);
   const [verified, setVerified] = useState(false);
@@ -39,15 +42,36 @@ export function Hero() {
             <span className="kicker mt-6 block">&gt; {t.hero.greeting}_</span>
           </Reveal>
 
-          <Reveal delay={0.1}>
-            <h1 className="font-display glow-text mt-4 text-5xl font-semibold leading-[1.05] tracking-tight sm:text-6xl md:text-7xl">
-              {t.personalInfo.name}
-            </h1>
-          </Reveal>
+          <m.h1
+            aria-label={t.personalInfo.name}
+            initial={reduceMotion ? false : "hidden"}
+            animate="visible"
+            variants={{ visible: { transition: { staggerChildren: 0.06, delayChildren: 0.1 } } }}
+            className="font-display glow-text mt-4 flex flex-wrap gap-x-[0.22em] text-5xl font-semibold leading-[1.05] tracking-tight sm:text-6xl md:text-7xl"
+          >
+            {nameWords.map((word, index) => (
+              <span key={`${word}-${index}`} className="inline-block overflow-hidden pb-[0.08em]">
+                <m.span
+                  aria-hidden="true"
+                  variants={{
+                    hidden: { y: "110%", filter: "blur(12px)" },
+                    visible: { y: "0%", filter: "blur(0px)", transition: { duration: 0.65, ease: [0.22, 1, 0.36, 1] } },
+                  }}
+                  className="inline-block"
+                >
+                  {word}
+                </m.span>
+              </span>
+            ))}
+          </m.h1>
 
           <Reveal delay={0.15}>
             <p className="mt-5 max-w-xl text-sm text-muted sm:text-base">
-              {t.personalInfo.title}
+              {titleWords.map((word, index) => (
+                <span key={`${word}-${index}`} className={index === titleWords.length - 1 ? "bg-gradient-to-r from-accent to-cyan-400 bg-clip-text font-medium text-transparent" : undefined}>
+                  {word}{index < titleWords.length - 1 ? " " : ""}
+                </span>
+              ))}
             </p>
           </Reveal>
 

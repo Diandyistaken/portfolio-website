@@ -1,0 +1,7 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 900 210" role="img" aria-labelledby="title desc">
+  <title id="title">Automation pipeline</title><desc id="desc">Five-stage abstract horizontal workflow</desc>
+  <defs><marker id="a" markerWidth="8" markerHeight="8" refX="7" refY="4" orient="auto"><path d="M0 0 8 4 0 8Z" fill="#4fe08d"/></marker></defs>
+  <g fill="none" stroke="#4fe08d" stroke-width="2" stroke-opacity=".65" stroke-dasharray="8 8" marker-end="url(#a)"><path d="M130 105h110"/><path d="M300 105h110"/><path d="M470 105h110"/><path d="M640 105h110"/></g>
+  <g fill="#0a0e16" stroke="#4fe08d" stroke-opacity=".7"><rect x="25" y="68" width="105" height="74" rx="7"/><rect x="195" y="68" width="105" height="74" rx="7"/><rect x="365" y="68" width="105" height="74" rx="7"/><rect x="535" y="68" width="105" height="74" rx="7"/><rect x="705" y="68" width="105" height="74" rx="7"/></g>
+  <g fill="#e9eef6" font-family="monospace" font-size="14" text-anchor="middle"><text x="77" y="112">Signal</text><text x="247" y="112">Filter</text><text x="417" y="112">Analysis</text><text x="587" y="112">Demo</text><text x="757" y="112">Delivery</text></g>
+</svg>

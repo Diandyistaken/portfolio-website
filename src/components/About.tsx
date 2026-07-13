@@ -3,6 +3,7 @@
 import { Reveal } from "./Reveal";
 import { SectionHeading } from "./SectionHeading";
 import { useLanguage } from "@/lib/i18n/LanguageProvider";
+import { KpiStats } from "./KpiStats";
 
 export function About() {
   const { t } = useLanguage();
@@ -22,6 +23,7 @@ export function About() {
             {t.personalInfo.bio}
           </p>
         </Reveal>
+        <KpiStats />
       </div>
     </section>
   );

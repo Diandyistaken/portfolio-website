@@ -14,6 +14,7 @@ export const de: Content = {
     experience: "Erfahrung",
     education: "Ausbildung",
     projects: "Projekte",
+    showcase: "Vitrine",
     goals: "Ziele",
     contact: "Kontakt",
   },
@@ -48,6 +49,11 @@ export const de: Content = {
   about: {
     kicker: "Über mich",
     title: "Wer ist Muhammed Maksut?",
+    stats: [
+      { value: 2026, suffix: "", label: "Abschlussjahr" },
+      { value: 12, suffix: "+", label: "Realisierte Projekte" },
+      { value: 20, suffix: "+", label: "Eingesetzte Technologien" },
+    ],
   },
   skills: {
     kicker: "Fähigkeiten",
@@ -218,6 +224,17 @@ export const de: Content = {
     kicker: "Projekte",
     title: "Womit ich mich beschäftigt habe",
     description: "Von der Spieleentwicklung über Automatisierung bis hin zu KI und Systemtools.",
+    botShowcase: {
+      label: "Live-Vorschau des Telegram-Bots",
+      typing: "schreibt...",
+      time: "07:00",
+      messages: [
+        "📮 Daily AI Researcher — Sonntag, 12. Juli 2026 / Guten Morgen, Maksut! ☕",
+        "🔥 Heute auf GitHub: malisper/pgrust ↗ +774 Sterne — Postgres in Rust neu geschrieben, jetzt bei 2.196 Sternen.",
+        "vercel/next.js ↗ +334 Sterne — mit 140.998 Sternen führend im Ökosystem.",
+        "Der Newsletter ist jeden Morgen um 07:00 Uhr fertig.",
+      ],
+    },
     items: [
       {
         id: "daily-ai-researcher",
@@ -261,6 +278,28 @@ export const de: Content = {
           "Ein Python-Tool, das Dateinamen und -endungen eines Ordners als .txt-Datei exportiert.",
       },
     ],
+  },
+  commandPalette: {
+    openLabel: "Befehlspalette öffnen",
+    closeLabel: "Befehlspalette schließen",
+    placeholder: "Abschnitt oder Befehl suchen...",
+    navigationLabel: "Zum Abschnitt",
+    actionsLabel: "Schnellaktionen",
+    downloadCv: "Lebenslauf herunterladen (TR)",
+    copyEmail: "E-Mail kopieren",
+    emailCopied: "E-Mail kopiert",
+    emptyLabel: "Keine Ergebnisse gefunden",
+  },
+  showcase: {
+    kicker: "Showcase / Lab",
+    title: "Von der Idee zum laufenden System",
+    description: "Zwei ausgewählte Arbeiten, die Produktdenken und technische Umsetzung unter Wahrung der Vertraulichkeit zeigen.",
+    items: [
+      { id: "platform", title: "Konzeption einer digitalen Unternehmensplattform", badge: "In Verhandlung · NDA", description: "Ein durchgängiges Konzept für eine moderne Webplattform einer traditionsreichen türkischen Berufsorganisation: mit Live-Simulation eines Admin-Dashboards, interaktiven Türkei- und Weltkarten, Ctrl+K-Befehlspalette, Theme-Wechsel, Mobile-App-Prototyp und KI-gestützter Inhaltsanalyse.", alt: "Konzept einer unbenannten digitalen Unternehmensplattform" },
+      { id: "automation", title: "Durchgängige Automatisierungssysteme", badge: "Vertrauliches Projekt · Kurzfassung", description: "Eine Automatisierungskette von der Signalerfassung über intelligente Filterung und automatische Analyse bis zur sofortigen Demo-Erstellung und Auslieferung – ergänzt durch Telegram-Bot-Oberfläche, geplante Aufgaben und eine Mehrkanalarchitektur.", alt: "Unbenannter durchgängiger Automatisierungsablauf" },
+    ],
+    note: "Live-Demos dieser Arbeiten können im Gespräch gezeigt werden.",
+    pipeline: ["Signal", "Filter", "Analyse", "Demo", "Übergabe"],
   },
   goals: {
     kicker: "Fahrplan",

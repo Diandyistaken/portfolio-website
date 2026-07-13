@@ -24,7 +24,7 @@ export function Goals() {
     <section id="goals" className="px-6 py-24 sm:py-28">
       <div className="mx-auto max-w-3xl">
         <SectionHeading
-          index="07"
+          index="08"
           kicker={t.goals.kicker}
           title={t.goals.title}
           description={t.goals.description}

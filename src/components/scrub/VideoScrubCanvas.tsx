@@ -19,8 +19,8 @@ import { useScrollVideo, isPerfLite, onPerfLite } from "./ScrollVideoProvider";
  */
 
 const FRAME_COUNT = 180;
-const FRAME_W = 1024;
-const FRAME_H = 576;
+const FRAME_W = 1536;
+const FRAME_H = 864;
 
 type FrameSet = { dir: string; w: number; h: number };
 const FULL: FrameSet = { dir: "/scrub", w: FRAME_W, h: FRAME_H };
@@ -207,13 +207,13 @@ export function VideoScrubCanvas() {
       />
       <canvas ref={canvasRef} className="absolute inset-0 h-full w-full" />
       {/* readability scrim: darkened edges + slight global dim */}
-      <div className="absolute inset-0 bg-black/45" />
-      <div className="absolute inset-0 bg-gradient-to-b from-black/70 via-transparent to-black/70" />
+      <div className="absolute inset-0 bg-black/30" />
+      <div className="absolute inset-0 bg-gradient-to-b from-black/55 via-transparent to-black/55" />
       <div
         className="absolute inset-0"
         style={{
           background:
-            "radial-gradient(ellipse at center, transparent 45%, rgb(0 0 0 / 0.55) 100%)",
+            "radial-gradient(ellipse at center, transparent 52%, rgb(0 0 0 / 0.45) 100%)",
         }}
       />
     </div>

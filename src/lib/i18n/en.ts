@@ -14,6 +14,7 @@ export const en: Content = {
     experience: "Experience",
     education: "Education",
     projects: "Projects",
+    showcase: "Showcase",
     goals: "Goals",
     contact: "Contact",
   },
@@ -48,6 +49,11 @@ export const en: Content = {
   about: {
     kicker: "About",
     title: "Who is Muhammed Maksut?",
+    stats: [
+      { value: 2026, suffix: "", label: "Graduation year" },
+      { value: 12, suffix: "+", label: "Projects built" },
+      { value: 20, suffix: "+", label: "Technologies used" },
+    ],
   },
   skills: {
     kicker: "Skills",
@@ -218,6 +224,17 @@ export const en: Content = {
     kicker: "Projects",
     title: "Things I've worked on",
     description: "From game development to automation, from AI to system tooling.",
+    botShowcase: {
+      label: "Live Telegram bot preview",
+      typing: "typing...",
+      time: "07:00",
+      messages: [
+        "📮 Daily AI Researcher — Sunday, July 12, 2026 / Good morning, Maksut! ☕",
+        "🔥 Today on GitHub: malisper/pgrust ↗ +774 stars — a Rust rewrite of Postgres, now at 2,196 stars.",
+        "vercel/next.js ↗ +334 stars — the ecosystem leader with 140,998 stars.",
+        "The briefing is ready every morning at 07:00.",
+      ],
+    },
     items: [
       {
         id: "daily-ai-researcher",
@@ -261,6 +278,28 @@ export const en: Content = {
           "A Python tool that exports file names and extensions from a folder into a .txt file.",
       },
     ],
+  },
+  commandPalette: {
+    openLabel: "Open command palette",
+    closeLabel: "Close command palette",
+    placeholder: "Search for a section or command...",
+    navigationLabel: "Go to section",
+    actionsLabel: "Quick actions",
+    downloadCv: "Download CV (TR)",
+    copyEmail: "Copy email",
+    emailCopied: "Email copied",
+    emptyLabel: "No results found",
+  },
+  showcase: {
+    kicker: "Showcase / Lab",
+    title: "From concept to working system",
+    description: "Two selected builds that demonstrate product thinking and technical execution while respecting confidentiality.",
+    items: [
+      { id: "platform", title: "Enterprise digital platform design", badge: "In negotiation · NDA", description: "An end-to-end modern web platform concept for one of Türkiye's established professional institutions, bringing together a live admin dashboard simulation, interactive Türkiye and world maps, a Ctrl+K command palette, theme switching, a mobile app prototype, and AI-assisted content analysis.", alt: "Unnamed enterprise digital platform interface concept" },
+      { id: "automation", title: "End-to-end automation systems", badge: "Stealth project · summary", description: "An automation pipeline spanning signal collection, intelligent filtering, automated analysis, instant demo generation, and delivery, supported by a Telegram bot interface, scheduled tasks, and a multi-channel architecture.", alt: "Unnamed end-to-end automation workflow" },
+    ],
+    note: "Live demos of these builds can be presented during an interview.",
+    pipeline: ["Signal", "Filter", "Analysis", "Demo", "Delivery"],
   },
   goals: {
     kicker: "Roadmap",

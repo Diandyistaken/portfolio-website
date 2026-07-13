@@ -14,6 +14,7 @@ export const tr: Content = {
     experience: "Deneyim",
     education: "Eğitim",
     projects: "Projeler",
+    showcase: "Vitrin",
     goals: "Hedefler",
     contact: "İletişim",
   },
@@ -48,6 +49,11 @@ export const tr: Content = {
   about: {
     kicker: "Hakkımda",
     title: "Kim bu Muhammed Maksut?",
+    stats: [
+      { value: 2026, suffix: "", label: "Mezuniyet yılı" },
+      { value: 12, suffix: "+", label: "Üretilen proje" },
+      { value: 20, suffix: "+", label: "Kullanılan teknoloji" },
+    ],
   },
   skills: {
     kicker: "Yetenekler",
@@ -220,6 +226,17 @@ export const tr: Content = {
     title: "Üzerinde çalıştığım projeler",
     description:
       "Oyun geliştirmeden otomasyona, yapay zekadan sistem araçlarına kadar.",
+    botShowcase: {
+      label: "Canlı Telegram bot önizlemesi",
+      typing: "yazıyor...",
+      time: "07:00",
+      messages: [
+        "📮 Daily AI Researcher — 12 Temmuz 2026, Pazar / Günaydın Maksut! ☕",
+        "🔥 GitHub'da bugün: malisper/pgrust ↗ +774 yıldız — Postgres'in Rust ile yeniden yazımı, 2.196 yıldıza ulaştı.",
+        "vercel/next.js ↗ +334 yıldız — 140.998 yıldızla ekosistem lideri.",
+        "Bülten her sabah 07:00'de hazır.",
+      ],
+    },
     items: [
       {
         id: "daily-ai-researcher",
@@ -263,6 +280,28 @@ export const tr: Content = {
           "Klasördeki dosya adlarını/uzantılarını .txt formatında dışa aktaran Python aracı.",
       },
     ],
+  },
+  commandPalette: {
+    openLabel: "Komut paletini aç",
+    closeLabel: "Komut paletini kapat",
+    placeholder: "Bir bölüm veya komut ara...",
+    navigationLabel: "Bölümlere git",
+    actionsLabel: "Hızlı işlemler",
+    downloadCv: "CV indir (TR)",
+    copyEmail: "E-postayı kopyala",
+    emailCopied: "E-posta kopyalandı",
+    emptyLabel: "Sonuç bulunamadı",
+  },
+  showcase: {
+    kicker: "Vitrin / Lab",
+    title: "Fikirden çalışan sisteme",
+    description: "Gizlilik sınırlarını koruyarak, ürün düşüncesi ve teknik uygulama gücünü gösteren iki seçili çalışma.",
+    items: [
+      { id: "platform", title: "Kurumsal dijital platform tasarımı", badge: "Görüşme aşamasında · NDA", description: "Türkiye'nin köklü bir meslek kurumu için tasarlanan uçtan uca modern web platformu konsepti; canlı yönetim paneli simülasyonu, interaktif Türkiye ve dünya haritaları, Ctrl+K komut paleti, tema geçişi, mobil uygulama prototipi ve AI destekli içerik analizini tek deneyimde buluşturuyor.", alt: "İsimsiz kurumsal dijital platform arayüzü konsepti" },
+      { id: "automation", title: "Uçtan uca otomasyon sistemleri", badge: "Gizli proje · özet", description: "Sinyal toplamadan akıllı filtreleme ve otomatik analize, anında demo üretiminden bildirime uzanan bir otomasyon hattı; Telegram bot arayüzü, zamanlanmış görevler ve çok kanallı mimariyle kesintisiz çalışır.", alt: "İsimsiz uçtan uca otomasyon akışı" },
+    ],
+    note: "Bu çalışmaların canlı demoları görüşme sırasında gösterilebilir.",
+    pipeline: ["Sinyal", "Filtre", "Analiz", "Demo", "Teslim"],
   },
   goals: {
     kicker: "Yol Haritası",

@@ -6,6 +6,7 @@ import { Reveal } from "./Reveal";
 import { SectionHeading } from "./SectionHeading";
 import { GithubIcon, LinkedinIcon, InstagramIcon } from "./icons";
 import { useLanguage } from "@/lib/i18n/LanguageProvider";
+import { MagneticButton } from "./MagneticButton";
 
 export function Contact() {
   const { t } = useLanguage();
@@ -25,7 +26,7 @@ export function Contact() {
     <section id="contact" className="px-6 py-24 sm:py-28">
       <div className="mx-auto max-w-2xl">
         <SectionHeading
-          index="08"
+          index="09"
           kicker={t.contact.kicker}
           title={t.contact.title}
           description={t.contact.description}
@@ -33,11 +34,8 @@ export function Contact() {
 
         <Reveal delay={0.1} className="mt-12">
           <div className="surface flex flex-col items-center gap-6 rounded-lg p-8 text-center sm:p-10">
-            <button
-              type="button"
-              onClick={handleCopy}
-              className="group flex flex-col items-center gap-2"
-            >
+            <MagneticButton>
+            <button type="button" onClick={handleCopy} className="group flex flex-col items-center gap-2">
               <span className="font-display text-2xl font-semibold tracking-tight sm:text-3xl md:text-4xl">
                 {t.personalInfo.email}
               </span>
@@ -53,6 +51,7 @@ export function Contact() {
                 )}
               </span>
             </button>
+            </MagneticButton>
 
             <div className="flex items-center gap-3">
               <a

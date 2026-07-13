@@ -37,6 +37,14 @@ export type ServiceContent = {
   description: string;
 };
 
+export type ShowcaseItemContent = {
+  id: "platform" | "automation";
+  title: string;
+  badge: string;
+  description: string;
+  alt: string;
+};
+
 export type Content = {
   htmlLang: string;
   meta: {
@@ -50,6 +58,7 @@ export type Content = {
     experience: string;
     education: string;
     projects: string;
+    showcase: string;
     goals: string;
     contact: string;
   };
@@ -84,6 +93,7 @@ export type Content = {
   about: {
     kicker: string;
     title: string;
+    stats: { value: number; suffix: string; label: string }[];
   };
   skills: {
     kicker: string;
@@ -116,6 +126,31 @@ export type Content = {
     title: string;
     description: string;
     items: ProjectContent[];
+    botShowcase: {
+      label: string;
+      messages: string[];
+      typing: string;
+      time: string;
+    };
+  };
+  commandPalette: {
+    openLabel: string;
+    closeLabel: string;
+    placeholder: string;
+    navigationLabel: string;
+    actionsLabel: string;
+    downloadCv: string;
+    copyEmail: string;
+    emailCopied: string;
+    emptyLabel: string;
+  };
+  showcase: {
+    kicker: string;
+    title: string;
+    description: string;
+    items: ShowcaseItemContent[];
+    note: string;
+    pipeline: string[];
   };
   goals: {
     kicker: string;

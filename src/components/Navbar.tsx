@@ -1,15 +1,18 @@
 "use client";
 
-import { useEffect, useId, useState } from "react";
+import { useEffect, useId, useRef, useState } from "react";
 import { AnimatePresence, m } from "framer-motion";
 import { Menu, X } from "lucide-react";
 import { Logo } from "./Logo";
 import { LanguageSwitcher } from "./LanguageSwitcher";
 import { useLanguage } from "@/lib/i18n/LanguageProvider";
+import { CommandPalette } from "./CommandPalette";
 
 export function Navbar() {
   const [open, setOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
+  const [paletteOpen, setPaletteOpen] = useState(false);
+  const paletteTriggerRef = useRef<HTMLButtonElement>(null);
   const { t } = useLanguage();
   const mobileMenuId = useId();
 
@@ -39,6 +42,17 @@ export function Navbar() {
     return () => document.removeEventListener("keydown", onKey);
   }, [open]);
 
+  useEffect(() => {
+    const onKey = (event: KeyboardEvent) => {
+      if ((event.metaKey || event.ctrlKey) && event.key.toLocaleLowerCase("tr") === "k") {
+        event.preventDefault();
+        setPaletteOpen((value) => !value);
+      }
+    };
+    document.addEventListener("keydown", onKey);
+    return () => document.removeEventListener("keydown", onKey);
+  }, []);
+
   return (
     <header
       className={`fixed inset-x-0 top-0 z-50 border-b transition-colors duration-300 ${
@@ -67,6 +81,16 @@ export function Navbar() {
         </ul>
 
         <div className="flex items-center gap-1">
+          <button
+            ref={paletteTriggerRef}
+            type="button"
+            onClick={() => setPaletteOpen(true)}
+            aria-label={t.commandPalette.openLabel}
+            aria-haspopup="dialog"
+            className="hidden h-8 items-center rounded-md border border-foreground/10 px-2 font-mono text-[0.65rem] text-muted transition-colors hover:border-accent/40 hover:text-foreground md:flex"
+          >
+            ⌘K
+          </button>
           <LanguageSwitcher />
           <button
             type="button"
@@ -107,6 +131,7 @@ export function Navbar() {
           </m.div>
         )}
       </AnimatePresence>
+      <CommandPalette open={paletteOpen} onOpenChange={setPaletteOpen} triggerRef={paletteTriggerRef} />
     </header>
   );
 }
