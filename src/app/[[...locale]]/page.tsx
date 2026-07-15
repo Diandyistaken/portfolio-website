@@ -1,3 +1,4 @@
+import dynamic from "next/dynamic";
 import { Navbar } from "@/components/Navbar";
 import { SkipLink } from "@/components/SkipLink";
 import { Hero } from "@/components/Hero";
@@ -11,24 +12,26 @@ import { Goals } from "@/components/Goals";
 import { Contact } from "@/components/Contact";
 import { Footer } from "@/components/Footer";
 import { ScrollVideoProvider } from "@/components/scrub/ScrollVideoProvider";
-import { VideoScrubCanvas } from "@/components/scrub/VideoScrubCanvas";
+import { BackgroundLayer } from "@/components/BackgroundLayer";
 import { PhaseHud } from "@/components/scrub/PhaseHud";
-import { ClickSparks } from "@/components/ClickSparks";
 import { TechMarquee } from "@/components/TechMarquee";
-import { ShowcaseLab } from "@/components/ShowcaseLab";
 import { ScrollProgress } from "@/components/ScrollProgress";
 import { NameMarquee } from "@/components/NameMarquee";
 import { IntroLoader } from "@/components/IntroLoader";
-import { CustomCursor } from "@/components/CustomCursor";
+import { ParallaxDivider, ParallaxQuote } from "@/components/ParallaxDivider";
+import { ClientChrome } from "@/components/ClientChrome";
+
+// Real content below the fold: keep SSR (SEO), just split out of the main chunk.
+const ShowcaseLab = dynamic(() => import("@/components/ShowcaseLab").then((mod) => mod.ShowcaseLab));
+const FreelanceHub = dynamic(() => import("@/components/FreelanceHub").then((mod) => mod.FreelanceHub));
 
 export default function Home() {
   return (
     <ScrollVideoProvider>
       <IntroLoader />
-      <CustomCursor />
-      <VideoScrubCanvas />
+      <ClientChrome />
+      <BackgroundLayer />
       <PhaseHud />
-      <ClickSparks />
       <ScrollProgress />
       <SkipLink />
       <Navbar />
@@ -38,12 +41,19 @@ export default function Home() {
           <TechMarquee />
           <About />
           <Skills />
+          <ParallaxDivider src="/istanbul/bosphorus-day.webp" alt="Bosphorus in daylight">
+            <ParallaxQuote id="day" />
+          </ParallaxDivider>
           <Services />
           <Experience />
           <Education />
           <Projects />
           <ShowcaseLab />
+          <FreelanceHub />
           <Goals />
+          <ParallaxDivider src="/istanbul/galata-sunset.webp" alt="Galata Bridge at sunset">
+            <ParallaxQuote id="sunset" />
+          </ParallaxDivider>
           <Contact />
         </main>
         <NameMarquee />

@@ -8,6 +8,7 @@ import {
   useState,
   type ReactNode,
 } from "react";
+import { useRouter } from "next/navigation";
 import { tr } from "./tr";
 import type { Content, Locale } from "./types";
 
@@ -25,8 +26,10 @@ export const localeNames: Record<Locale, string> = {
   de: "Deutsch",
 };
 
-// tr ships in the main bundle (it's the SSR default); en/de are code-split
-// and fetched only when the visitor actually switches language.
+// tr is unprefixed ("/"), en/de live at "/en" and "/de" — each is server
+// rendered with the right locale (see app/[[...locale]]/layout.tsx), so
+// this client-side loader only runs for the instant-feedback swap while a
+// navigation to the new locale path is in flight.
 const loadDictionary = (locale: Locale): Promise<Content> => {
   switch (locale) {
     case "en":
@@ -38,6 +41,10 @@ const loadDictionary = (locale: Locale): Promise<Content> => {
   }
 };
 
+export function localePath(locale: Locale): string {
+  return locale === "tr" ? "/" : `/${locale}`;
+}
+
 type LanguageContextValue = {
   locale: Locale;
   setLocale: (locale: Locale) => void;
@@ -46,26 +53,51 @@ type LanguageContextValue = {
 
 const LanguageContext = createContext<LanguageContextValue | null>(null);
 
-export function LanguageProvider({ children }: { children: ReactNode }) {
-  const [locale, setLocaleState] = useState<Locale>("tr");
-  const [dict, setDict] = useState<Content>(tr);
-  const requestRef = useRef<Locale>("tr");
+type LanguageProviderProps = {
+  children: ReactNode;
+  initialLocale?: Locale;
+  initialDict?: Content;
+};
 
+export function LanguageProvider({
+  children,
+  initialLocale = "tr",
+  initialDict,
+}: LanguageProviderProps) {
+  const router = useRouter();
+  const [locale, setLocaleState] = useState<Locale>(initialLocale);
+  const [dict, setDict] = useState<Content>(initialDict ?? tr);
+  const requestRef = useRef<Locale>(initialLocale);
+
+  // Keep in sync when the route's locale changes from outside setLocale
+  // (browser back/forward, a direct link) — adjusted during render (React's
+  // documented pattern for this) instead of an effect, to avoid an extra
+  // cascading render pass.
+  const [prevInitialLocale, setPrevInitialLocale] = useState(initialLocale);
+  if (initialLocale !== prevInitialLocale) {
+    setPrevInitialLocale(initialLocale);
+    setLocaleState(initialLocale);
+  }
+
+  // A stored preference from an earlier visit should win, but as a real
+  // navigation to the matching locale path — not a silent text swap — so
+  // the URL stays the source of truth for search engines and sharing.
   useEffect(() => {
     const stored = window.localStorage.getItem("lang");
-    if (stored && locales.includes(stored as Locale)) {
-      // eslint-disable-next-line react-hooks/set-state-in-effect
-      setLocaleState(stored as Locale);
+    if (stored && locales.includes(stored as Locale) && stored !== initialLocale) {
+      router.replace(`${localePath(stored as Locale)}${window.location.hash}`);
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   useEffect(() => {
     requestRef.current = locale;
+    if (locale === initialLocale && initialDict) return; // SSR already has it
     loadDictionary(locale).then((d) => {
       // ignore stale loads if the user switched again mid-flight
       if (requestRef.current === locale) setDict(d);
     });
-  }, [locale]);
+  }, [locale, initialLocale, initialDict]);
 
   useEffect(() => {
     document.documentElement.lang = dict.htmlLang;
@@ -78,6 +110,7 @@ export function LanguageProvider({ children }: { children: ReactNode }) {
   const setLocale = (next: Locale) => {
     setLocaleState(next);
     window.localStorage.setItem("lang", next);
+    router.push(`${localePath(next)}${window.location.hash}`);
   };
 
   return (

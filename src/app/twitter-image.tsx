@@ -1,7 +1,7 @@
 import { ImageResponse } from "next/og";
 import { OgImageContent, ogImageSize } from "@/lib/og-image";
 
-export const alt = "Muhammed Maksut Çakmaktaş — Bilgisayar Mühendisi & Siber Güvenlik Uzmanı";
+export const alt = "Muhammed Maksut Çakmaktaş — Bilgisayar Mühendisi & Siber Güvenlik Meraklısı";
 export const size = ogImageSize;
 export const contentType = "image/png";
 
