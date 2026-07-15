@@ -59,8 +59,17 @@ export function Goals() {
                 custom={{ index, motionSafe }}
                 variants={goalVariants}
                 whileHover={motionSafe ? "hover" : undefined}
+                role="button"
+                tabIndex={0}
+                aria-label={goal.title}
                 onClick={() => rerun(goal.id)}
-                className="surface surface-hover tap-pop cursor-pointer rounded-lg p-6 [transform-style:preserve-3d]"
+                onKeyDown={(e) => {
+                  if (e.key === "Enter" || e.key === " ") {
+                    e.preventDefault();
+                    rerun(goal.id);
+                  }
+                }}
+                className="surface surface-hover tap-pop cursor-pointer rounded-lg p-6 outline-none [transform-style:preserve-3d]"
               >
                 <div className="flex min-w-0 items-center gap-3">
                   <m.div variants={{ hover: { x: 3, rotate: 4 } }} className="flex h-9 w-9 shrink-0 items-center justify-center rounded-md border border-foreground/12 text-accent [transform:translateZ(12px)]">

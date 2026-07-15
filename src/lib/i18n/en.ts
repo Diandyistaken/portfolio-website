@@ -3,7 +3,7 @@ import type { Content } from "./types";
 export const en: Content = {
   htmlLang: "en",
   meta: {
-    title: "Muhammed Maksut Çakmaktaş | Computer Engineer & Cybersecurity Enthusiast",
+    title: "Muhammed Maksut Çakmaktaş | Computer Engineer & Cybersecurity",
     description:
       "Personal portfolio of Muhammed Maksut Çakmaktaş, a Computer Engineer who builds proactive solutions across cybersecurity and software development.",
   },
@@ -40,6 +40,7 @@ export const en: Content = {
   hero: {
     greeting: "Hi, I'm",
     ctaPrimary: "Get in Touch",
+    ctaSecondary: "See Projects",
     followLabel: "Follow",
     followLinkedin: "Follow on LinkedIn",
     followInstagram: "Follow on Instagram",

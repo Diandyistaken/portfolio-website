@@ -19,15 +19,26 @@ export function IntroLoader() {
       "(prefers-reduced-motion: reduce)",
     ).matches;
 
-    if (
-      reducedMotion ||
-      (!initiatedRef.current && sessionStorage.getItem(SESSION_KEY))
-    ) {
+    // Storage access can throw (Safari private mode, cookies disabled by
+    // policy) — treat that the same as "no record of a previous visit"
+    // rather than letting it crash the whole component.
+    let alreadySeen = false;
+    try {
+      alreadySeen = Boolean(sessionStorage.getItem(SESSION_KEY));
+    } catch {
+      alreadySeen = false;
+    }
+
+    if (reducedMotion || (!initiatedRef.current && alreadySeen)) {
       return;
     }
 
     initiatedRef.current = true;
-    sessionStorage.setItem(SESSION_KEY, "true");
+    try {
+      sessionStorage.setItem(SESSION_KEY, "true");
+    } catch {
+      // best-effort only; the intro just replays next visit
+    }
 
     const previousOverflow = document.body.style.overflow;
     document.body.style.overflow = "hidden";

@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { m, useReducedMotion } from "framer-motion";
 import { Check, Copy, Mail } from "lucide-react";
 import { Reveal } from "./Reveal";
@@ -18,16 +18,34 @@ export function Contact() {
   const [copyState, setCopyState] = useState<CopyState>("idle");
   const reducedMotion = useReducedMotion();
   const perfLite = usePerfLite();
-  const mailtoHref = `mailto:${t.personalInfo.email}`;
+  const resetTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+
+  // Kept out of the server-rendered HTML on purpose: a plain-text mailto
+  // link is exactly the pattern spam harvesters regex for. Revealing it
+  // after mount stops that without touching the JSON-LD copy search
+  // engines are meant to read.
+  const [revealedEmail, setRevealedEmail] = useState<string | null>(null);
+  useEffect(() => {
+    // eslint-disable-next-line react-hooks/set-state-in-effect -- deliberately deferred past SSR, see comment above
+    setRevealedEmail(t.personalInfo.email);
+  }, [t]);
+  const mailtoHref = revealedEmail ? `mailto:${revealedEmail}` : undefined;
+
+  useEffect(() => {
+    return () => {
+      if (resetTimerRef.current !== null) clearTimeout(resetTimerRef.current);
+    };
+  }, []);
 
   const handleCopy = async () => {
+    if (resetTimerRef.current !== null) clearTimeout(resetTimerRef.current);
     try {
       await navigator.clipboard.writeText(t.personalInfo.email);
       setCopyState("copied");
     } catch {
       setCopyState("failed");
     } finally {
-      setTimeout(() => setCopyState("idle"), 2200);
+      resetTimerRef.current = setTimeout(() => setCopyState("idle"), 2200);
     }
   };
 
@@ -67,7 +85,7 @@ export function Contact() {
                 href={mailtoHref}
                 className="font-display max-w-full break-all text-xl font-semibold tracking-tight transition-colors hover:text-accent sm:text-3xl md:text-4xl 3xl:text-5xl"
               >
-                {t.personalInfo.email}
+                {revealedEmail ?? "···"}
               </a>
               <div className="flex flex-wrap items-center justify-center gap-x-5 gap-y-1.5">
                 <a

@@ -156,6 +156,12 @@ export function Hero() {
                   className="transition-transform duration-200 group-hover:translate-x-1"
                 />
               </a>
+              <a
+                href="#projects"
+                className="tap-pop rounded-md border border-foreground/15 px-6 py-3 text-sm font-medium text-foreground transition-colors hover:border-accent/50 hover:text-accent"
+              >
+                {t.hero.ctaSecondary}
+              </a>
             </div>
           </Reveal>
 

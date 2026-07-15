@@ -27,6 +27,7 @@ export function CommandPalette({ open, onOpenChange, triggerRef }: CommandPalett
   const [query, setQuery] = useState("");
   const [activeIndex, setActiveIndex] = useState(0);
   const [copied, setCopied] = useState(false);
+  const [copyFailed, setCopyFailed] = useState(false);
 
   const items = useMemo<PaletteItem[]>(() => {
     const sections = [
@@ -46,11 +47,24 @@ export function CommandPalette({ open, onOpenChange, triggerRef }: CommandPalett
         link.download = `Muhammed-Maksut-Cakmaktas-CV-${cvLocale.toUpperCase()}.pdf`;
         link.click();
       } },
-      { id: "copy-email", label: copied ? t.commandPalette.emailCopied : t.commandPalette.copyEmail, group: "actions", icon: Copy, run: async () => {
-        await navigator.clipboard.writeText(t.personalInfo.email); setCopied(true);
-      } },
+      {
+        id: "copy-email",
+        label: copyFailed ? t.contact.copyFailedLabel : copied ? t.commandPalette.emailCopied : t.commandPalette.copyEmail,
+        group: "actions",
+        icon: Copy,
+        run: async () => {
+          try {
+            await navigator.clipboard.writeText(t.personalInfo.email);
+            setCopied(true);
+            setCopyFailed(false);
+          } catch {
+            setCopyFailed(true);
+            setCopied(false);
+          }
+        },
+      },
     ];
-  }, [copied, reduceMotion, t, locale]);
+  }, [copied, copyFailed, reduceMotion, t, locale]);
 
   const filtered = useMemo(() => {
     const needle = query.trim().toLocaleLowerCase("tr");
@@ -65,13 +79,13 @@ export function CommandPalette({ open, onOpenChange, triggerRef }: CommandPalett
     requestAnimationFrame(() => inputRef.current?.focus());
     // ESC must close the palette even when focus has left the search input
     const onDocKeyDown = (e: KeyboardEvent) => {
-      if (e.key === "Escape") { setQuery(""); setCopied(false); onOpenChange(false); }
+      if (e.key === "Escape") { setQuery(""); setCopied(false); setCopyFailed(false); onOpenChange(false); }
     };
     document.addEventListener("keydown", onDocKeyDown);
     return () => { document.removeEventListener("keydown", onDocKeyDown); document.body.style.overflow = previousOverflow; trigger?.focus(); };
   }, [open, triggerRef, onOpenChange]);
 
-  const close = () => { setQuery(""); setCopied(false); onOpenChange(false); };
+  const close = () => { setQuery(""); setCopied(false); setCopyFailed(false); onOpenChange(false); };
   const select = async (item: PaletteItem) => { await item.run(); if (item.id !== "copy-email") close(); };
 
   return (

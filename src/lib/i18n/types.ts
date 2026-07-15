@@ -86,6 +86,7 @@ export type Content = {
   hero: {
     greeting: string;
     ctaPrimary: string;
+    ctaSecondary: string;
     followLabel: string;
     followLinkedin: string;
     followInstagram: string;

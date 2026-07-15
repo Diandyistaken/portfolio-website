@@ -15,6 +15,9 @@
   --accent: rgb(79 224 141);
   --accent-rgb: 79 224 141;
   --muted: #94a0b3;
+  /* Fixed, not scroll-synced: focus rings must stay legible and not read as
+     an alert even during the "red team" phase, when --accent turns red. */
+  --focus-color: #4fe08d;
 }
 
 /* Breakpoints and fluid type live in a plain @theme block: `@theme inline`
@@ -118,6 +121,16 @@ html.custom-cursor input,
 html.custom-cursor textarea,
 html.custom-cursor select {
   cursor: auto;
+}
+
+/* The custom ring already grows to signal "interactive", but that's a
+   fallback layer, not a replacement: if the JS animation stutters or the
+   pointermove listener hasn't fired yet, links/buttons must still show a
+   native affordance rather than no cursor at all. */
+html.custom-cursor a,
+html.custom-cursor button,
+html.custom-cursor [role="button"] {
+  cursor: pointer;
 }
 
 .custom-cursor__dot,
@@ -453,7 +466,7 @@ html.custom-cursor select {
 }
 
 :focus-visible {
-  outline: 2px solid var(--accent);
+  outline: 2px solid var(--focus-color);
   outline-offset: 3px;
 }
 

@@ -45,6 +45,25 @@ export function localePath(locale: Locale): string {
   return locale === "tr" ? "/" : `/${locale}`;
 }
 
+// localStorage can throw (Safari private mode, cookies disabled by policy) —
+// a language preference is a nice-to-have, never worth crashing the page.
+function readStoredLocale(): Locale | null {
+  try {
+    const stored = window.localStorage.getItem("lang");
+    return stored && locales.includes(stored as Locale) ? (stored as Locale) : null;
+  } catch {
+    return null;
+  }
+}
+
+function writeStoredLocale(locale: Locale) {
+  try {
+    window.localStorage.setItem("lang", locale);
+  } catch {
+    // best-effort only
+  }
+}
+
 type LanguageContextValue = {
   locale: Locale;
   setLocale: (locale: Locale) => void;
@@ -83,9 +102,9 @@ export function LanguageProvider({
   // navigation to the matching locale path — not a silent text swap — so
   // the URL stays the source of truth for search engines and sharing.
   useEffect(() => {
-    const stored = window.localStorage.getItem("lang");
-    if (stored && locales.includes(stored as Locale) && stored !== initialLocale) {
-      router.replace(`${localePath(stored as Locale)}${window.location.hash}`);
+    const stored = readStoredLocale();
+    if (stored && stored !== initialLocale) {
+      router.replace(`${localePath(stored)}${window.location.hash}`);
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
@@ -109,7 +128,7 @@ export function LanguageProvider({
 
   const setLocale = (next: Locale) => {
     setLocaleState(next);
-    window.localStorage.setItem("lang", next);
+    writeStoredLocale(next);
     router.push(`${localePath(next)}${window.location.hash}`);
   };
 

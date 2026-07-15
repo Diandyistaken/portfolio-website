@@ -35,37 +35,37 @@ export const educationPhotosMeta: Record<string, { src: string }> = {
 
 export const projectsMeta: Record<string, { url: string; size: "lg" | "md"; tags: string[] }> = {
   "daily-ai-researcher": {
-    url: "https://github.com/Diandyistaken/daily-ai-researcher",
+    url: "https://github.com/diandyistaken/daily-ai-researcher",
     size: "lg",
     tags: ["Python", "Claude API", "Automation"],
   },
   "emotion-ai": {
-    url: "https://github.com/Diandyistaken/emotion-detection-using-AI",
+    url: "https://github.com/diandyistaken/emotion-detection-using-AI",
     size: "lg",
     tags: ["AI", "CNN", "Computer Vision"],
   },
   rpg: {
-    url: "https://github.com/Diandyistaken/2.5d-rpg-unity",
+    url: "https://github.com/diandyistaken/2.5d-rpg-unity",
     size: "lg",
     tags: ["Unity", "C#", "Game Dev"],
   },
   "career-tracker": {
-    url: "https://github.com/Diandyistaken/udemy-kariyer-takip",
+    url: "https://github.com/diandyistaken/udemy-kariyer-takip",
     size: "md",
     tags: ["Chrome Extension", "JavaScript", "SVG"],
   },
   "gmail-agent": {
-    url: "https://github.com/Diandyistaken/gmail-ozet-ajani",
+    url: "https://github.com/diandyistaken/gmail-ozet-ajani",
     size: "md",
     tags: ["Node.js", "Gmail API", "Automation"],
   },
   "image-cleaner": {
-    url: "https://github.com/Diandyistaken/image-cleaner",
+    url: "https://github.com/diandyistaken/image-cleaner",
     size: "md",
     tags: ["Python", "Automation"],
   },
   "file-namer": {
-    url: "https://github.com/Diandyistaken/dosya-isim-kaydedici",
+    url: "https://github.com/diandyistaken/dosya-isim-kaydedici",
     size: "md",
     tags: ["Python", "CLI"],
   },

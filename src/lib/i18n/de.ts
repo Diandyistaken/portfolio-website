@@ -3,9 +3,9 @@ import type { Content } from "./types";
 export const de: Content = {
   htmlLang: "de",
   meta: {
-    title: "Muhammed Maksut Çakmaktaş | Informatiker & Cybersecurity-Enthusiast",
+    title: "Muhammed Maksut Çakmaktaş | Informatiker & Cybersicherheit",
     description:
-      "Persönliches Portfolio von Muhammed Maksut Çakmaktaş, einem Informatiker, der proaktive Lösungen in den Bereichen Cybersicherheit und Softwareentwicklung entwickelt.",
+      "Persönliches Portfolio von Muhammed Maksut Çakmaktaş, einem Informatiker mit Fokus auf Cybersicherheit und Softwareentwicklung.",
   },
   nav: {
     about: "Über mich",
@@ -40,6 +40,7 @@ export const de: Content = {
   hero: {
     greeting: "Hallo, ich bin",
     ctaPrimary: "Kontakt aufnehmen",
+    ctaSecondary: "Projekte ansehen",
     followLabel: "Folgen",
     followLinkedin: "Auf LinkedIn folgen",
     followInstagram: "Auf Instagram folgen",
