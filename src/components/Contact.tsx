@@ -1,56 +1,99 @@
 "use client";
 
 import { useState } from "react";
-import { Check, Copy } from "lucide-react";
+import { m, useReducedMotion } from "framer-motion";
+import { Check, Copy, Mail } from "lucide-react";
 import { Reveal } from "./Reveal";
 import { SectionHeading } from "./SectionHeading";
 import { GithubIcon, LinkedinIcon, InstagramIcon } from "./icons";
 import { useLanguage } from "@/lib/i18n/LanguageProvider";
 import { MagneticButton } from "./MagneticButton";
+import { CONTAINER } from "@/lib/layout";
+import { SectionBackdrop, usePerfLite } from "./SectionBackdrop";
+
+type CopyState = "idle" | "copied" | "failed";
 
 export function Contact() {
   const { t } = useLanguage();
-  const [copied, setCopied] = useState(false);
+  const [copyState, setCopyState] = useState<CopyState>("idle");
+  const reducedMotion = useReducedMotion();
+  const perfLite = usePerfLite();
+  const mailtoHref = `mailto:${t.personalInfo.email}`;
 
   const handleCopy = async () => {
     try {
       await navigator.clipboard.writeText(t.personalInfo.email);
-      setCopied(true);
-      setTimeout(() => setCopied(false), 1800);
+      setCopyState("copied");
     } catch {
-      // clipboard unavailable, ignore silently
+      setCopyState("failed");
+    } finally {
+      setTimeout(() => setCopyState("idle"), 2200);
     }
   };
 
   return (
-    <section id="contact" className="px-6 py-24 sm:py-28">
-      <div className="mx-auto max-w-2xl">
+    <section id="contact" className="relative overflow-hidden px-6 py-24 sm:px-10 sm:py-28 3xl:px-16">
+      <SectionBackdrop variant="waves" />
+      <div className={`relative z-10 ${CONTAINER}`}>
+        <div className="mx-auto max-w-2xl 3xl:max-w-4xl">
         <SectionHeading
-          index="09"
+        index="10"
           kicker={t.contact.kicker}
           title={t.contact.title}
           description={t.contact.description}
         />
 
         <Reveal delay={0.1} className="mt-12">
-          <div className="surface flex flex-col items-center gap-6 rounded-lg p-8 text-center sm:p-10">
-            <MagneticButton>
-            <button type="button" onClick={handleCopy} className="group flex flex-col items-center gap-2">
-              <span className="font-display text-2xl font-semibold tracking-tight sm:text-3xl md:text-4xl">
+          <m.div
+            initial="idle"
+            whileHover={reducedMotion || perfLite ? undefined : "hover"}
+            className="surface relative overflow-hidden rounded-lg p-6 text-center sm:p-10 3xl:p-12"
+          >
+            <m.div
+              aria-hidden="true"
+              variants={{
+                idle: { x: "-145%", opacity: 0 },
+                hover: {
+                  x: "145%",
+                  opacity: [0, 0.45, 0],
+                  transition: { duration: 0.85, ease: "easeInOut" },
+                },
+              }}
+              className="pointer-events-none absolute inset-y-0 z-0 w-1/2 skew-x-[-18deg] bg-gradient-to-r from-transparent via-accent/20 to-transparent"
+            />
+            <div className="relative z-10 flex flex-col items-center gap-6">
+            <MagneticButton className="flex max-w-full flex-col items-center gap-3">
+              <a
+                href={mailtoHref}
+                className="font-display max-w-full break-all text-xl font-semibold tracking-tight transition-colors hover:text-accent sm:text-3xl md:text-4xl 3xl:text-5xl"
+              >
                 {t.personalInfo.email}
-              </span>
-              <span className="flex items-center gap-1.5 text-xs text-muted transition-colors group-hover:text-foreground">
-                {copied ? (
-                  <>
-                    <Check size={14} className="text-accent" /> {t.contact.copiedLabel}
-                  </>
-                ) : (
-                  <>
-                    <Copy size={14} /> {t.contact.copyLabel}
-                  </>
-                )}
-              </span>
-            </button>
+              </a>
+              <div className="flex flex-wrap items-center justify-center gap-x-5 gap-y-1.5">
+                <a
+                  href={mailtoHref}
+                  className="flex items-center gap-1.5 text-xs text-muted transition-colors hover:text-foreground"
+                >
+                  <Mail size={14} /> {t.contact.mailLabel}
+                </a>
+                <button
+                  type="button"
+                  onClick={handleCopy}
+                  className="flex items-center gap-1.5 text-xs text-muted transition-colors hover:text-foreground"
+                >
+                  {copyState === "copied" ? (
+                    <>
+                      <Check size={14} className="text-accent" /> {t.contact.copiedLabel}
+                    </>
+                  ) : copyState === "failed" ? (
+                    <span className="text-amber-400">{t.contact.copyFailedLabel}</span>
+                  ) : (
+                    <>
+                      <Copy size={14} /> {t.contact.copyLabel}
+                    </>
+                  )}
+                </button>
+              </div>
             </MagneticButton>
 
             <div className="flex items-center gap-3">
@@ -82,8 +125,10 @@ export function Contact() {
                 <GithubIcon className="h-4.5 w-4.5" />
               </a>
             </div>
-          </div>
+            </div>
+          </m.div>
         </Reveal>
+        </div>
       </div>
     </section>
   );
