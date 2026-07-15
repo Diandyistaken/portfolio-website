@@ -1,4 +1,13 @@
+"use client";
+
+import { createContext, useContext, type ReactNode } from "react";
 import { Reveal } from "./Reveal";
+
+const SectionIndexContext = createContext<string | null>(null);
+
+export function SectionIndexOverride({ index, children }: { index: string; children: ReactNode }) {
+  return <SectionIndexContext.Provider value={index}>{children}</SectionIndexContext.Provider>;
+}
 
 export function SectionHeading({
   index,
@@ -11,11 +20,13 @@ export function SectionHeading({
   title: string;
   description?: string;
 }) {
+  const indexOverride = useContext(SectionIndexContext);
+
   return (
     <Reveal>
-      <div className="flex items-center gap-4">
+      <div className="flex min-w-0 items-center gap-3 sm:gap-4">
         <span className="kicker shrink-0">
-          [ {index} ] // {kicker}
+          [ {indexOverride ?? index} ] // {kicker}
         </span>
         <span
           className="h-px flex-1"
@@ -26,11 +37,13 @@ export function SectionHeading({
           aria-hidden="true"
         />
       </div>
-      <h2 className="font-display glow-text mt-4 max-w-2xl text-3xl font-semibold tracking-tight sm:text-4xl">
+      <h2 className="font-display glow-text mt-4 max-w-2xl text-section font-semibold tracking-tight 3xl:max-w-4xl">
         {title}
       </h2>
       {description && (
-        <p className="mt-3 max-w-xl text-sm text-muted sm:text-base">{description}</p>
+        <p className="mt-3 max-w-xl text-sm text-muted [text-shadow:0_2px_16px_rgb(0_0_0/0.7)] sm:text-base 3xl:max-w-2xl 3xl:text-lg">
+          {description}
+        </p>
       )}
     </Reveal>
   );

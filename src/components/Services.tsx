@@ -7,6 +7,7 @@ import { TiltCard } from "./TiltCard";
 import { useLanguage } from "@/lib/i18n/LanguageProvider";
 import { servicesMeta } from "@/lib/data";
 import { m } from "framer-motion";
+import { CONTAINER } from "@/lib/layout";
 
 const icons = {
   home: Home,
@@ -21,10 +22,10 @@ export function Services() {
   const { t } = useLanguage();
 
   return (
-    <section id="services" className="px-6 py-24 sm:py-28">
-      <div className="mx-auto max-w-6xl">
+    <section id="services" className="px-6 py-24 sm:px-10 sm:py-28 3xl:px-16">
+      <div className={CONTAINER}>
         <SectionHeading
-          index="03"
+        index="03"
           kicker={t.services.kicker}
           title={t.services.title}
           description={t.services.description}
@@ -32,7 +33,7 @@ export function Services() {
 
         <RevealGroup
           stagger={0.06}
-          className="mt-14 grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3"
+          className="mt-14 grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3 3xl:grid-cols-4 3xl:gap-6"
         >
           {t.services.items.map((service) => {
             const Icon = icons[servicesMeta[service.id].icon];

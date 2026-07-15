@@ -17,6 +17,16 @@
   --muted: #94a0b3;
 }
 
+/* Breakpoints and fluid type live in a plain @theme block: `@theme inline`
+   only emits utilities whose values reference other variables, so static
+   tokens like breakpoints are silently dropped there. */
+@theme {
+  --breakpoint-3xl: 120rem;
+  --breakpoint-4xl: 150rem;
+  --text-hero: clamp(2.75rem, 1rem + 4.5vw, 7.5rem);
+  --text-section: clamp(1.875rem, 1.625rem + 0.625vw, 3.75rem);
+}
+
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
@@ -29,6 +39,13 @@
 
 * {
   scroll-behavior: smooth;
+}
+
+/* The navbar is fixed and overlays content, so every anchor-link target
+   (nav links, mobile menu, command palette) needs headroom or its heading
+   lands hidden behind the header. */
+section[id] {
+  scroll-margin-top: 5.5rem;
 }
 
 body {
@@ -355,6 +372,26 @@ html.custom-cursor select {
   animation: name-marquee 42s linear infinite;
 }
 
+@media (min-width: 120rem) {
+  .name-marquee-track {
+    animation-duration: 50s;
+  }
+
+  .marquee-track {
+    animation-duration: 40s;
+  }
+}
+
+@media (min-width: 150rem) {
+  .name-marquee-track {
+    animation-duration: 58s;
+  }
+
+  .marquee-track {
+    animation-duration: 48s;
+  }
+}
+
 .marquee {
   mask-image: linear-gradient(
     to right,
@@ -440,4 +477,94 @@ html.custom-cursor select {
   }
   .name-marquee-track { transform: none !important; }
   .spotlight-overlay { display: none; }
+}
+
+/* Cursor-tracked holographic portrait layer. */
+.holo-card {
+  --holo-x: 50%;
+  --holo-y: 50%;
+  position: relative;
+  will-change: transform;
+}
+
+.holo-glare {
+  position: absolute;
+  inset: 0;
+  z-index: 4;
+  overflow: hidden;
+  border-radius: 0.5rem;
+  pointer-events: none;
+  opacity: 0;
+  background:
+    radial-gradient(
+      circle at var(--holo-x) var(--holo-y),
+      rgb(255 255 255 / 0.28),
+      transparent 28%
+    ),
+    linear-gradient(
+      118deg,
+      transparent 20%,
+      rgb(90 255 216 / 0.22) 38%,
+      rgb(124 112 255 / 0.2) 51%,
+      rgb(255 83 195 / 0.18) 62%,
+      transparent 80%
+    );
+  background-position:
+    center,
+    var(--holo-x) var(--holo-y);
+  background-size:
+    auto,
+    180% 180%;
+  mix-blend-mode: screen;
+  filter: saturate(1.35) hue-rotate(12deg);
+  transition: opacity 0.25s ease;
+}
+
+.holo-card[data-hovered="true"] .holo-glare {
+  opacity: 0.72;
+}
+
+@keyframes ops-cursor-blink {
+  0%,
+  45% {
+    opacity: 1;
+  }
+  46%,
+  100% {
+    opacity: 0;
+  }
+}
+
+.ops-cursor {
+  animation: ops-cursor-blink 0.9s steps(1, end) infinite;
+}
+
+.perf-lite .holo-card {
+  transform: none !important;
+  box-shadow: none !important;
+  will-change: auto;
+}
+
+.perf-lite .holo-glare {
+  display: none;
+}
+
+.perf-lite .ops-cursor {
+  animation: none;
+}
+
+@media (hover: none), (pointer: coarse), (prefers-reduced-motion: reduce) {
+  .holo-card {
+    transform: none !important;
+    box-shadow: none !important;
+    will-change: auto;
+  }
+
+  .holo-glare {
+    display: none;
+  }
+
+  .ops-cursor {
+    animation: none;
+  }
 }

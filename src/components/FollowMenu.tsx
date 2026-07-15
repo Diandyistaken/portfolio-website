@@ -49,6 +49,27 @@ export function FollowMenu() {
             <InstagramIcon className="h-4 w-4 text-accent" />
             {t.hero.followInstagram}
           </a>
+          {[
+            ["Freelancer", "F", "https://www.freelancer.com/u/muhammedmaksut"],
+            ["Upwork", "Up", "https://www.upwork.com/freelancers/~01221182b8c340bf9a"],
+            ["Fiverr", "fi", "https://www.fiverr.com/diandy_"],
+            ["Bionluk", "b", "https://bionluk.com/muhammedmaksut"],
+          ].map(([label, monogram, href]) => (
+            <a
+              key={label}
+              href={href}
+              target="_blank"
+              rel="noopener noreferrer"
+              role="menuitem"
+              onClick={close}
+              className="flex items-center gap-2.5 rounded-sm px-3 py-2 text-sm text-muted outline-none transition-colors hover:bg-foreground/5 hover:text-foreground focus-visible:bg-foreground/5 focus-visible:text-foreground"
+            >
+              <span className="grid h-4 w-4 place-items-center font-mono text-[0.55rem] font-semibold text-accent" aria-hidden="true">
+                {monogram}
+              </span>
+              {label}
+            </a>
+          ))}
         </div>
       )}
     </Dropdown>

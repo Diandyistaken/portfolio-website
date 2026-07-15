@@ -1,11 +1,16 @@
 "use client";
 
+import Image from "next/image";
 import { m, useReducedMotion } from "framer-motion";
 import { Eye } from "lucide-react";
+import { useState } from "react";
+import { Lightbox } from "./Lightbox";
 import { SectionHeading } from "./SectionHeading";
 import { RevealGroup, revealItem } from "./Reveal";
 import { useLanguage } from "@/lib/i18n/LanguageProvider";
 import { useSpotlight } from "@/lib/useSpotlight";
+import { useTilt3D } from "@/lib/useTilt3D";
+import { CONTAINER } from "@/lib/layout";
 
 function Pipeline({ labels }: { labels: string[] }) {
   const reducedMotion = useReducedMotion();
@@ -27,19 +32,24 @@ function Pipeline({ labels }: { labels: string[] }) {
   );
 }
 
-function ShowcaseCard({ item, pipeline }: { item: ReturnType<typeof useLanguage>["t"]["showcase"]["items"][number]; pipeline: string[] }) {
+function ShowcaseCard({ item, pipeline, onOpenScreenshot }: { item: ReturnType<typeof useLanguage>["t"]["showcase"]["items"][number]; pipeline: string[]; onOpenScreenshot: (index: number) => void }) {
   const spotlight = useSpotlight<HTMLDivElement>();
+  const tilt = useTilt3D<HTMLElement>();
   return (
-    <m.article variants={revealItem} onMouseMove={spotlight.onMouseMove} className="spotlight-card group relative overflow-hidden rounded-lg border border-foreground/10 bg-[rgb(var(--surface)/0.92)] p-6 sm:p-8">
+    <m.article {...tilt.handlers} style={tilt.motionStyle} variants={revealItem} onMouseMove={spotlight.onMouseMove} className="spotlight-card group relative min-w-0 overflow-hidden rounded-lg border border-foreground/10 bg-[rgb(var(--surface)/0.92)] p-6 transition-[border-color,box-shadow] hover:border-accent/35 hover:shadow-[0_18px_48px_rgb(var(--accent-rgb)/0.1)] sm:p-8 3xl:p-10">
       <div className="spotlight-overlay" aria-hidden="true" />
-      <div className="relative z-10">
+      <div className="relative z-10 [transform:translateZ(18px)]">
         <span className="inline-flex items-center gap-2 rounded-sm border border-accent/30 px-2.5 py-1 font-mono text-[0.65rem] uppercase tracking-wider text-accent"><span className="h-1.5 w-1.5 bg-accent" />{item.badge}</span>
         <h3 className="font-display mt-5 text-2xl font-semibold tracking-tight">{item.title}</h3>
         <p className="mt-3 text-sm leading-relaxed text-muted sm:text-base">{item.description}</p>
         {item.id === "platform" ? (
           <div className="relative mt-8 aspect-[16/10]">
-            <img src="/showcase/platform-2.webp" alt={item.alt} width="1200" height="750" className="absolute inset-x-4 top-0 w-[calc(100%-2rem)] rounded-md border border-foreground/10 object-cover opacity-55" />
-            <img src="/showcase/platform-1.webp" alt={item.alt} width="1200" height="750" className="absolute inset-x-0 top-5 w-full rounded-md border border-foreground/15 object-cover shadow-2xl transition-transform duration-500 group-hover:translate-x-2 group-hover:-translate-y-2 group-hover:-rotate-1 motion-reduce:transform-none" />
+            <button type="button" aria-label={item.alt} onClick={() => onOpenScreenshot(1)} className="absolute inset-x-4 top-0 w-[calc(100%-2rem)] cursor-zoom-in rounded-md transition-transform duration-300 hover:scale-[1.015] focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-accent motion-reduce:transform-none">
+              <Image src="/showcase/platform-2.webp" alt={item.alt} width={1200} height={750} sizes="(min-width: 2400px) 60rem, (min-width: 1024px) 50vw, calc(100vw - 3rem)" className="w-full rounded-md border border-foreground/10 object-cover opacity-55" />
+            </button>
+            <button type="button" aria-label={item.alt} onClick={() => onOpenScreenshot(0)} className="absolute inset-x-0 top-5 w-full cursor-zoom-in rounded-md transition-transform duration-500 hover:scale-[1.015] group-hover:translate-x-2 group-hover:-translate-y-2 group-hover:-rotate-1 focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-accent motion-reduce:transform-none">
+              <Image src="/showcase/platform-1.webp" alt={item.alt} width={1200} height={750} sizes="(min-width: 2400px) 60rem, (min-width: 1024px) 50vw, calc(100vw - 3rem)" className="w-full rounded-md border border-foreground/15 object-cover shadow-2xl" />
+            </button>
           </div>
         ) : <div className="mt-8"><Pipeline labels={pipeline} /></div>}
       </div>
@@ -49,15 +59,23 @@ function ShowcaseCard({ item, pipeline }: { item: ReturnType<typeof useLanguage>
 
 export function ShowcaseLab() {
   const { t } = useLanguage();
+  const [lightboxIndex, setLightboxIndex] = useState<number | null>(null);
+  const platformAlt = t.showcase.items.find((item) => item.id === "platform")?.alt ?? "";
+  const showcaseImages = [
+    { src: "/showcase/platform-1.webp", alt: platformAlt },
+    { src: "/showcase/platform-2.webp", alt: platformAlt },
+  ];
+
   return (
-    <section id="showcase" className="px-6 py-24 sm:py-28">
-      <div className="mx-auto max-w-6xl">
+    <section id="showcase" className="px-6 py-24 sm:px-10 sm:py-28 3xl:px-16">
+      <div className={CONTAINER}>
         <SectionHeading index="07" kicker={t.showcase.kicker} title={t.showcase.title} description={t.showcase.description} />
-        <RevealGroup stagger={0.1} className="mt-14 grid gap-5 lg:grid-cols-2">
-          {t.showcase.items.map((item) => <ShowcaseCard key={item.id} item={item} pipeline={t.showcase.pipeline} />)}
+        <RevealGroup stagger={0.1} className="mt-14 grid gap-5 lg:grid-cols-2 3xl:gap-8">
+          {t.showcase.items.map((item) => <ShowcaseCard key={item.id} item={item} pipeline={t.showcase.pipeline} onOpenScreenshot={setLightboxIndex} />)}
         </RevealGroup>
         <div className="mt-6 flex items-center justify-center gap-2 font-mono text-xs text-muted"><Eye size={14} className="text-accent" />{t.showcase.note}</div>
       </div>
+      <Lightbox images={showcaseImages} openIndex={lightboxIndex} onClose={() => setLightboxIndex(null)} />
     </section>
   );
 }

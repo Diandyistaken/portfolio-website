@@ -27,9 +27,9 @@ function Row({ hidden }: { hidden?: boolean }) {
       {ITEMS.map((item) => (
         <span
           key={item}
-          className="flex items-center font-mono text-[0.65rem] tracking-[0.25em] text-muted"
+          className="flex items-center font-mono text-[0.65rem] tracking-[0.25em] text-muted 3xl:text-sm 4xl:text-base"
         >
-          <span className="px-5">{item}</span>
+          <span className="px-5 3xl:px-8 4xl:px-10">{item}</span>
           <span className="text-accent" style={{ fontSize: "0.5rem" }}>
             ◆
           </span>
@@ -41,7 +41,7 @@ function Row({ hidden }: { hidden?: boolean }) {
 
 export function TechMarquee() {
   return (
-    <div className="marquee relative overflow-hidden border-y border-white/6 py-3.5">
+    <div className="marquee relative overflow-hidden border-y border-white/6 py-3.5 3xl:py-5 4xl:py-6">
       <div className="marquee-track flex w-max">
         <Row />
         <Row hidden />

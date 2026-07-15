@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState, useSyncExternalStore } from "react";
 import Image from "next/image";
 import { AnimatePresence, m, useReducedMotion } from "framer-motion";
 import { ArrowRight, ChevronDown, MapPin, ShieldCheck } from "lucide-react";
@@ -9,7 +9,21 @@ import { TiltCard } from "./TiltCard";
 import { HeroTerminal } from "./HeroTerminal";
 import { CvDownload } from "./CvDownload";
 import { FollowMenu } from "./FollowMenu";
+import { DecryptText } from "./DecryptText";
 import { useLanguage } from "@/lib/i18n/LanguageProvider";
+import { CONTAINER } from "@/lib/layout";
+
+const subscribeToRootClass = (onStoreChange: () => void) => {
+  const observer = new MutationObserver(onStoreChange);
+  observer.observe(document.documentElement, {
+    attributes: true,
+    attributeFilter: ["class"],
+  });
+  return () => observer.disconnect();
+};
+
+const getPerfLiteSnapshot = () =>
+  document.documentElement.classList.contains("perf-lite");
 
 export function Hero() {
   const { t } = useLanguage();
@@ -19,6 +33,24 @@ export function Hero() {
   // increments per click so the scan CSS animation can re-trigger via key
   const [scanRun, setScanRun] = useState(0);
   const [verified, setVerified] = useState(false);
+  const [tickerIndex, setTickerIndex] = useState(0);
+  const perfLite = useSyncExternalStore(
+    subscribeToRootClass,
+    getPerfLiteSnapshot,
+    () => false,
+  );
+
+  useEffect(() => {
+    if (reduceMotion || perfLite || t.hero.ticker.length < 2) {
+      return;
+    }
+
+    const interval = window.setInterval(() => {
+      setTickerIndex((index) => (index + 1) % t.hero.ticker.length);
+    }, 2800);
+
+    return () => window.clearInterval(interval);
+  }, [perfLite, reduceMotion, t.hero.ticker]);
 
   const startScan = () => {
     setScanRun((n) => n + 1);
@@ -30,16 +62,23 @@ export function Hero() {
   return (
     <section
       id="top"
-      className="relative flex min-h-screen items-center px-6 pt-28 pb-24"
+      className="relative flex min-h-screen min-h-[100svh] items-center px-6 pt-28 pb-24 sm:px-10 3xl:px-16 3xl:pt-32 3xl:pb-28"
     >
-      <div className="mx-auto grid w-full max-w-6xl grid-cols-1 items-center gap-12 lg:grid-cols-[1.15fr_0.85fr]">
+      <div className={`${CONTAINER} grid grid-cols-1 items-center gap-12 lg:grid-cols-[1.15fr_0.85fr] 3xl:gap-20`}>
         <div>
-          <Reveal>
+          {/* z-40: the console dropdown must beat the sibling h1's stacking
+              context (framer transforms promote each Reveal to its own layer,
+              so the panel's inner z-30 alone can't win) */}
+          <Reveal className="relative z-40">
             <HeroTerminal />
           </Reveal>
 
           <Reveal delay={0.05}>
-            <span className="kicker mt-6 block">&gt; {t.hero.greeting}_</span>
+            <DecryptText
+              text={`> ${t.hero.greeting}_`}
+              className="kicker mt-6 block"
+              delay={0.05}
+            />
           </Reveal>
 
           <m.h1
@@ -47,7 +86,7 @@ export function Hero() {
             initial={reduceMotion ? false : "hidden"}
             animate="visible"
             variants={{ visible: { transition: { staggerChildren: 0.06, delayChildren: 0.1 } } }}
-            className="font-display glow-text mt-4 flex flex-wrap gap-x-[0.22em] text-5xl font-semibold leading-[1.05] tracking-tight sm:text-6xl md:text-7xl"
+            className="font-display glow-text mt-4 flex flex-wrap gap-x-[0.22em] text-hero font-semibold leading-[1.05] tracking-tight"
           >
             {nameWords.map((word, index) => (
               <span key={`${word}-${index}`} className="inline-block overflow-hidden pb-[0.08em]">
@@ -66,7 +105,7 @@ export function Hero() {
           </m.h1>
 
           <Reveal delay={0.15}>
-            <p className="mt-5 max-w-xl text-sm text-muted sm:text-base">
+            <p className="mt-5 max-w-xl text-sm text-muted sm:text-base 3xl:max-w-3xl 3xl:text-xl 4xl:text-2xl">
               {titleWords.map((word, index) => (
                 <span key={`${word}-${index}`} className={index === titleWords.length - 1 ? "bg-gradient-to-r from-accent to-cyan-400 bg-clip-text font-medium text-transparent" : undefined}>
                   {word}{index < titleWords.length - 1 ? " " : ""}
@@ -76,10 +115,33 @@ export function Hero() {
           </Reveal>
 
           <Reveal delay={0.2}>
-            <p className="mt-2 flex items-center gap-1.5 font-mono text-xs text-muted">
-              <MapPin size={13} className="text-accent" />
-              {t.personalInfo.location} — 41.0°N 29.0°E
-            </p>
+            <div className="mt-2 font-mono text-xs text-muted 3xl:text-sm">
+              <p className="flex flex-wrap items-center gap-1.5">
+                <MapPin size={13} className="text-accent" />
+                <DecryptText
+                  text={`${t.personalInfo.location} — 41.0°N 29.0°E`}
+                  delay={0.15}
+                />
+              </p>
+              <div
+                className="mt-2 flex h-4 items-center overflow-hidden text-[0.65rem] tracking-wide text-accent/80 3xl:text-xs"
+                aria-live="polite"
+              >
+                <AnimatePresence mode="wait" initial={false}>
+                  <m.span
+                    key={reduceMotion || perfLite ? "static" : tickerIndex}
+                    initial={reduceMotion || perfLite ? false : { opacity: 0, y: 8 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    exit={reduceMotion || perfLite ? undefined : { opacity: 0, y: -8 }}
+                    transition={{ duration: 0.22 }}
+                    className="whitespace-nowrap"
+                  >
+                    {t.hero.ticker[reduceMotion || perfLite ? 0 : tickerIndex]}
+                  </m.span>
+                </AnimatePresence>
+                <span className="ops-cursor ml-1" aria-hidden="true">█</span>
+              </div>
+            </div>
           </Reveal>
 
           <Reveal delay={0.25}>
@@ -109,13 +171,13 @@ export function Hero() {
           initial={{ opacity: 0, y: 24 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.7, delay: 0.25, ease: [0.22, 1, 0.36, 1] }}
-          className="relative mx-auto w-64 sm:w-80 lg:w-full lg:max-w-sm"
+          className="relative mx-auto w-64 sm:w-80 lg:w-full lg:max-w-sm 3xl:max-w-md 4xl:max-w-lg"
         >
           <TiltCard className="hud-corners">
             <div
               role="button"
               tabIndex={0}
-              aria-label="ID scan"
+              aria-label={t.hero.scanLabel}
               onClick={startScan}
               onKeyDown={(e) => {
                 if (e.key === "Enter" || e.key === " ") {
@@ -132,7 +194,7 @@ export function Hero() {
                   fill
                   priority
                   quality={90}
-                  sizes="(min-width: 1024px) 24rem, 20rem"
+                  sizes="(min-width: 2400px) 32rem, (min-width: 1920px) 28rem, (min-width: 1024px) 24rem, 20rem"
                   className="object-cover object-[center_25%]"
                 />
                 <div
@@ -152,10 +214,10 @@ export function Hero() {
                       animate={{ opacity: 1, scale: 1, rotate: -4 }}
                       exit={{ opacity: 0, scale: 0.9 }}
                       transition={{ type: "spring", stiffness: 320, damping: 18 }}
-                      className="absolute bottom-4 left-1/2 z-10 flex -translate-x-1/2 items-center gap-2 rounded-md border border-accent/70 bg-[#05070c]/85 px-3.5 py-2 font-mono text-[0.65rem] tracking-[0.2em] text-accent"
+                className="absolute bottom-4 left-1/2 z-10 flex -translate-x-1/2 items-center gap-2 rounded-md border border-accent/70 bg-[#05070c]/85 px-3.5 py-2 font-mono text-[0.65rem] tracking-[0.2em] text-accent"
                     >
                       <ShieldCheck size={14} />
-                      ID VERIFIED
+                      {t.hero.verifiedLabel}
                     </m.div>
                   )}
                 </AnimatePresence>
@@ -163,7 +225,7 @@ export function Hero() {
             </div>
           </TiltCard>
           <span className="surface font-mono absolute -bottom-3 -right-3 z-10 rounded-md px-2.5 py-1 text-[0.65rem] tracking-wide text-accent">
-            IST // ONLINE
+            {t.hero.onlineLabel}
           </span>
         </m.div>
       </div>
@@ -177,7 +239,7 @@ export function Hero() {
         transition={{ delay: 1.2, duration: 0.8 }}
         className="absolute bottom-7 left-1/2 flex -translate-x-1/2 flex-col items-center gap-1 font-mono text-[0.62rem] tracking-[0.3em] text-muted"
       >
-        SCROLL
+        {t.hero.scrollLabel}
         <m.span
           animate={{ y: [0, 6, 0] }}
           transition={{ duration: 1.6, repeat: Infinity, ease: "easeInOut" }}

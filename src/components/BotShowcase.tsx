@@ -15,7 +15,7 @@ export function BotShowcase() {
     >
       <div className="pointer-events-none absolute -right-16 -top-20 h-56 w-56 rounded-full bg-accent/15 blur-3xl" />
       <div className="relative flex items-center gap-3 border-b border-white/10 bg-white/[0.035] px-5 py-4">
-        <div className="flex h-10 w-10 items-center justify-center rounded-full bg-gradient-to-br from-accent to-cyan-400 font-display font-bold text-[#05070c]">
+      <div className="flex h-10 w-10 items-center justify-center rounded-full bg-gradient-to-br from-accent to-cyan-400 font-display font-bold text-[#05070c]">
           D
         </div>
         <div>

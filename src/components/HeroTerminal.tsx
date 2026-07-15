@@ -74,7 +74,10 @@ export function HeroTerminal() {
     <div ref={rootRef} className="relative inline-block">
       <button
         type="button"
-        onClick={() => setOpen((v) => !v)}
+        onClick={() => {
+          setOpen((v) => !v);
+          window.dispatchEvent(new CustomEvent("scene:pulse"));
+        }}
         aria-expanded={open}
         className="tap-pop surface inline-flex cursor-pointer items-center gap-2 rounded-full px-4 py-1.5 font-mono text-[0.7rem] tracking-[0.18em] text-accent transition-shadow hover:shadow-[0_0_24px_rgb(var(--accent-rgb)/0.3)]"
       >
@@ -91,7 +94,7 @@ export function HeroTerminal() {
             transition={{ duration: 0.2, ease: [0.22, 1, 0.36, 1] }}
             style={{
               transformOrigin: "top left",
-              background: "rgb(5 7 12 / 0.96)",
+        background: "rgb(5 7 12 / 0.96)",
               boxShadow:
                 "0 14px 44px rgb(0 0 0 / 0.6), 0 0 30px rgb(var(--accent-rgb) / 0.12)",
             }}
