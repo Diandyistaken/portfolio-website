@@ -6,6 +6,18 @@ export const en: Content = {
     title: "Muhammed Maksut Çakmaktaş | Computer Engineer & Cybersecurity",
     description:
       "Personal portfolio of Muhammed Maksut Çakmaktaş, a Computer Engineer who builds proactive solutions across cybersecurity and software development.",
+    knowsAbout: [
+      "Cybersecurity",
+      "Penetration Testing",
+      "DevSecOps",
+      "Kali Linux",
+      "Metasploit",
+      "Nmap",
+      "Wireshark",
+      "Python",
+      "Unity",
+      "Next.js",
+    ],
   },
   nav: {
     about: "About",

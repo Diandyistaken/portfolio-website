@@ -6,6 +6,18 @@ export const tr: Content = {
     title: "Muhammed Maksut Çakmaktaş | Bilgisayar Mühendisi & Siber Güvenlik",
     description:
       "Muhammed Maksut Çakmaktaş — İstanbul merkezli Bilgisayar Mühendisi. Siber güvenlik, penetrasyon testi ve DevSecOps üzerine projeler; portfolyo ve iletişim.",
+    knowsAbout: [
+      "Siber Güvenlik",
+      "Penetrasyon Testi",
+      "DevSecOps",
+      "Kali Linux",
+      "Metasploit",
+      "Nmap",
+      "Wireshark",
+      "Python",
+      "Unity",
+      "Next.js",
+    ],
   },
   nav: {
     about: "Hakkımda",

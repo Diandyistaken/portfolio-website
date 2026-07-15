@@ -52,6 +52,7 @@ export type Content = {
   meta: {
     title: string;
     description: string;
+    knowsAbout: string[];
   };
   nav: {
     about: string;

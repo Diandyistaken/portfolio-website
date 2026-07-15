@@ -6,6 +6,18 @@ export const de: Content = {
     title: "Muhammed Maksut Çakmaktaş | Informatiker & Cybersicherheit",
     description:
       "Persönliches Portfolio von Muhammed Maksut Çakmaktaş, einem Informatiker mit Fokus auf Cybersicherheit und Softwareentwicklung.",
+    knowsAbout: [
+      "Cybersicherheit",
+      "Penetrationstests",
+      "DevSecOps",
+      "Kali Linux",
+      "Metasploit",
+      "Nmap",
+      "Wireshark",
+      "Python",
+      "Unity",
+      "Next.js",
+    ],
   },
   nav: {
     about: "Über mich",

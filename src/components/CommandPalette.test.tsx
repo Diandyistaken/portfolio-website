@@ -84,6 +84,20 @@ describe("CommandPalette", () => {
     expect(screen.getByRole("dialog")).toBeInTheDocument();
   });
 
+  it("shows a failure label and keeps the dialog open when copying fails", async () => {
+    const user = userEvent.setup();
+    Object.defineProperty(navigator, "clipboard", {
+      value: { writeText: vi.fn().mockRejectedValue(new Error("denied")) },
+      configurable: true,
+    });
+    render(<Harness />);
+
+    await user.click(screen.getByText("E-postayı kopyala"));
+
+    expect(await screen.findByText(/kopyalanamadı/i)).toBeInTheDocument();
+    expect(screen.getByRole("dialog")).toBeInTheDocument();
+  });
+
   it("closes on Escape", async () => {
     const user = userEvent.setup();
     render(<Harness />);
