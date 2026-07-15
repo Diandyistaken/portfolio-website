@@ -60,7 +60,7 @@ export function OgImageContent() {
           color: "#94a0b3",
         }}
       >
-        Siber Güvenlik Uzmanı · Penetrasyon Testi · DevSecOps
+        Siber Güvenlik Meraklısı · Penetrasyon Testi · DevSecOps
       </div>
       <div
         style={{

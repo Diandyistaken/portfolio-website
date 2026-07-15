@@ -15,6 +15,7 @@ export const en: Content = {
     education: "Education",
     projects: "Projects",
     showcase: "Showcase",
+    freelance: "Freelance",
     goals: "Goals",
     contact: "Contact",
   },
@@ -29,7 +30,7 @@ export const en: Content = {
   personalInfo: {
     name: "Muhammed Maksut Çakmaktaş",
     title: "Computer Engineer | Cybersecurity Enthusiast",
-    bio: "I'm an innovative Computer Engineer who builds proactive solutions across cybersecurity and software development. I combine hands-on field experience, ranging from network security to system automation, with sharp analytical thinking and uncompromising work discipline. Driven by a genuine passion for technology, my goal is to become a lasting part of professional teams that create value and push boundaries. Throughout my studies I've built hands-on projects across several disciplines, including academic work in AI and large language models — an area I'm continuing to actively grow in.",
+    bio: "I'm a Computer Engineer working on cybersecurity, software development, and system automation. I've gained hands-on experience with Nmap, Metasploit, Python, SAP PI/PO, and AI projects. Now I want to join a team that builds secure, useful products.",
     location: "Istanbul, Türkiye",
     email: "mo.maksut@gmail.com",
     linkedin: "https://www.linkedin.com/in/muhammed-maksut-çakmaktaş-967502365/",
@@ -45,21 +46,41 @@ export const en: Content = {
     cvLabel: "Download CV",
     cvOptionTr: "Turkish CV",
     cvOptionEn: "English CV",
+    ticker: [
+      "> network scan … CLEAN",
+      "> 0 open ports exposed",
+      "> uptime 99.98%",
+      "> threat: LOW — coffee: CRITICAL",
+    ],
+    scanLabel: "Start ID scan",
+    verifiedLabel: "ID VERIFIED",
+    onlineLabel: "IST // ONLINE",
+    scrollLabel: "SCROLL",
   },
   about: {
     kicker: "About",
     title: "Who is Muhammed Maksut?",
+    reelLead: "The secret of the colors: this video colors the entire site.",
     stats: [
       { value: 2026, suffix: "", label: "Graduation year" },
-      { value: 12, suffix: "+", label: "Projects built" },
+      { value: 9, suffix: "", label: "Projects built" },
       { value: 20, suffix: "+", label: "Technologies used" },
+    ],
+  },
+  reel: {
+    description: "Every accent color on the site is sampled from this video — the interface takes on the color of the current frame. Scroll to try it.",
+    captions: [
+      "system secure",
+      "attack simulation",
+      "defense active",
+      "sunset — workday over",
     ],
   },
   skills: {
     kicker: "Skills",
-    title: "Three disciplines, one analytical mindset",
+    title: "What I can do",
     description:
-      "From cybersecurity to game development, from enterprise integration to automation — a broad technical range.",
+      "Cybersecurity, Unity, SAP PI/PO, and automation: the tools I use and the work I do.",
     categories: [
       {
         id: "cyber",
@@ -87,9 +108,9 @@ export const en: Content = {
               "Strong command of the Unity engine architecture, gameplay mechanics and object-oriented programming with C#/C++",
           },
           {
-            label: "Developer Vision",
+            label: "Game Performance & UX",
             description:
-              "Designing digital worlds with a focus on performance, optimization, and user experience",
+              "Improving game performance and building easy-to-use interfaces",
           },
         ],
       },
@@ -135,7 +156,7 @@ export const en: Content = {
     kicker: "Services",
     title: "How I can help",
     description:
-      "From idea to working product — end-to-end support across automation and security.",
+      "I can help with websites, mobile apps, automation, pentesting, and Unity projects.",
     items: [
       {
         id: "smart-home",
@@ -176,27 +197,29 @@ export const en: Content = {
   experience: {
     kicker: "Experience",
     title: "Field experience",
+    intro:
+      "Three short internships showed me different layers: offensive/defensive security, enterprise integration, first-line support. Now I'm looking for a full-time team role to bring those together in production.",
     items: [
       {
         id: "cyber4",
         role: "Cybersecurity Intern",
-        period: "Jul 2025 – Aug 2025",
+        period: "Jul 2025 (20 days)",
         description:
-          "During a twenty-day internship, I took an active role in system vulnerability analysis and penetration testing using tools such as Nmap and Metasploit in a Kali Linux environment. I also developed Python-based scripts that directly contributed to automating security operations and to the technical internship reporting process.",
+          "During a twenty-day internship, I used Kali Linux, Nmap, and Metasploit for vulnerability analysis and pentesting. I wrote Python scripts that sped up security tasks and reporting.",
       },
       {
         id: "negzel",
         role: "SAP PI/PO Intern",
         period: "Aug 2025 – Sep 2025",
         description:
-          "I carried out hands-on work on the SAP PI/PO integration architecture to optimize data flow and communication between enterprise systems. Using middleware software, I provided technical support for the digital transformation and integration stages of business processes.",
+          "I examined data flows between enterprise systems in SAP PI/PO and provided technical support for integration tasks.",
       },
       {
         id: "iskur",
         role: "IT Support",
         period: "Jan 2025 – Jun 2025",
         description:
-          "I provided first-level technical support for hardware, software, and basic network issues reported by internal users. I carried out the routine maintenance and troubleshooting operations required to keep systems running without interruption.",
+          "I provided first-level support for in-house hardware, software, and basic network issues. I handled routine maintenance and troubleshooting.",
       },
     ],
   },
@@ -207,6 +230,7 @@ export const en: Content = {
     department: "Computer Engineering",
     graduationLabel: "Graduation",
     graduation: "January 2026",
+    photosIntro: "Two frames from graduation day — a short personal aside.",
     photos: [
       {
         id: "mother",
@@ -285,31 +309,53 @@ export const en: Content = {
     placeholder: "Search for a section or command...",
     navigationLabel: "Go to section",
     actionsLabel: "Quick actions",
-    downloadCv: "Download CV (TR)",
+    downloadCv: "Download CV",
     copyEmail: "Copy email",
     emailCopied: "Email copied",
     emptyLabel: "No results found",
   },
   showcase: {
     kicker: "Showcase / Lab",
-    title: "From concept to working system",
-    description: "Two selected builds that demonstrate product thinking and technical execution while respecting confidentiality.",
+    title: "Two working system examples",
+    description: "Here are two projects covered by NDAs, shown through the features I can share.",
     items: [
-      { id: "platform", title: "Enterprise digital platform design", badge: "In negotiation · NDA", description: "An end-to-end modern web platform concept for one of Türkiye's established professional institutions, bringing together a live admin dashboard simulation, interactive Türkiye and world maps, a Ctrl+K command palette, theme switching, a mobile app prototype, and AI-assisted content analysis.", alt: "Unnamed enterprise digital platform interface concept" },
-      { id: "automation", title: "End-to-end automation systems", badge: "Stealth project · summary", description: "An automation pipeline spanning signal collection, intelligent filtering, automated analysis, instant demo generation, and delivery, supported by a Telegram bot interface, scheduled tasks, and a multi-channel architecture.", alt: "Unnamed end-to-end automation workflow" },
+      { id: "platform", title: "Enterprise digital platform design", badge: "In negotiation · NDA", description: "A web platform design for a professional institution, with an admin dashboard, interactive maps, a Ctrl+K command palette, theme selection, a mobile app prototype, and AI content analysis.", alt: "Unnamed enterprise digital platform interface concept" },
+      { id: "automation", title: "End-to-end automation systems", badge: "Stealth project · summary", description: "A system that automates signal collection, filtering, analysis, demo generation, and notifications using a Telegram bot, scheduled tasks, and multiple notification channels.", alt: "Unnamed end-to-end automation workflow" },
     ],
     note: "Live demos of these builds can be presented during an interview.",
     pipeline: ["Signal", "Filter", "Analysis", "Demo", "Delivery"],
+    lightboxLabel: "Showcase screenshot gallery",
+    lightboxClose: "Close gallery",
+    lightboxPrevious: "Previous screenshot",
+    lightboxNext: "Next screenshot",
+  },
+  freelance: {
+    kicker: "Work With Me",
+    title: "Reach me on four platforms",
+    description: "For a web, automation, or security project, message me on the platform that suits you. We'll define what you need, then get to work.",
+    disclaimer: "Note: I'm primarily looking for a full-time team role — this section is for short/independent project requests.",
+    platforms: {
+      freelancer: { pitch: "Flexible collaboration for web, automation, and security projects." },
+      upwork: { pitch: "Long-term projects and complete product development." },
+      fiverr: { pitch: "Modern, animated websites." },
+      bionluk: { pitch: "Web and automation support with fast communication from Türkiye." },
+    },
+    featuredGig: "Featured gig: modern 3D animated website",
+    visit: "Visit profile",
+  },
+  dividers: {
+    day: "A breather between lines of code: Istanbul.",
+    sunset: "End of the day: systems secure, sun going down.",
   },
   goals: {
-    kicker: "Roadmap",
+    kicker: "What's Next?",
     title: "Ongoing goals",
-    description: "Less about certificates, more about a continuous learning journey.",
+    description: "I'm currently working on pentesting fundamentals, TryHackMe labs, and the eJPT.",
     items: [
       {
         id: "udemy",
         title: "Udemy Cybersecurity Course",
-        description: "Building foundational knowledge",
+        description: "Complete the cybersecurity fundamentals",
       },
       {
         id: "tryhackme",
@@ -319,16 +365,18 @@ export const en: Content = {
       {
         id: "ejpt",
         title: "eJPT Certification",
-        description: "eLearnSecurity Junior Penetration Tester",
+        description: "Prepare for the exam and earn the certification",
       },
     ],
   },
   contact: {
     kicker: "Contact",
     title: "Let's talk",
-    description: "For an idea, an opportunity, or just to say hello.",
+    description: "Got a project, job opportunity, or problem to solve? Send a message. Hello works too.",
+    mailLabel: "Send email",
     copyLabel: "Copy",
     copiedLabel: "Copied",
+    copyFailedLabel: "Couldn't copy — select and copy the email manually",
   },
   footer: {
     rights: "All rights reserved.",

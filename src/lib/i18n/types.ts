@@ -45,6 +45,8 @@ export type ShowcaseItemContent = {
   alt: string;
 };
 
+export type FreelancePlatformId = "freelancer" | "upwork" | "fiverr" | "bionluk";
+
 export type Content = {
   htmlLang: string;
   meta: {
@@ -59,6 +61,7 @@ export type Content = {
     education: string;
     projects: string;
     showcase: string;
+    freelance: string;
     goals: string;
     contact: string;
   };
@@ -89,11 +92,21 @@ export type Content = {
     cvLabel: string;
     cvOptionTr: string;
     cvOptionEn: string;
+    ticker: string[];
+    scanLabel: string;
+    verifiedLabel: string;
+    onlineLabel: string;
+    scrollLabel: string;
   };
   about: {
     kicker: string;
     title: string;
+    reelLead: string;
     stats: { value: number; suffix: string; label: string }[];
+  };
+  reel: {
+    description: string;
+    captions: [string, string, string, string];
   };
   skills: {
     kicker: string;
@@ -110,6 +123,7 @@ export type Content = {
   experience: {
     kicker: string;
     title: string;
+    intro: string;
     items: ExperienceContent[];
   };
   education: {
@@ -119,6 +133,7 @@ export type Content = {
     department: string;
     graduationLabel: string;
     graduation: string;
+    photosIntro: string;
     photos: GraduationPhotoContent[];
   };
   projects: {
@@ -151,6 +166,23 @@ export type Content = {
     items: ShowcaseItemContent[];
     note: string;
     pipeline: string[];
+    lightboxLabel: string;
+    lightboxClose: string;
+    lightboxPrevious: string;
+    lightboxNext: string;
+  };
+  freelance: {
+    kicker: string;
+    title: string;
+    description: string;
+    disclaimer: string;
+    platforms: Record<FreelancePlatformId, { pitch: string }>;
+    featuredGig: string;
+    visit: string;
+  };
+  dividers: {
+    day: string;
+    sunset: string;
   };
   goals: {
     kicker: string;
@@ -162,8 +194,10 @@ export type Content = {
     kicker: string;
     title: string;
     description: string;
+    mailLabel: string;
     copyLabel: string;
     copiedLabel: string;
+    copyFailedLabel: string;
   };
   footer: {
     rights: string;

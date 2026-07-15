@@ -3,9 +3,9 @@ import type { Content } from "./types";
 export const tr: Content = {
   htmlLang: "tr",
   meta: {
-    title: "Muhammed Maksut Çakmaktaş | Bilgisayar Mühendisi & Siber Güvenlik Uzmanı",
+    title: "Muhammed Maksut Çakmaktaş | Bilgisayar Mühendisi & Siber Güvenlik Meraklısı",
     description:
-      "Muhammed Maksut Çakmaktaş (Maksut Çakmaktaş) — İstanbul merkezli Bilgisayar Mühendisi; Siber Güvenlik, Penetrasyon Testi ve DevSecOps alanlarında projeler geliştiriyor. Portfolyo, yetenekler ve iletişim.",
+      "Muhammed Maksut Çakmaktaş — İstanbul merkezli Bilgisayar Mühendisi. Siber güvenlik, penetrasyon testi ve DevSecOps üzerine projeler; portfolyo ve iletişim.",
   },
   nav: {
     about: "Hakkımda",
@@ -15,6 +15,7 @@ export const tr: Content = {
     education: "Eğitim",
     projects: "Projeler",
     showcase: "Vitrin",
+    freelance: "Freelance",
     goals: "Hedefler",
     contact: "İletişim",
   },
@@ -28,8 +29,8 @@ export const tr: Content = {
   },
   personalInfo: {
     name: "Muhammed Maksut Çakmaktaş",
-    title: "Bilgisayar Mühendisi | Cybersecurity Enthusiast",
-    bio: "Siber güvenlik ve yazılım geliştirme süreçlerinde proaktif çözümler üreten yenilikçi bir Bilgisayar Mühendisiyim. Ağ güvenliğinden sistem otomasyonlarına kadar geniş bir yelpazede edindiğim saha tecrübelerini, güçlü bir analitik zekâ ve tavizsiz bir çalışma disipliniyle harmanlıyorum. Teknolojiye olan tutkumla, değer yaratan ve sınırları zorlayan profesyonel ekiplerin kalıcı bir parçası olmayı hedefliyorum. Eğitimim boyunca farklı disiplinlerde uygulamalı projeler geliştirdim; bunlar arasında yapay zekâ ve büyük dil modelleri üzerine akademik çalışmalar da yer alıyor ve bu alanda kendimi aktif biçimde geliştirmeye devam ediyorum.",
+    title: "Bilgisayar Mühendisi | Siber Güvenlik Meraklısı",
+    bio: "Bilgisayar mühendisiyim; siber güvenlik, yazılım geliştirme ve sistem otomasyonu üzerine çalışıyorum. Nmap, Metasploit, Python, SAP PI/PO ve yapay zekâ projelerinde uygulamalı deneyim kazandım. Şimdi güvenli ve kullanışlı ürünler geliştiren bir ekipte çalışmak istiyorum.",
     location: "İstanbul, Türkiye",
     email: "mo.maksut@gmail.com",
     linkedin: "https://www.linkedin.com/in/muhammed-maksut-çakmaktaş-967502365/",
@@ -45,21 +46,41 @@ export const tr: Content = {
     cvLabel: "CV İndir",
     cvOptionTr: "Türkçe CV",
     cvOptionEn: "English CV",
+    ticker: [
+      "> ağ taraması … TEMİZ",
+      "> dışa açık port: 0",
+      "> çalışma süresi: %99,98",
+      "> tehdit: DÜŞÜK — kahve: KRİTİK",
+    ],
+    scanLabel: "Kimlik taramasını başlat",
+    verifiedLabel: "KİMLİK DOĞRULANDI",
+    onlineLabel: "İST // ÇEVRİMİÇİ",
+    scrollLabel: "KAYDIR",
   },
   about: {
     kicker: "Hakkımda",
     title: "Kim bu Muhammed Maksut?",
+    reelLead: "Renklerin sırrı: bu video, sitenin tamamını boyuyor.",
     stats: [
       { value: 2026, suffix: "", label: "Mezuniyet yılı" },
-      { value: 12, suffix: "+", label: "Üretilen proje" },
+      { value: 9, suffix: "", label: "Üretilen proje" },
       { value: 20, suffix: "+", label: "Kullanılan teknoloji" },
+    ],
+  },
+  reel: {
+    description: "Sitedeki bütün vurgu renkleri bu videodan örnekleniyor — hangi karedeysen arayüz o karenin rengine bürünür. Kaydırarak dene.",
+    captions: [
+      "sistem güvende",
+      "saldırı simülasyonu",
+      "savunma devrede",
+      "gün batımı — mesai bitti",
     ],
   },
   skills: {
     kicker: "Yetenekler",
-    title: "Üç disiplin, tek analitik bakış",
+    title: "Neler yapabiliyorum",
     description:
-      "Siber güvenlikten oyun geliştirmeye, kurumsal entegrasyondan otomasyona kadar geniş bir teknik yelpaze.",
+      "Siber güvenlik, Unity, SAP PI/PO ve otomasyon: kullandığım araçlar ve yaptığım işler.",
     categories: [
       {
         id: "cyber",
@@ -87,9 +108,9 @@ export const tr: Content = {
               "Unity oyun motoru mimarisine hakimiyet, C tabanlı diller (C#/C++) ile oyun mekaniği ve nesne yönelimli programlama",
           },
           {
-            label: "Geliştirici Vizyonu",
+            label: "Oyun Performansı ve UX",
             description:
-              "Performans, optimizasyon ve kullanıcı deneyimi odaklı dijital dünya tasarımı",
+              "Oyun performansını iyileştirme ve kullanımı kolay arayüzler hazırlama",
           },
         ],
       },
@@ -136,7 +157,7 @@ export const tr: Content = {
     kicker: "Hizmetler",
     title: "Nasıl yardımcı olabilirim",
     description:
-      "Fikirden çalışan ürüne; otomasyondan güvenliğe uçtan uca destek.",
+      "Web sitesi, mobil uygulama, otomasyon, pentest ve Unity projelerinde destek veriyorum.",
     items: [
       {
         id: "smart-home",
@@ -177,27 +198,29 @@ export const tr: Content = {
   experience: {
     kicker: "Deneyim",
     title: "Saha tecrübesi",
+    intro:
+      "Üç kısa stajda farklı katmanları gördüm: saldırı/savunma güvenliği, kurumsal entegrasyon, birinci seviye destek. Şimdi bunları üretim ortamında bir araya getireceğim tam zamanlı bir ekip rolü arıyorum.",
     items: [
       {
         id: "cyber4",
         role: "Siber Güvenlik Stajyeri",
-        period: "Temmuz 2025 – Ağustos 2025",
+        period: "Temmuz 2025 (20 gün)",
         description:
-          "Yirmi günlük staj programı kapsamında, Kali Linux ortamında Nmap ve Metasploit gibi araçları kullanarak sistem zafiyet analizi ve penetrasyon testi süreçlerinde aktif rol aldım. Ayrıca Python tabanlı betikler geliştirerek güvenlik operasyonlarının otomasyonuna ve teknik staj raporlama süreçlerine doğrudan katkı sağladım.",
+          "Yirmi günlük stajda Kali Linux, Nmap ve Metasploit ile zafiyet analizi ve pentest yaptım. Güvenlik görevlerini ve raporlamayı hızlandıran Python betikleri yazdım.",
       },
       {
         id: "negzel",
         role: "SAP PI/PO Stajyeri",
         period: "Ağustos 2025 – Eylül 2025",
         description:
-          "Kurumsal sistemler arasındaki veri akışını ve iletişimi optimize etmek amacıyla SAP PI/PO entegrasyon mimarisi üzerinde uygulamalı çalışmalar gerçekleştirdim. Ara katman yazılımları kullanılarak yürütülen iş süreçlerinin dijital dönüşüm ve entegrasyon aşamalarına teknik destek sundum.",
+          "SAP PI/PO üzerinde kurumsal sistemler arasındaki veri akışlarını inceledim ve entegrasyon görevlerine teknik destek verdim.",
       },
       {
         id: "iskur",
         role: "BT Destek (IT Support)",
         period: "Ocak 2025 – Haziran 2025",
         description:
-          "Kurum içi kullanıcılardan gelen talepler doğrultusunda donanım, yazılım ve temel ağ problemlerine yönelik birinci seviye teknik destek sağladım. Sistemlerin kesintisiz çalışması için gerekli rutin bakım ve sorun giderme operasyonlarını yürüttüm.",
+          "Kurum içindeki donanım, yazılım ve temel ağ sorunlarına birinci seviye destek verdim. Rutin bakım ve arıza giderme işlerini yürüttüm.",
       },
     ],
   },
@@ -208,6 +231,7 @@ export const tr: Content = {
     department: "Bilgisayar Mühendisliği (Computer Engineering)",
     graduationLabel: "Mezuniyet",
     graduation: "Ocak 2026",
+    photosIntro: "Mezuniyet günümden iki kare — kısa bir kişisel ara.",
     photos: [
       {
         id: "mother",
@@ -287,31 +311,53 @@ export const tr: Content = {
     placeholder: "Bir bölüm veya komut ara...",
     navigationLabel: "Bölümlere git",
     actionsLabel: "Hızlı işlemler",
-    downloadCv: "CV indir (TR)",
+    downloadCv: "CV indir",
     copyEmail: "E-postayı kopyala",
     emailCopied: "E-posta kopyalandı",
     emptyLabel: "Sonuç bulunamadı",
   },
   showcase: {
     kicker: "Vitrin / Lab",
-    title: "Fikirden çalışan sisteme",
-    description: "Gizlilik sınırlarını koruyarak, ürün düşüncesi ve teknik uygulama gücünü gösteren iki seçili çalışma.",
+    title: "Çalışan sistemlerden iki örnek",
+    description: "NDA kapsamındaki iki projeyi, paylaşabildiğim özellikleriyle burada gösteriyorum.",
     items: [
-      { id: "platform", title: "Kurumsal dijital platform tasarımı", badge: "Görüşme aşamasında · NDA", description: "Türkiye'nin köklü bir meslek kurumu için tasarlanan uçtan uca modern web platformu konsepti; canlı yönetim paneli simülasyonu, interaktif Türkiye ve dünya haritaları, Ctrl+K komut paleti, tema geçişi, mobil uygulama prototipi ve AI destekli içerik analizini tek deneyimde buluşturuyor.", alt: "İsimsiz kurumsal dijital platform arayüzü konsepti" },
-      { id: "automation", title: "Uçtan uca otomasyon sistemleri", badge: "Gizli proje · özet", description: "Sinyal toplamadan akıllı filtreleme ve otomatik analize, anında demo üretiminden bildirime uzanan bir otomasyon hattı; Telegram bot arayüzü, zamanlanmış görevler ve çok kanallı mimariyle kesintisiz çalışır.", alt: "İsimsiz uçtan uca otomasyon akışı" },
+      { id: "platform", title: "Kurumsal dijital platform tasarımı", badge: "Görüşme aşamasında · NDA", description: "Bir meslek kurumu için yönetim paneli, interaktif haritalar, Ctrl+K komut paleti, tema seçimi, mobil uygulama prototipi ve AI içerik analizi içeren web platformu tasarımı.", alt: "İsimsiz kurumsal dijital platform arayüzü konsepti" },
+      { id: "automation", title: "Uçtan uca otomasyon sistemleri", badge: "Gizli proje · özet", description: "Sinyal toplama, filtreleme, analiz, demo üretimi ve bildirimi otomatikleştiren sistem; Telegram botu, zamanlanmış görevler ve birden fazla bildirim kanalı kullanıyor.", alt: "İsimsiz uçtan uca otomasyon akışı" },
     ],
     note: "Bu çalışmaların canlı demoları görüşme sırasında gösterilebilir.",
     pipeline: ["Sinyal", "Filtre", "Analiz", "Demo", "Teslim"],
+    lightboxLabel: "Vitrin ekran görüntüsü galerisi",
+    lightboxClose: "Galeriyi kapat",
+    lightboxPrevious: "Önceki ekran görüntüsü",
+    lightboxNext: "Sonraki ekran görüntüsü",
+  },
+  freelance: {
+    kicker: "Birlikte Çalışalım",
+    title: "Dört platformdan ulaşabilirsin",
+    description: "Web, otomasyon veya güvenlik projen için sana uygun platformdan yaz. Önce ihtiyacı netleştirir, sonra işe koyuluruz.",
+    disclaimer: "Not: Asıl aradığım tam zamanlı bir ekip rolü — burası kısa/bağımsız proje talepleri için.",
+    platforms: {
+      freelancer: { pitch: "Web, otomasyon ve güvenlik odaklı projeler için esnek iş birliği." },
+      upwork: { pitch: "Uzun süreli projeler ve baştan sona ürün geliştirme." },
+      fiverr: { pitch: "Modern ve animasyonlu web siteleri." },
+      bionluk: { pitch: "Türkiye’den hızlı iletişimle web ve otomasyon desteği." },
+    },
+    featuredGig: "Öne çıkan ilan: 3D animasyonlu modern web sitesi",
+    visit: "Profili ziyaret et",
+  },
+  dividers: {
+    day: "Kod arası nefes molası: İstanbul.",
+    sunset: "Günün sonu: sistemler güvende, gün batıyor.",
   },
   goals: {
-    kicker: "Yol Haritası",
+    kicker: "Sırada Ne Var?",
     title: "Devam eden hedefler",
-    description: "Sertifikalardan çok, sürekli ilerleyen bir öğrenme yolculuğu.",
+    description: "Şu anda pentest temelleri, TryHackMe laboratuvarları ve eJPT için çalışıyorum.",
     items: [
       {
         id: "udemy",
         title: "Udemy Cybersecurity Kursu",
-        description: "Temel bilgi edinimi",
+        description: "Siber güvenlik temellerini tamamlamak",
       },
       {
         id: "tryhackme",
@@ -321,16 +367,18 @@ export const tr: Content = {
       {
         id: "ejpt",
         title: "eJPT Sertifikasyonu",
-        description: "eLearnSecurity Junior Penetration Tester",
+        description: "Sınava hazırlanmak ve sertifikayı almak",
       },
     ],
   },
   contact: {
     kicker: "İletişim",
     title: "Hadi konuşalım",
-    description: "Bir fikri, bir fırsatı ya da sadece merhaba demeyi konuşmak için.",
+    description: "Projen, iş fırsatın veya bir sorun varsa yaz. Merhaba da kabul.",
+    mailLabel: "Mail gönder",
     copyLabel: "Kopyala",
     copiedLabel: "Kopyalandı",
+    copyFailedLabel: "Kopyalanamadı — e-postayı seçip elle kopyala",
   },
   footer: {
     rights: "Tüm hakları saklıdır.",

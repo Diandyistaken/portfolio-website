@@ -21,7 +21,7 @@ type PaletteItem = {
 };
 
 export function CommandPalette({ open, onOpenChange, triggerRef }: CommandPaletteProps) {
-  const { t } = useLanguage();
+  const { t, locale } = useLanguage();
   const reduceMotion = useReducedMotion();
   const inputRef = useRef<HTMLInputElement>(null);
   const [query, setQuery] = useState("");
@@ -32,21 +32,25 @@ export function CommandPalette({ open, onOpenChange, triggerRef }: CommandPalett
     const sections = [
       ["about", t.nav.about], ["skills", t.nav.skills], ["services", t.nav.services],
       ["experience", t.nav.experience], ["education", t.nav.education], ["projects", t.nav.projects],
-      ["showcase", t.nav.showcase], ["goals", t.nav.goals], ["contact", t.nav.contact],
+      ["showcase", t.nav.showcase], ["freelance", t.nav.freelance], ["goals", t.nav.goals], ["contact", t.nav.contact],
     ];
+    const cvLocale = locale === "tr" ? "tr" : "en";
     return [
       ...sections.map(([id, label]) => ({
         id, label, group: "navigation" as const, icon: ArrowRight,
         run: () => document.getElementById(id)?.scrollIntoView({ behavior: reduceMotion ? "auto" : "smooth" }),
       })),
       { id: "download-cv", label: t.commandPalette.downloadCv, group: "actions", icon: ArrowDownToLine, run: () => {
-        const link = document.createElement("a"); link.href = cvFiles.tr; link.download = "Muhammed-Maksut-Cakmaktas-CV-TR.pdf"; link.click();
+        const link = document.createElement("a");
+        link.href = cvFiles[cvLocale];
+        link.download = `Muhammed-Maksut-Cakmaktas-CV-${cvLocale.toUpperCase()}.pdf`;
+        link.click();
       } },
       { id: "copy-email", label: copied ? t.commandPalette.emailCopied : t.commandPalette.copyEmail, group: "actions", icon: Copy, run: async () => {
         await navigator.clipboard.writeText(t.personalInfo.email); setCopied(true);
       } },
     ];
-  }, [copied, reduceMotion, t]);
+  }, [copied, reduceMotion, t, locale]);
 
   const filtered = useMemo(() => {
     const needle = query.trim().toLocaleLowerCase("tr");

@@ -15,6 +15,7 @@ export const de: Content = {
     education: "Ausbildung",
     projects: "Projekte",
     showcase: "Vitrine",
+    freelance: "Freelance",
     goals: "Ziele",
     contact: "Kontakt",
   },
@@ -29,7 +30,7 @@ export const de: Content = {
   personalInfo: {
     name: "Muhammed Maksut Çakmaktaş",
     title: "Informatiker | Cybersecurity-Enthusiast",
-    bio: "Ich bin ein innovativer Informatiker, der proaktive Lösungen in den Bereichen Cybersicherheit und Softwareentwicklung entwickelt. Meine praktischen Erfahrungen, von Netzwerksicherheit bis hin zu Systemautomatisierung, verbinde ich mit ausgeprägtem analytischem Denken und einer konsequenten Arbeitsdisziplin. Mit meiner Leidenschaft für Technologie möchte ich langfristig Teil professioneller Teams werden, die echten Mehrwert schaffen und Grenzen verschieben. Während meines Studiums habe ich praxisnahe Projekte in verschiedenen Bereichen umgesetzt, darunter auch akademische Arbeiten im Bereich KI und große Sprachmodelle – ein Feld, in dem ich mich kontinuierlich weiterentwickle.",
+    bio: "Ich bin Informatiker und arbeite an Cybersicherheit, Softwareentwicklung und Systemautomatisierung. Praktische Erfahrung habe ich mit Nmap, Metasploit, Python, SAP PI/PO und KI-Projekten gesammelt. Jetzt möchte ich in einem Team sichere und nützliche Produkte entwickeln.",
     location: "Istanbul, Türkei",
     email: "mo.maksut@gmail.com",
     linkedin: "https://www.linkedin.com/in/muhammed-maksut-çakmaktaş-967502365/",
@@ -45,21 +46,41 @@ export const de: Content = {
     cvLabel: "Lebenslauf herunterladen",
     cvOptionTr: "Lebenslauf (Türkisch)",
     cvOptionEn: "Lebenslauf (Englisch)",
+    ticker: [
+      "> Netzwerkscan … SAUBER",
+      "> 0 offene Ports exponiert",
+      "> Verfügbarkeit: 99,98 %",
+      "> Bedrohung: NIEDRIG — Kaffee: KRITISCH",
+    ],
+    scanLabel: "ID-Scan starten",
+    verifiedLabel: "ID BESTÄTIGT",
+    onlineLabel: "IST // ONLINE",
+    scrollLabel: "SCROLLEN",
   },
   about: {
     kicker: "Über mich",
     title: "Wer ist Muhammed Maksut?",
+    reelLead: "Das Geheimnis der Farben: Dieses Video färbt die gesamte Website.",
     stats: [
       { value: 2026, suffix: "", label: "Abschlussjahr" },
-      { value: 12, suffix: "+", label: "Realisierte Projekte" },
+      { value: 9, suffix: "", label: "Realisierte Projekte" },
       { value: 20, suffix: "+", label: "Eingesetzte Technologien" },
+    ],
+  },
+  reel: {
+    description: "Alle Akzentfarben der Website werden aus diesem Video abgetastet — die Oberfläche nimmt die Farbe des aktuellen Bildes an. Scrolle, um es auszuprobieren.",
+    captions: [
+      "System sicher",
+      "Angriffssimulation",
+      "Abwehr aktiv",
+      "Sonnenuntergang — Feierabend",
     ],
   },
   skills: {
     kicker: "Fähigkeiten",
-    title: "Drei Disziplinen, ein analytischer Blick",
+    title: "Was ich kann",
     description:
-      "Von Cybersicherheit über Spieleentwicklung bis hin zu Unternehmensintegration und Automatisierung – ein breites technisches Spektrum.",
+      "Cybersicherheit, Unity, SAP PI/PO und Automatisierung: meine Werkzeuge und Aufgaben.",
     categories: [
       {
         id: "cyber",
@@ -87,9 +108,9 @@ export const de: Content = {
               "Sicherer Umgang mit der Unity-Engine-Architektur sowie Spielmechanik und objektorientierter Programmierung mit C#/C++",
           },
           {
-            label: "Entwickler-Perspektive",
+            label: "Game-Performance & UX",
             description:
-              "Gestaltung digitaler Welten mit Fokus auf Performance, Optimierung und Nutzererfahrung",
+              "Spielperformance verbessern und einfach bedienbare Oberflächen erstellen",
           },
         ],
       },
@@ -135,7 +156,7 @@ export const de: Content = {
     kicker: "Dienstleistungen",
     title: "Wie ich helfen kann",
     description:
-      "Von der Idee zum fertigen Produkt – durchgängige Unterstützung von Automatisierung bis Sicherheit.",
+      "Ich unterstütze bei Websites, mobilen Apps, Automatisierung, Pentests und Unity-Projekten.",
     items: [
       {
         id: "smart-home",
@@ -176,27 +197,29 @@ export const de: Content = {
   experience: {
     kicker: "Erfahrung",
     title: "Praxiserfahrung",
+    intro:
+      "Drei kurze Praktika haben mir verschiedene Ebenen gezeigt: offensive/defensive Sicherheit, Unternehmensintegration, First-Level-Support. Jetzt suche ich eine Vollzeit-Teamrolle, in der ich das in der Produktion zusammenführen kann.",
     items: [
       {
         id: "cyber4",
         role: "Praktikant Cybersicherheit",
-        period: "Juli 2025 – August 2025",
+        period: "Juli 2025 (20 Tage)",
         description:
-          "Im Rahmen eines zwanzigtägigen Praktikums habe ich aktiv an der Systemschwachstellenanalyse und an Penetrationstests mitgewirkt, unter anderem mit Nmap und Metasploit in einer Kali-Linux-Umgebung. Zudem habe ich Python-basierte Skripte entwickelt, die direkt zur Automatisierung von Sicherheitsabläufen und zur technischen Praktikumsberichterstattung beigetragen haben.",
+          "Während eines zwanzigtägigen Praktikums habe ich mit Kali Linux, Nmap und Metasploit Schwachstellenanalysen und Pentests durchgeführt. Mit Python-Skripten habe ich Sicherheitsaufgaben und Berichte beschleunigt.",
       },
       {
         id: "negzel",
         role: "Praktikant SAP PI/PO",
         period: "August 2025 – September 2025",
         description:
-          "Ich habe praxisnah an der SAP-PI/PO-Integrationsarchitektur gearbeitet, um den Datenfluss und die Kommunikation zwischen Unternehmenssystemen zu optimieren. Mithilfe von Middleware-Software habe ich technischen Support für die Digitalisierungs- und Integrationsphasen von Geschäftsprozessen geleistet.",
+          "Ich habe Datenflüsse zwischen Unternehmenssystemen in SAP PI/PO untersucht und Integrationsaufgaben technisch unterstützt.",
       },
       {
         id: "iskur",
         role: "IT-Support",
         period: "Januar 2025 – Juni 2025",
         description:
-          "Ich habe internen Anwendern erstklassigen technischen Support bei Hardware-, Software- und grundlegenden Netzwerkproblemen geleistet. Zudem habe ich die notwendigen Wartungs- und Fehlerbehebungsarbeiten für einen unterbrechungsfreien Systembetrieb durchgeführt.",
+          "Ich habe internen Anwendern First-Level-Support bei Hardware-, Software- und grundlegenden Netzwerkproblemen gegeben. Außerdem habe ich Routinewartung und Fehlerbehebung übernommen.",
       },
     ],
   },
@@ -207,6 +230,7 @@ export const de: Content = {
     department: "Informatik (Computer Engineering)",
     graduationLabel: "Abschluss",
     graduation: "Januar 2026",
+    photosIntro: "Zwei Aufnahmen vom Abschlusstag — ein kurzer persönlicher Moment.",
     photos: [
       {
         id: "mother",
@@ -285,31 +309,53 @@ export const de: Content = {
     placeholder: "Abschnitt oder Befehl suchen...",
     navigationLabel: "Zum Abschnitt",
     actionsLabel: "Schnellaktionen",
-    downloadCv: "Lebenslauf herunterladen (TR)",
+    downloadCv: "Lebenslauf herunterladen",
     copyEmail: "E-Mail kopieren",
     emailCopied: "E-Mail kopiert",
     emptyLabel: "Keine Ergebnisse gefunden",
   },
   showcase: {
     kicker: "Showcase / Lab",
-    title: "Von der Idee zum laufenden System",
-    description: "Zwei ausgewählte Arbeiten, die Produktdenken und technische Umsetzung unter Wahrung der Vertraulichkeit zeigen.",
+    title: "Zwei Beispiele für laufende Systeme",
+    description: "Hier zeige ich zwei Projekte unter NDA anhand der Funktionen, die ich teilen darf.",
     items: [
-      { id: "platform", title: "Konzeption einer digitalen Unternehmensplattform", badge: "In Verhandlung · NDA", description: "Ein durchgängiges Konzept für eine moderne Webplattform einer traditionsreichen türkischen Berufsorganisation: mit Live-Simulation eines Admin-Dashboards, interaktiven Türkei- und Weltkarten, Ctrl+K-Befehlspalette, Theme-Wechsel, Mobile-App-Prototyp und KI-gestützter Inhaltsanalyse.", alt: "Konzept einer unbenannten digitalen Unternehmensplattform" },
-      { id: "automation", title: "Durchgängige Automatisierungssysteme", badge: "Vertrauliches Projekt · Kurzfassung", description: "Eine Automatisierungskette von der Signalerfassung über intelligente Filterung und automatische Analyse bis zur sofortigen Demo-Erstellung und Auslieferung – ergänzt durch Telegram-Bot-Oberfläche, geplante Aufgaben und eine Mehrkanalarchitektur.", alt: "Unbenannter durchgängiger Automatisierungsablauf" },
+      { id: "platform", title: "Konzeption einer digitalen Unternehmensplattform", badge: "In Verhandlung · NDA", description: "Das Design einer Webplattform für eine Berufsorganisation mit Admin-Dashboard, interaktiven Karten, Ctrl+K-Befehlspalette, Theme-Auswahl, Mobile-App-Prototyp und KI-Inhaltsanalyse.", alt: "Konzept einer unbenannten digitalen Unternehmensplattform" },
+      { id: "automation", title: "Durchgängige Automatisierungssysteme", badge: "Vertrauliches Projekt · Kurzfassung", description: "Ein System, das Signalerfassung, Filterung, Analyse, Demo-Erstellung und Benachrichtigungen mit einem Telegram-Bot, geplanten Aufgaben und mehreren Benachrichtigungskanälen automatisiert.", alt: "Unbenannter durchgängiger Automatisierungsablauf" },
     ],
     note: "Live-Demos dieser Arbeiten können im Gespräch gezeigt werden.",
     pipeline: ["Signal", "Filter", "Analyse", "Demo", "Übergabe"],
+    lightboxLabel: "Galerie der Showcase-Screenshots",
+    lightboxClose: "Galerie schließen",
+    lightboxPrevious: "Vorheriger Screenshot",
+    lightboxNext: "Nächster Screenshot",
+  },
+  freelance: {
+    kicker: "Zusammenarbeiten",
+    title: "Du erreichst mich auf vier Plattformen",
+    description: "Schreib mir für dein Web-, Automatisierungs- oder Sicherheitsprojekt auf der Plattform, die dir passt. Wir klären zuerst den Bedarf und legen dann los.",
+    disclaimer: "Hinweis: Ich suche in erster Linie eine Vollzeit-Teamrolle — dieser Bereich ist für kurze/unabhängige Projektanfragen.",
+    platforms: {
+      freelancer: { pitch: "Flexible Zusammenarbeit für Web-, Automatisierungs- und Sicherheitsprojekte." },
+      upwork: { pitch: "Langfristige Projekte und komplette Produktentwicklung." },
+      fiverr: { pitch: "Moderne, animierte Websites." },
+      bionluk: { pitch: "Web- und Automatisierungsunterstützung mit schneller Kommunikation aus Türkiye." },
+    },
+    featuredGig: "Ausgewähltes Angebot: moderne 3D-animierte Website",
+    visit: "Profil besuchen",
+  },
+  dividers: {
+    day: "Kurze Pause zwischen den Codezeilen: Istanbul.",
+    sunset: "Feierabend: Systeme sicher, die Sonne geht unter.",
   },
   goals: {
-    kicker: "Fahrplan",
+    kicker: "Was kommt als Nächstes?",
     title: "Laufende Ziele",
-    description: "Weniger Zertifikate, mehr eine kontinuierliche Lernreise.",
+    description: "Aktuell arbeite ich an Pentest-Grundlagen, TryHackMe-Labs und der eJPT.",
     items: [
       {
         id: "udemy",
         title: "Udemy-Kurs Cybersicherheit",
-        description: "Aufbau von Grundlagenwissen",
+        description: "Die Grundlagen der Cybersicherheit abschließen",
       },
       {
         id: "tryhackme",
@@ -319,16 +365,18 @@ export const de: Content = {
       {
         id: "ejpt",
         title: "eJPT-Zertifizierung",
-        description: "eLearnSecurity Junior Penetration Tester",
+        description: "Auf die Prüfung vorbereiten und die Zertifizierung erwerben",
       },
     ],
   },
   contact: {
     kicker: "Kontakt",
     title: "Lass uns reden",
-    description: "Für eine Idee, eine Gelegenheit oder einfach nur, um Hallo zu sagen.",
+    description: "Du hast ein Projekt, ein Jobangebot oder ein Problem? Schreib mir. Hallo geht auch.",
+    mailLabel: "E-Mail senden",
     copyLabel: "Kopieren",
     copiedLabel: "Kopiert",
+    copyFailedLabel: "Kopieren fehlgeschlagen — E-Mail bitte manuell markieren und kopieren",
   },
   footer: {
     rights: "Alle Rechte vorbehalten.",
