@@ -10,6 +10,7 @@ export function BotShowcase() {
 
   return (
     <div
+      role="group"
       aria-label={label}
       className="relative isolate overflow-hidden rounded-2xl border border-foreground/10 bg-[rgb(var(--surface)/0.95)] shadow-[0_28px_80px_rgb(0_0_0/0.35)]"
     >
@@ -22,7 +23,7 @@ export function BotShowcase() {
           <p className="text-sm font-semibold text-foreground">Daily AI Researcher</p>
           <p className="mt-0.5 font-mono text-[0.65rem] text-accent">bot</p>
         </div>
-        <span className="ml-auto font-mono text-[0.62rem] text-foreground/35">{time}</span>
+        <span className="ml-auto font-mono text-[0.62rem] text-foreground/60">{time}</span>
       </div>
 
       <div className="relative min-h-[27rem] space-y-4 p-5 sm:p-6">
@@ -32,7 +33,8 @@ export function BotShowcase() {
             <div key={message} className="relative min-h-14">
               {!reduceMotion && (
                 <m.div
-                  aria-label={typing}
+                  aria-hidden="true"
+                  title={typing}
                   initial={{ opacity: 0, scale: 0.96 }}
                   whileInView={{ opacity: [0, 1, 1, 0], scale: [0.96, 1, 1, 0.98] }}
                   viewport={{ once: true, amount: 0.5 }}

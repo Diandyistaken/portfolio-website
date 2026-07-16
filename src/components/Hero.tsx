@@ -1,8 +1,8 @@
 "use client";
 
-import { useEffect, useState, useSyncExternalStore } from "react";
+import { useEffect, useRef, useState, useSyncExternalStore } from "react";
 import Image from "next/image";
-import { AnimatePresence, m, useReducedMotion } from "framer-motion";
+import { AnimatePresence, m, useReducedMotion, useScroll, useTransform } from "framer-motion";
 import { ArrowRight, ChevronDown, MapPin, ShieldCheck, Sparkles } from "lucide-react";
 import { Reveal } from "./Reveal";
 import { HeroBackdrop } from "./HeroBackdrop";
@@ -40,6 +40,19 @@ export function Hero() {
     () => false,
   );
 
+  // Parallax exit: as the hero scrolls away, text and photo drift apart at
+  // different speeds and fade — cheap depth that makes the first scroll feel
+  // dimensional.
+  const sectionRef = useRef<HTMLElement>(null);
+  const { scrollYProgress } = useScroll({
+    target: sectionRef,
+    offset: ["start start", "end start"],
+  });
+  const contentY = useTransform(scrollYProgress, [0, 1], [0, -80]);
+  const photoY = useTransform(scrollYProgress, [0, 1], [0, 60]);
+  const exitOpacity = useTransform(scrollYProgress, [0, 0.75], [1, 0.15]);
+  const staticHero = reduceMotion || perfLite;
+
   useEffect(() => {
     if (reduceMotion || perfLite || t.hero.ticker.length < 2) {
       return;
@@ -66,19 +79,23 @@ export function Hero() {
 
   return (
     <section
+      ref={sectionRef}
       id="top"
       className="relative isolate flex min-h-screen min-h-[100svh] items-center overflow-hidden px-6 pt-28 pb-24 sm:px-10 3xl:px-16 3xl:pt-32 3xl:pb-28"
     >
       <HeroBackdrop />
 
       <div className={`${CONTAINER} relative z-10 grid grid-cols-1 items-center gap-16 lg:grid-cols-[1.1fr_0.9fr] 3xl:gap-24`}>
-        <div>
+        <m.div style={staticHero ? undefined : { y: contentY, opacity: exitOpacity }}>
           <Reveal>
             {/* Status badge doubles as a toy: each click cycles a new
                 tongue-in-cheek status line. */}
             <button
               type="button"
-              onClick={() => setStatusIndex((index) => (index + 1) % t.hero.statusCycle.length)}
+              onClick={() => {
+                setStatusIndex((index) => (index + 1) % t.hero.statusCycle.length);
+                window.dispatchEvent(new Event("app:status-cycled"));
+              }}
               className="surface-hover surface tap-pop inline-flex cursor-pointer items-center gap-2 rounded-full px-3.5 py-1.5"
             >
               <span className="relative flex h-2 w-2">
@@ -210,9 +227,12 @@ export function Hero() {
               <FollowMenu />
             </div>
           </Reveal>
-        </div>
+        </m.div>
 
-        <div className="relative mx-auto flex w-full max-w-sm flex-col items-center gap-6">
+        <m.div
+          style={staticHero ? undefined : { y: photoY, opacity: exitOpacity }}
+          className="relative mx-auto flex w-full max-w-sm flex-col items-center gap-6"
+        >
           <div className="relative w-64 sm:w-72 lg:w-full lg:max-w-xs 3xl:max-w-sm">
             <m.div
               initial={reduceMotion ? false : { scale: 0.75, opacity: 0 }}
@@ -240,14 +260,15 @@ export function Hero() {
                 }}
                 className="surface scanline relative aspect-[4/5] cursor-pointer overflow-hidden rounded-2xl p-2 outline-none"
               >
-                <div className="relative h-full w-full overflow-hidden rounded-xl">
+                <div className="ken-burns relative h-full w-full overflow-hidden rounded-xl">
                   <Image
                     src="/profil-fotografi.jpg"
                     alt={t.personalInfo.name}
                     fill
                     priority
-                    quality={90}
-                    sizes="(min-width: 2400px) 32rem, (min-width: 1920px) 28rem, (min-width: 1024px) 24rem, 20rem"
+                    fetchPriority="high"
+                    quality={75}
+                    sizes="(min-width: 2400px) 32rem, (min-width: 1920px) 28rem, (min-width: 1024px) 24rem, (min-width: 640px) 18rem, 16rem"
                     className="object-cover object-[center_25%]"
                   />
                   <div
@@ -326,7 +347,7 @@ export function Hero() {
               </div>
             </div>
           </Reveal>
-        </div>
+        </m.div>
       </div>
 
       <m.a

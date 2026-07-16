@@ -42,6 +42,7 @@ export function Contact() {
     try {
       await navigator.clipboard.writeText(t.personalInfo.email);
       setCopyState("copied");
+      window.dispatchEvent(new Event("app:email-copied"));
     } catch {
       setCopyState("failed");
     } finally {
@@ -119,7 +120,7 @@ export function Contact() {
                 target="_blank"
                 rel="noopener noreferrer"
                 aria-label="LinkedIn"
-                className="flex h-11 w-11 items-center justify-center rounded-md border border-foreground/12 text-foreground transition-colors hover:border-foreground/30"
+                data-prox data-prox-radius="200" className="prox-icon flex h-11 w-11 items-center justify-center rounded-md border border-foreground/12 text-foreground transition-colors hover:border-foreground/30"
               >
                 <LinkedinIcon className="h-4.5 w-4.5" />
               </a>
@@ -128,7 +129,7 @@ export function Contact() {
                 target="_blank"
                 rel="noopener noreferrer"
                 aria-label="Instagram"
-                className="flex h-11 w-11 items-center justify-center rounded-md border border-foreground/12 text-foreground transition-colors hover:border-foreground/30"
+                data-prox data-prox-radius="200" className="prox-icon flex h-11 w-11 items-center justify-center rounded-md border border-foreground/12 text-foreground transition-colors hover:border-foreground/30"
               >
                 <InstagramIcon className="h-4.5 w-4.5" />
               </a>
@@ -137,7 +138,7 @@ export function Contact() {
                 target="_blank"
                 rel="noopener noreferrer"
                 aria-label="GitHub"
-                className="flex h-11 w-11 items-center justify-center rounded-md border border-foreground/12 text-foreground transition-colors hover:border-foreground/30"
+                data-prox data-prox-radius="200" className="prox-icon flex h-11 w-11 items-center justify-center rounded-md border border-foreground/12 text-foreground transition-colors hover:border-foreground/30"
               >
                 <GithubIcon className="h-4.5 w-4.5" />
               </a>

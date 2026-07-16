@@ -44,10 +44,10 @@ function ShowcaseCard({ item, pipeline, onOpenScreenshot }: { item: ReturnType<t
         <p className="mt-3 text-sm leading-relaxed text-muted sm:text-base">{item.description}</p>
         {item.id === "platform" ? (
           <div className="relative mt-8 aspect-[16/10]">
-            <button type="button" aria-label={item.alt} onClick={() => onOpenScreenshot(1)} className="absolute inset-x-4 top-0 w-[calc(100%-2rem)] cursor-zoom-in rounded-md transition-transform duration-300 hover:scale-[1.015] focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-accent motion-reduce:transform-none">
+            <button type="button" aria-label={item.alt} onClick={() => onOpenScreenshot(1)} className="absolute inset-x-4 top-0 w-[calc(100%-2rem)] cursor-zoom-in rounded-md transition-transform duration-300 hover:scale-[1.04] hover:brightness-110 focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-accent motion-reduce:transform-none">
               <Image src="/showcase/platform-2.webp" alt={item.alt} width={1200} height={750} sizes="(min-width: 2400px) 60rem, (min-width: 1024px) 50vw, calc(100vw - 3rem)" className="w-full rounded-md border border-foreground/10 object-cover opacity-55" />
             </button>
-            <button type="button" aria-label={item.alt} onClick={() => onOpenScreenshot(0)} className="absolute inset-x-0 top-5 w-full cursor-zoom-in rounded-md transition-transform duration-500 hover:scale-[1.015] group-hover:translate-x-2 group-hover:-translate-y-2 group-hover:-rotate-1 focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-accent motion-reduce:transform-none">
+            <button type="button" aria-label={item.alt} onClick={() => onOpenScreenshot(0)} className="absolute inset-x-0 top-5 w-full cursor-zoom-in rounded-md transition-transform duration-500 hover:scale-[1.04] hover:brightness-110 group-hover:translate-x-2 group-hover:-translate-y-2 group-hover:-rotate-1 focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-accent motion-reduce:transform-none">
               <Image src="/showcase/platform-1.webp" alt={item.alt} width={1200} height={750} sizes="(min-width: 2400px) 60rem, (min-width: 1024px) 50vw, calc(100vw - 3rem)" className="w-full rounded-md border border-foreground/15 object-cover shadow-2xl" />
             </button>
           </div>

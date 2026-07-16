@@ -20,7 +20,7 @@ function ProjectRow({ project, index }: { project: ReturnType<typeof useLanguage
       <div className="spotlight-overlay" aria-hidden="true" />
       <span className="font-mono relative z-10 hidden text-sm text-muted [transform:translateZ(12px)] sm:block">{String(index + 1).padStart(2, "0")}</span>
       <div className="relative z-10 min-w-0 [transform:translateZ(18px)]"><div className="flex min-w-0 items-center gap-2"><h3 className="font-display break-words text-lg font-semibold sm:text-xl 3xl:text-2xl">{project.title}</h3><ArrowUpRight size={16} className="shrink-0 text-muted transition-all duration-200 group-hover:-translate-y-0.5 group-hover:translate-x-0.5 group-hover:text-accent" /></div><p className="mt-1.5 max-w-xl break-words text-sm leading-relaxed text-muted 3xl:max-w-3xl 3xl:text-base">{project.description}</p></div>
-      <div className="relative z-10 flex flex-wrap gap-2 [transform:translateZ(14px)] sm:justify-end">{meta.tags.map((tag) => <span key={tag} className="font-mono rounded-sm border border-foreground/12 px-2.5 py-1 text-[0.7rem] text-muted">{tag}</span>)}</div>
+      <div className="relative z-10 flex flex-wrap gap-2 [transform:translateZ(14px)] sm:justify-end">{meta.tags.map((tag) => <span key={tag} data-prox className="prox-chip font-mono rounded-sm border border-foreground/12 px-2.5 py-1 text-[0.7rem] text-muted">{tag}</span>)}</div>
     </m.a>
   );
 }
@@ -51,9 +51,9 @@ export function Projects() {
               </div>
               <p className="mt-4 text-sm leading-relaxed text-muted sm:text-base">{featured.description}</p>
             </a>
-            <div className="mt-6 flex flex-wrap gap-2">{featuredMeta.tags.map((tag) => <span key={tag} className="font-mono rounded-sm border border-foreground/12 px-2.5 py-1 text-[0.7rem] text-muted">{tag}</span>)}</div>
+            <div className="mt-6 flex flex-wrap gap-2">{featuredMeta.tags.map((tag) => <span key={tag} data-prox className="prox-chip font-mono rounded-sm border border-foreground/12 px-2.5 py-1 text-[0.7rem] text-muted">{tag}</span>)}</div>
           </m.div>
-          <div className="[transform:translateZ(24px)]"><BotShowcase /></div>
+          <m.div initial={{ opacity: 0, scale: 0.92 }} whileInView={{ opacity: 1, scale: 1 }} viewport={{ once: true, amount: 0.3 }} transition={{ duration: 0.6, ease: [0.22, 1, 0.36, 1] }} className="[transform:translateZ(24px)]"><BotShowcase /></m.div>
         </m.div>
 
         <RevealGroup stagger={0.06} className="surface mt-5 flex flex-col rounded-lg px-6 sm:px-8">

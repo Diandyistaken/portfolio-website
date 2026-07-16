@@ -75,10 +75,11 @@ export function RevealGroup({
 }
 
 export const revealItem: Variants = {
-  hidden: { opacity: 0, y: 24, rotateX: 12, transformPerspective: 900 },
+  hidden: { opacity: 0, y: 24, scale: 0.96, rotateX: 12, transformPerspective: 900 },
   visible: {
     opacity: 1,
     y: 0,
+    scale: 1,
     rotateX: 0,
     transformPerspective: 900,
     transition: { duration: 0.55, ease: [0.22, 1, 0.36, 1] },

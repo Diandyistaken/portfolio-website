@@ -50,7 +50,8 @@ export function ClassifiedWork() {
 
               {/* Redacted "name" line: the bar IS the point — reads as a
                   censored classified file, backed by a screen-reader label. */}
-              <div className="mt-5 flex items-center gap-3" aria-label={t.classified.redactedLabel}>
+              <div className="mt-5 flex items-center gap-3">
+                <span className="sr-only">{t.classified.redactedLabel}</span>
                 <span className="redacted-bar h-6 w-36 rounded-sm sm:w-44" aria-hidden="true" />
                 <span className="redacted-bar h-6 w-14 rounded-sm sm:w-20" aria-hidden="true" />
               </div>
@@ -62,7 +63,8 @@ export function ClassifiedWork() {
                 {item.stack.map((tech) => (
                   <span
                     key={tech}
-                    className="font-mono rounded-sm border border-foreground/12 px-2.5 py-1 text-[0.7rem] text-muted"
+                    data-prox
+                    className="prox-chip font-mono rounded-sm border border-foreground/12 px-2.5 py-1 text-[0.7rem] text-muted"
                   >
                     {tech}
                   </span>
@@ -84,7 +86,7 @@ export function ClassifiedWork() {
           ))}
         </RevealGroup>
 
-        <p className="mt-6 font-mono text-xs leading-relaxed text-muted/80">
+        <p className="mt-6 font-mono text-xs leading-relaxed text-muted">
           {t.classified.note}
         </p>
       </div>

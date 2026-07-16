@@ -99,9 +99,14 @@ export type Content = {
   robot: {
     label: string;
     dismissLabel: string;
+    introMessage: string;
     messages: string[];
     sleepingMessage: string;
     hackMessage: string;
+  };
+  achievements: {
+    unlocked: string;
+    items: { id: string; title: string }[];
   };
   about: {
     kicker: string;

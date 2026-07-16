@@ -119,7 +119,8 @@ export function DecryptText({
   }, [delay, perfLite, reduceMotion, safeCharset, text]);
 
   return (
-    <span ref={elementRef} className={className} aria-label={text}>
+    <span ref={elementRef} className={className}>
+      <span className="sr-only">{text}</span>
       <span aria-hidden="true">
         {reduceMotion || perfLite ? text : displayText}
       </span>

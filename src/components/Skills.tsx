@@ -36,7 +36,7 @@ function SkillCard({ category }: { category: SkillCategory }) {
         meta.size === "lg" ? "sm:col-span-2" : ""
       }`}
     >
-      <m.div variants={{ hover: { z: 26, scale: 1.06 } }} className="mb-5 flex h-10 w-10 items-center justify-center rounded-md border border-foreground/12 text-accent [transform:translateZ(10px)]">
+      <m.div data-prox data-prox-radius="320" variants={{ hover: { z: 26, scale: 1.06 } }} className="prox-icon mb-5 flex h-10 w-10 items-center justify-center rounded-md border border-foreground/12 text-accent [transform:translateZ(10px)]">
         <Icon size={18} />
       </m.div>
       <m.h3 variants={{ hover: { z: 20 } }} className="font-display text-lg font-semibold [transform:translateZ(8px)]">
@@ -67,7 +67,8 @@ function SkillCard({ category }: { category: SkillCategory }) {
                   transition: { duration: 0.3, delay: index * 0.045 },
                 },
               }}
-              className="font-mono rounded-sm border border-foreground/12 px-2.5 py-1 text-[0.7rem] text-muted"
+              data-prox
+              className="prox-chip font-mono rounded-sm border border-foreground/12 px-2.5 py-1 text-[0.7rem] text-muted"
             >
               {tool}
             </m.span>

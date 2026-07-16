@@ -26,12 +26,10 @@ const ogLocaleMap: Record<Locale, string> = { tr: "tr_TR", en: "en_US", de: "de_
 
 type Params = { locale?: string[] };
 
-// Generates the three crawlable locale routes at build time: "/" (tr,
-// unprefixed default), "/en", "/de" — each with its own server-rendered
-// HTML, title/description, and hreflang alternates.
-export function generateStaticParams() {
-  return [{ locale: [] }, { locale: ["en"] }, { locale: ["de"] }];
-}
+// Nonce-based CSP (src/proxy.ts) requires per-request rendering: Next stamps
+// the request's nonce onto its inline scripts only during dynamic SSR —
+// statically prerendered HTML would ship nonce-less scripts the CSP blocks.
+export const dynamic = "force-dynamic";
 
 function buildPersonJsonLd(locale: Locale, content: Content) {
   return {

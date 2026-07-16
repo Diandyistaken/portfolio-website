@@ -1,39 +1,16 @@
 import type { NextConfig } from "next";
 
-// Next.js statically prerenders this site (no proxy/middleware, so no
-// per-request nonce is available - see Next's CSP guide, "Without Nonces").
-// script-src therefore needs 'unsafe-inline': besides our own JSON-LD
-// snippet, Next's App Router injects its own inline RSC hydration payload
-// scripts (`__next_f.push(...)`) whose content isn't stable across builds,
-// so a static hash allowlist can't cover them without breaking hydration.
-// Locking this down further would require switching the whole app to
-// dynamic (per-request) rendering purely for CSP purposes, which isn't
-// worth the lost static export/CDN caching for a site with no auth, forms,
-// or user data.
-// Next dev's React Server Components client uses eval() for debugging
-// (stack-trace reconstruction) — never in production, per Next's own
-// warning text. Dev-only relaxation so `next dev` doesn't silently fail to
-// hydrate under this CSP; production keeps the strict policy.
-const isDev = process.env.NODE_ENV === "development";
-
-const csp = [
-  "default-src 'self'",
-  `script-src 'self' 'unsafe-inline'${isDev ? " 'unsafe-eval'" : ""}`,
-  "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com",
-  "font-src 'self' https://fonts.gstatic.com data:",
-  "img-src 'self' data: blob:",
-  "connect-src 'self'",
-  "object-src 'none'",
-  "base-uri 'self'",
-  "form-action 'self'",
-  "frame-ancestors 'none'",
-].join("; ");
-
+// The CSP moved to src/proxy.ts: securityheaders.com caps the grade at A
+// while script-src carries a bare 'unsafe-inline', and the only sound way
+// past that is a per-request nonce — which needs the proxy + dynamic
+// rendering (see the layout's force-dynamic). The static headers below stay
+// here; everything script-execution-related lives with the nonce.
 const nextConfig: NextConfig = {
   turbopack: {
     root: __dirname,
   },
   images: {
+    formats: ["image/avif", "image/webp"],
     qualities: [75, 90, 95, 100],
   },
   async headers() {
@@ -41,13 +18,24 @@ const nextConfig: NextConfig = {
       {
         source: "/:path*",
         headers: [
-          { key: "Content-Security-Policy", value: csp },
           { key: "X-Frame-Options", value: "DENY" },
           { key: "X-Content-Type-Options", value: "nosniff" },
           { key: "Referrer-Policy", value: "strict-origin-when-cross-origin" },
           {
             key: "Strict-Transport-Security",
             value: "max-age=63072000; includeSubDomains; preload",
+          },
+          {
+            // no camera/mic/geolocation/etc. anywhere on a portfolio —
+            // deny the lot (securityheaders.com A+ requires this header)
+            key: "Permissions-Policy",
+            value:
+              "accelerometer=(), autoplay=(), browsing-topics=(), camera=(), display-capture=(), encrypted-media=(), geolocation=(), gyroscope=(), magnetometer=(), microphone=(), midi=(), payment=(), picture-in-picture=(), publickey-credentials-get=(), screen-wake-lock=(), usb=(), xr-spatial-tracking=()",
+          },
+          {
+            // origin isolation (also a Lighthouse best-practices audit)
+            key: "Cross-Origin-Opener-Policy",
+            value: "same-origin",
           },
         ],
       },

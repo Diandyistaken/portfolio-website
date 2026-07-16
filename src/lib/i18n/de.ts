@@ -81,6 +81,7 @@ export const de: Content = {
   robot: {
     label: "Roboter-Assistent — zum Reden klicken",
     dismissLabel: "Roboter ausblenden",
+    introMessage: "piep bup! ich bin der Wachroboter — meine Augen folgen dir 👀",
     messages: [
       "piep bup! willkommen, besucher_",
       "systemscan: alles sauber ✓",
@@ -332,6 +333,17 @@ export const de: Content = {
         description:
           "Ein Python-Tool, das Dateinamen und -endungen eines Ordners als .txt-Datei exportiert.",
       },
+    ],
+  },
+  achievements: {
+    unlocked: "ERFOLG FREIGESCHALTET",
+    items: [
+      { id: "robot-friend", title: "Neuer Freund — du hast den Roboter begrüßt" },
+      { id: "white-hat", title: "White Hat — du hast den geheimen Befehl gefunden" },
+      { id: "shell-runner", title: "Befehlskette — 3 Terminal-Befehle ausgeführt" },
+      { id: "explorer", title: "Entdecker — alle Bereiche besucht" },
+      { id: "first-contact", title: "Erstkontakt — E-Mail kopiert" },
+      { id: "status-dj", title: "Status-DJ — Badge 5-mal gewechselt" },
     ],
   },
   classified: {

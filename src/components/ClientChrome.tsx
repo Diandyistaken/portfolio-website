@@ -12,6 +12,9 @@ const CustomCursor = dynamic(() => import("./CustomCursor").then((mod) => mod.Cu
 const AmbientField = dynamic(() => import("./AmbientField").then((mod) => mod.AmbientField), { ssr: false });
 const RobotBuddy = dynamic(() => import("./RobotBuddy").then((mod) => mod.RobotBuddy), { ssr: false });
 const EasterEgg = dynamic(() => import("./EasterEgg").then((mod) => mod.EasterEgg), { ssr: false });
+const ProximityField = dynamic(() => import("./ProximityField").then((mod) => mod.ProximityField), { ssr: false });
+const SectionRail = dynamic(() => import("./SectionRail").then((mod) => mod.SectionRail), { ssr: false });
+const Achievements = dynamic(() => import("./Achievements").then((mod) => mod.Achievements), { ssr: false });
 
 export function ClientChrome() {
   useEffect(() => {
@@ -25,6 +28,9 @@ export function ClientChrome() {
       <ClickSparks />
       <RobotBuddy />
       <EasterEgg />
+      <ProximityField />
+      <SectionRail />
+      <Achievements />
     </>
   );
 }

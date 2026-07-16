@@ -81,6 +81,7 @@ export const tr: Content = {
   robot: {
     label: "Robot asistan — tıkla, konuşsun",
     dismissLabel: "Robotu gizle",
+    introMessage: "bip bop! ben nöbetçi robot — gözlerim seni izliyor 👀",
     messages: [
       "bip bop! hoş geldin ziyaretçi_",
       "sistem taraması: her şey temiz ✓",
@@ -334,6 +335,17 @@ export const tr: Content = {
         description:
           "Klasördeki dosya adlarını/uzantılarını .txt formatında dışa aktaran Python aracı.",
       },
+    ],
+  },
+  achievements: {
+    unlocked: "BAŞARIM AÇILDI",
+    items: [
+      { id: "robot-friend", title: "Yeni Arkadaş — robota merhaba dedin" },
+      { id: "white-hat", title: "Beyaz Şapka — gizli komutu buldun" },
+      { id: "shell-runner", title: "Komut Zinciri — terminalde 3 komut çalıştırdın" },
+      { id: "explorer", title: "Kâşif — tüm bölümleri gezdin" },
+      { id: "first-contact", title: "İlk Temas — e-postayı kopyaladın" },
+      { id: "status-dj", title: "Durum DJ'i — rozeti 5 kez çevirdin" },
     ],
   },
   classified: {

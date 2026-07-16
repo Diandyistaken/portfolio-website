@@ -81,6 +81,7 @@ export const en: Content = {
   robot: {
     label: "Robot assistant — click to chat",
     dismissLabel: "Hide robot",
+    introMessage: "beep boop! I'm the watch robot — my eyes follow you 👀",
     messages: [
       "beep boop! welcome, visitor_",
       "system scan: all clear ✓",
@@ -332,6 +333,17 @@ export const en: Content = {
         description:
           "A Python tool that exports file names and extensions from a folder into a .txt file.",
       },
+    ],
+  },
+  achievements: {
+    unlocked: "ACHIEVEMENT UNLOCKED",
+    items: [
+      { id: "robot-friend", title: "New Friend — you said hi to the robot" },
+      { id: "white-hat", title: "White Hat — you found the hidden command" },
+      { id: "shell-runner", title: "Command Chain — ran 3 terminal commands" },
+      { id: "explorer", title: "Explorer — visited every section" },
+      { id: "first-contact", title: "First Contact — copied the email" },
+      { id: "status-dj", title: "Status DJ — cycled the badge 5 times" },
     ],
   },
   classified: {

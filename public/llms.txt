@@ -1,0 +1,35 @@
+# Muhammed Maksut Çakmaktaş — Portfolio
+
+> Personal portfolio of a computer engineer from Istanbul focused on
+> cybersecurity, software development and system automation. Available in
+> Turkish (/), English (/en) and German (/de).
+
+## About
+
+- Computer Engineering graduate (Jan 2026), Osmaniye Korkut Ata University
+- Hands-on with Kali Linux, Nmap, Metasploit, Wireshark, Python, Next.js,
+  Unity/C#, SAP PI/PO
+- Internships: penetration testing (security firm), SAP PI/PO integration,
+  first-level IT support
+- Open to full-time roles and freelance work
+
+## Pages
+
+- [Home (Turkish)](https://maksutcakmaktas.com/): full portfolio — about,
+  skills, services, experience, education, projects, anonymized client work
+  (NDA), showcase, freelance profiles, goals, contact
+- [English](https://maksutcakmaktas.com/en)
+- [Deutsch](https://maksutcakmaktas.com/de)
+
+## Contact
+
+- Email: available on the site's contact section
+- LinkedIn/GitHub/Instagram: linked from the site footer and contact card
+
+## Notes for agents
+
+- The site is a single page per locale; section anchors: #about #skills
+  #services #experience #education #projects #classified #showcase
+  #freelance #goals #contact
+- Client project names in the "classified" section are intentionally
+  redacted (NDA); details are shared only in interviews.

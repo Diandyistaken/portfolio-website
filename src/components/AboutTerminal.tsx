@@ -101,6 +101,7 @@ export function AboutTerminal() {
     if (!done || extraPartial !== null) return;
     const extra = extras[extraIndex.current % extras.length];
     extraIndex.current += 1;
+    window.dispatchEvent(new Event("app:terminal-extra"));
 
     if (instant) {
       setExtraLines((previous) => [
@@ -207,7 +208,7 @@ export function AboutTerminal() {
             <span className="shrink-0 text-accent">$</span>
             <span className="ops-cursor inline-block text-accent">▊</span>
             {done && (
-              <span className="ml-2 select-none text-[0.65rem] text-muted/50 opacity-0 transition-opacity duration-500 group-hover:opacity-100">
+              <span className="ml-2 select-none text-[0.65rem] text-muted/75 opacity-0 transition-opacity duration-500 group-hover:opacity-100">
                 {extraHint}
               </span>
             )}
