@@ -1,11 +1,12 @@
 "use client";
 
+import { useRef, useState } from "react";
 import { ArrowUpRight } from "lucide-react";
 import { RevealGroup, revealItem } from "./Reveal";
 import { SectionHeading } from "./SectionHeading";
 import { useLanguage } from "@/lib/i18n/LanguageProvider";
 import { projectsMeta } from "@/lib/data";
-import { m } from "framer-motion";
+import { m, useInView } from "framer-motion";
 import { useSpotlight } from "@/lib/useSpotlight";
 import { useTilt3D } from "@/lib/useTilt3D";
 import { BotShowcase } from "./BotShowcase";
@@ -15,10 +16,17 @@ function ProjectRow({ project, index }: { project: ReturnType<typeof useLanguage
   const meta = projectsMeta[project.id];
   const spotlight = useSpotlight<HTMLAnchorElement>();
   const tilt = useTilt3D<HTMLAnchorElement>();
+  // #25 Port-scan reveal: fire the scan-line sweep when the row enters view
+  const scanRef = useRef<HTMLAnchorElement>(null);
+  const scanned = useInView(scanRef, { once: true, amount: 0.6 });
+  const [port] = useState(() => 1024 + index * 137);
   return (
-    <m.a {...tilt.handlers} style={tilt.motionStyle} onMouseMove={spotlight.onMouseMove} href={meta.url} target="_blank" rel="noopener noreferrer" variants={revealItem} className="spotlight-card target-frame group relative grid min-w-0 grid-cols-1 items-center gap-3 overflow-hidden border-b border-foreground/10 py-6 transition-[background-color,border-color,box-shadow] last:border-b-0 hover:border-accent/30 hover:bg-foreground/[0.04] hover:shadow-[0_16px_42px_rgb(var(--accent-rgb)/0.08)] sm:grid-cols-[3rem_minmax(0,1fr)_auto] sm:gap-6 sm:px-2 3xl:grid-cols-[4rem_minmax(0,1fr)_auto] 3xl:gap-10 3xl:py-8">
+    <m.a ref={scanRef} data-scanned={scanned ? "true" : "false"} {...tilt.handlers} style={tilt.motionStyle} onMouseMove={spotlight.onMouseMove} href={meta.url} target="_blank" rel="noopener noreferrer" variants={revealItem} className="scan-row spotlight-card target-frame group relative grid min-w-0 grid-cols-1 items-center gap-3 overflow-hidden border-b border-foreground/10 py-6 transition-[background-color,border-color,box-shadow] last:border-b-0 hover:border-accent/30 hover:bg-foreground/[0.04] hover:shadow-[0_16px_42px_rgb(var(--accent-rgb)/0.08)] sm:grid-cols-[3rem_minmax(0,1fr)_auto] sm:gap-6 sm:px-2 3xl:grid-cols-[4rem_minmax(0,1fr)_auto] 3xl:gap-10 3xl:py-8">
       <div className="spotlight-overlay" aria-hidden="true" />
-      <span className="font-mono relative z-10 hidden text-sm text-muted [transform:translateZ(12px)] sm:block">{String(index + 1).padStart(2, "0")}</span>
+      <span className="font-mono relative z-10 hidden text-sm text-muted [transform:translateZ(12px)] sm:block">
+        {String(index + 1).padStart(2, "0")}
+        <span className="mt-0.5 block text-[0.55rem] uppercase tracking-wider text-accent/0 transition-colors duration-300 group-hover:text-accent/70">:{port} open</span>
+      </span>
       <div className="relative z-10 min-w-0 [transform:translateZ(18px)]"><div className="flex min-w-0 items-center gap-2"><h3 className="font-display break-words text-lg font-semibold sm:text-xl 3xl:text-2xl">{project.title}</h3><ArrowUpRight size={16} className="shrink-0 text-muted transition-all duration-200 group-hover:-translate-y-0.5 group-hover:translate-x-0.5 group-hover:text-accent" /></div><p className="mt-1.5 max-w-xl break-words text-sm leading-relaxed text-muted 3xl:max-w-3xl 3xl:text-base">{project.description}</p></div>
       <div className="relative z-10 flex flex-wrap gap-2 [transform:translateZ(14px)] sm:justify-end">{meta.tags.map((tag) => <span key={tag} data-prox className="prox-chip font-mono rounded-sm border border-foreground/12 px-2.5 py-1 text-[0.7rem] text-muted">{tag}</span>)}</div>
     </m.a>

@@ -15,6 +15,7 @@ const EasterEgg = dynamic(() => import("./EasterEgg").then((mod) => mod.EasterEg
 const ProximityField = dynamic(() => import("./ProximityField").then((mod) => mod.ProximityField), { ssr: false });
 const SectionRail = dynamic(() => import("./SectionRail").then((mod) => mod.SectionRail), { ssr: false });
 const Achievements = dynamic(() => import("./Achievements").then((mod) => mod.Achievements), { ssr: false });
+const OverdriveHud = dynamic(() => import("./OverdriveHud").then((mod) => mod.OverdriveHud), { ssr: false });
 
 export function ClientChrome() {
   useEffect(() => {
@@ -31,6 +32,7 @@ export function ClientChrome() {
       <ProximityField />
       <SectionRail />
       <Achievements />
+      <OverdriveHud />
     </>
   );
 }

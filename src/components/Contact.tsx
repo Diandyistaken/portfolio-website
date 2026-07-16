@@ -86,12 +86,16 @@ export function Contact() {
     };
   }, []);
 
+  // #26 Data uplink beam: a beam shoots up from the card on a successful copy
+  const [beamKey, setBeamKey] = useState(0);
+
   const handleCopy = async () => {
     if (resetTimerRef.current !== null) clearTimeout(resetTimerRef.current);
     try {
       await navigator.clipboard.writeText(t.personalInfo.email);
       setCopyState("copied");
       window.dispatchEvent(new Event("app:email-copied"));
+      if (!reducedMotion && !perfLite) setBeamKey((key) => key + 1);
     } catch {
       setCopyState("failed");
     } finally {
@@ -117,6 +121,16 @@ export function Contact() {
             whileHover={reducedMotion || perfLite ? undefined : "hover"}
             className="surface relative overflow-hidden rounded-lg p-6 text-center sm:p-10 3xl:p-12"
           >
+            {beamKey > 0 && (
+              <m.span
+                key={beamKey}
+                aria-hidden="true"
+                initial={{ scaleY: 0, opacity: 0.9 }}
+                animate={{ scaleY: 1, opacity: 0 }}
+                transition={{ duration: 0.9, ease: [0.22, 1, 0.36, 1] }}
+                className="pointer-events-none absolute bottom-1/2 left-1/2 h-[60vh] w-[3px] -translate-x-1/2 origin-bottom bg-gradient-to-t from-accent via-accent/60 to-transparent shadow-[0_0_20px_rgb(var(--accent-rgb)/0.8)]"
+              />
+            )}
             <m.div
               aria-hidden="true"
               variants={{

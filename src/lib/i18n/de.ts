@@ -524,6 +524,16 @@ export const de: Content = {
     copyFailedLabel: "Kopieren fehlgeschlagen — E-Mail bitte manuell markieren und kopieren",
     signalLabel: "SIGNAL",
   },
+  receipt: {
+    title: "SITZUNGSBELEG",
+    sections: "Bereiche besucht",
+    badges: "Abzeichen frei",
+    duration: "auf der Seite",
+    thanks: "danke für den Besuch — Kaffee geht auf mich ☕",
+  },
+  overdrive: {
+    label: "OVERDRIVE",
+  },
   footer: {
     rights: "Alle Rechte vorbehalten.",
     tagline: "Aus Istanbul, mit Kaffee und Terminal-Fenstern.",

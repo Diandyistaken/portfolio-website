@@ -93,7 +93,7 @@
   Section headings (and the hero name — merged from the hero-only variant) respond per-letter to cursor approach within ~120px: each glyph independently ramps weight and blends from dim gray toward #5ec8ff with distance falloff, so a hot zone of ignited letters follows the cursor across the text, springing back with slight overshoot. The typographic answer to 'color shifts as the mouse approaches'.
   _tech: framer motion values + single mousemove listener, per-char spans, color/weight interpolation_
 
-- [ ] **22. Velocity Overdrive HUD** (hook 8, M, global corner HUD)
+- [x] **22. Velocity Overdrive HUD** (hook 8, M, global corner HUD)
   Scroll past a velocity threshold and a tiny corner HUD appears: 'SCROLL VELOCITY: 4,213 px/s ⚠ THROTTLING', with the cursor ring briefly stretching into a motion-blur ellipse; the session's fastest speed is kept as a mini high-score. Turns raw scrolling into a toy people deliberately flick to max out.
   _tech: framer useVelocity + spring, sessionStorage high score_
 
@@ -101,15 +101,15 @@
   A fixed mono badge upgrades your access level as you scroll deeper — GUEST → USER → ANALYST → ROOT — each transition flashing 'privilege escalation granted' with a keycard-flip animation (absorbs the sectors-cleared counter: cleared sections tick alongside, persisted in localStorage). Reaching the footer at ROOT prints a one-time 'full access: hire me'.
   _tech: scroll progress thresholds + IntersectionObserver + framer, localStorage_
 
-- [ ] **24. Packet Rider Timeline** (hook 8, M, experience)
+- [x] **24. Packet Rider Timeline** (hook 8, M, experience)
   The canonical timeline companion (merges three near-identical pitches): a glowing packet blip with a dashed tail rides the experience timeline spine, position bound to scroll progress; reaching a node makes it flare, emit one ping ring, and re-type its date stamp with a traceroute-style 'hop 3: [OK]' flavor. Scrolling up sends the packet back, so visitors scrub it like a toy.
   _tech: framer useScroll → motion value along SVG spine, ping rings, decrypt reuse_
 
-- [ ] **25. Port Scan Reveal** (hook 8, M, projects)
+- [x] **25. Port Scan Reveal** (hook 8, M, projects)
   As the projects section scrolls in, a fast nmap-style line rakes down the list — each row flashes 'PORT 3000/tcp ... OPEN' in mono before real content decrypts in, staggered top-to-bottom and tied to scroll progress so scrubbing back re-closes ports. Full sweep once per visit, subtle one-row re-ping afterwards.
   _tech: framer useScroll/useInView + staggered variants, text swap_
 
-- [ ] **26. Data Uplink Beam** (hook 8, M, contact)
+- [x] **26. Data Uplink Beam** (hook 8, M, contact)
   When the email is copied, a dashed beam of ascending packet dots streams from the contact card up to the corner robot, whose antenna LED blinks in 'receiving' mode before it gives a thumbs-up eye animation and a bubble: 'transmission received.' Turns the site's single most important action into its best micro-moment.
   _tech: framer staggered dot ascent between two DOM rects + robot state hook_
 
@@ -117,11 +117,11 @@
   Press-and-drag the email pill and it stretches like taffy (scaleX with a resistance curve) with the accent border tightening; pull past the threshold and it SNAPS — copies the email, recoils with a jelly wobble, and fires a short WebAudio plink. Plain click still copies normally, so this is a bonus, not friction (superseded the two-stage detonator idea for exactly that reason).
   _tech: framer drag with diminishing-returns transform, spring recoil, WebAudio blip_
 
-- [ ] **28. Session Receipt Shutdown** (hook 8, M, footer)
+- [x] **28. Session Receipt Shutdown** (hook 8, M, footer)
   At the true bottom of the footer, a mini terminal types a personalized session receipt: real uptime ('session: 4m 12s'), sections visited, easter eggs found — ending with 'connection persisted. see you soon.' Stats come from an in-memory tracker, no storage needed.
   _tech: IntersectionObserver at page end + runtime counters + existing typer_
 
-- [ ] **29. Goal Progress Decryption Bars** (hook 8, M, goals)
+- [x] **29. Goal Progress Decryption Bars** (hook 8, M, goals)
   The canonical goals treatment (merges three scroll-fill pitches): bars render as terminal gauges [███████░░░] whose fill is scroll-linked, and the covered portion shows scrambled glyphs that resolve into readable label text exactly at the fill edge — watching the bar fill literally decrypts the goal. Completed goals stamp a 'CRACKED' tag; in-progress ones end with a blinking cursor; scrolling back re-encrypts.
   _tech: useScroll progress → char count + per-char resolve keyed to fill %_
 

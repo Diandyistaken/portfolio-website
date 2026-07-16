@@ -526,6 +526,16 @@ export const tr: Content = {
     copyFailedLabel: "Kopyalanamadı — e-postayı seçip elle kopyala",
     signalLabel: "SİNYAL",
   },
+  receipt: {
+    title: "OTURUM FİŞİ",
+    sections: "gezilen bölüm",
+    badges: "açılan rozet",
+    duration: "sürede",
+    thanks: "ziyaret için teşekkürler — kahve benden ☕",
+  },
+  overdrive: {
+    label: "AŞIRI HIZ",
+  },
   footer: {
     rights: "Tüm hakları saklıdır.",
     tagline: "İstanbul'dan, kahve ve terminal eşliğinde.",

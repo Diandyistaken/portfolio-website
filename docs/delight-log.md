@@ -3,6 +3,21 @@
 > Kullanıcı talebi: "bunları şunları ekledim diye log sun." Her parti buraya
 > işlenir; kaynak sıralama `delight-backlog.md`.
 
+## Parti 6 — 2026-07-17 (loop iter 1 · 6 fikir)
+
+- **#22 Velocity Overdrive HUD:** hızlı scroll'da sağ üstte px/s hız göstergesi
+  belirir (kırmızı çizgiye dayanan bar), yavaşlayınca kaybolur.
+- **#24 Packet Rider Timeline:** Deneyim çizgisi çizilirken üzerinde parlayan
+  bir "paket" noktası aşağı doğru yol alır.
+- **#25 Port Scan Reveal:** proje satırları görünüme girerken üzerinden tarama
+  çizgisi geçer; hover'da satır numarası ":PORT open" olur.
+- **#26 Data Uplink Beam:** iletişim e-postası kopyalanınca karttan yukarı bir
+  ışın huzmesi fırlar.
+- **#28 Session Receipt:** footer'a gelince "OTURUM FİŞİ" termal fiş açılır —
+  gezilen bölüm, açılan rozet (n/8), sayfada geçen süre + teşekkür.
+- **#29 Goal Progress Decryption Bars:** hedef yüzdeleri rakamları karıştırıp
+  "şifre çözer" gibi gerçek değere oturur (karta tıklayınca yeniden).
+
 ## Parti 5 — 2026-07-17 (RobotChat + 8 backlog fikri)
 
 - **ROBOTCHAT (özel istek):** robota tıklayınca açılan büyük hali — tam gövdeli

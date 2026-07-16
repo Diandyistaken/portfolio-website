@@ -1,7 +1,7 @@
 "use client";
 
-import { useState } from "react";
-import { m, useReducedMotion, type Variants } from "framer-motion";
+import { useEffect, useRef, useState } from "react";
+import { m, useInView, useReducedMotion, type Variants } from "framer-motion";
 import { Target } from "lucide-react";
 import { RevealGroup } from "./Reveal";
 import { SectionHeading } from "./SectionHeading";
@@ -9,6 +9,49 @@ import { useLanguage } from "@/lib/i18n/LanguageProvider";
 import { goalsMeta } from "@/lib/data";
 import { CONTAINER } from "@/lib/layout";
 import { usePerfLite } from "./SectionBackdrop";
+
+/** #29 Decryption percent: the number scrambles through random digits and
+ *  resolves to the real value — a bar "decrypting" its progress. Restarts on
+ *  the `runKey` bump (card click) and when it first scrolls into view. */
+function DecryptPercent({
+  value,
+  runKey,
+  format,
+  animate: doAnimate,
+}: {
+  value: number;
+  runKey: number;
+  format: (fraction: number) => string;
+  animate: boolean;
+}) {
+  const ref = useRef<HTMLSpanElement>(null);
+  const inView = useInView(ref, { amount: 0.6 });
+  // starts at the real value; the interval (a callback, not the effect body)
+  // scrambles it while animating, so there's no setState in the effect body.
+  const [display, setDisplay] = useState(value);
+
+  useEffect(() => {
+    if (!doAnimate || !inView) return;
+    const startedAt = performance.now();
+    const DURATION = 900;
+    const id = setInterval(() => {
+      const now = performance.now();
+      const progress = Math.min(1, (now - startedAt) / DURATION);
+      if (progress >= 1) {
+        setDisplay(value);
+        clearInterval(id);
+        return;
+      }
+      // early: full scramble (time-derived pseudo digits); late: home in on
+      // the real value so the last few frames read as "locking in".
+      const scrambled = Math.floor(now / 47) % 100;
+      setDisplay(progress < 0.7 ? scrambled : Math.round(value * progress + scrambled * (1 - progress)));
+    }, 45);
+    return () => clearInterval(id);
+  }, [doAnimate, inView, value, runKey]);
+
+  return <span ref={ref}>{format(display / 100)}</span>;
+}
 
 const goalVariants: Variants = {
   hidden: ({ index, motionSafe }: { index: number; motionSafe: boolean }) =>
@@ -85,9 +128,14 @@ export function Goals() {
                     initial={motionSafe ? { scale: 0.6, opacity: 0 } : false}
                     animate={{ scale: 1, opacity: 1 }}
                     transition={{ type: "spring", stiffness: 300, damping: 16, delay: 0.35 }}
-                    className="font-mono text-sm text-accent"
+                    className="font-mono text-sm tabular-nums text-accent"
                   >
-                    {percentFormatter.format(progress / 100)}
+                    <DecryptPercent
+                      value={progress}
+                      runKey={runKey}
+                      format={(fraction) => percentFormatter.format(fraction)}
+                      animate={motionSafe}
+                    />
                   </m.span>
                 </div>
 

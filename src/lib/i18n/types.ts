@@ -260,4 +260,14 @@ export type Content = {
     tagline: string;
     backToTop: string;
   };
+  receipt: {
+    title: string;
+    sections: string;
+    badges: string;
+    duration: string;
+    thanks: string;
+  };
+  overdrive: {
+    label: string;
+  };
 };

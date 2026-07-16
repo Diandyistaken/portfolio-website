@@ -524,6 +524,16 @@ export const en: Content = {
     copyFailedLabel: "Couldn't copy — select and copy the email manually",
     signalLabel: "SIGNAL",
   },
+  receipt: {
+    title: "SESSION RECEIPT",
+    sections: "sections visited",
+    badges: "badges unlocked",
+    duration: "on page",
+    thanks: "thanks for visiting — coffee's on me ☕",
+  },
+  overdrive: {
+    label: "OVERDRIVE",
+  },
   footer: {
     rights: "All rights reserved.",
     tagline: "From Istanbul, fueled by coffee and terminal windows.",

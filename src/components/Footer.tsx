@@ -7,6 +7,7 @@ import { useLanguage } from "@/lib/i18n/LanguageProvider";
 import { CONTAINER } from "@/lib/layout";
 import { Honeypot } from "./Honeypot";
 import { SysLog } from "./SysLog";
+import { SessionReceipt } from "./SessionReceipt";
 
 const FREELANCE_LINKS = [
   { label: "Freelancer", href: "https://www.freelancer.com/u/muhammedmaksut" },
@@ -91,6 +92,8 @@ export function Footer() {
           </span>
         </a>
       </div>
+
+      <SessionReceipt />
     </footer>
     </>
   );

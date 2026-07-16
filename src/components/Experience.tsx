@@ -5,7 +5,7 @@ import { RevealGroup } from "./Reveal";
 import { SectionHeading } from "./SectionHeading";
 import { useLanguage } from "@/lib/i18n/LanguageProvider";
 import { experienceMeta } from "@/lib/data";
-import { m, useInView, useReducedMotion, useScroll, useSpring } from "framer-motion";
+import { m, useInView, useReducedMotion, useScroll, useSpring, useTransform } from "framer-motion";
 import { CONTAINER } from "@/lib/layout";
 import { usePerfLite } from "./SectionBackdrop";
 
@@ -58,6 +58,10 @@ export function Experience() {
     offset: ["start 78%", "end 55%"],
   });
   const spineScale = useSpring(scrollYProgress, { stiffness: 90, damping: 22 });
+  // #24 Packet rider: a glowing dot travels down the spine as it draws,
+  // like a packet routing through the timeline.
+  const packetTop = useTransform(spineScale, (value) => `${Math.min(1, value) * 100}%`);
+  const packetOpacity = useTransform(spineScale, [0, 0.03, 0.97, 1], [0, 1, 1, 0]);
 
   return (
     <section id="experience" className="relative overflow-hidden px-6 py-24 sm:px-10 sm:py-28 3xl:px-16">
@@ -76,6 +80,13 @@ export function Experience() {
               className="absolute inset-y-0 left-0 w-px origin-top bg-accent/50 shadow-[0_0_14px_rgb(var(--accent-rgb)/0.35)]"
               style={reducedMotion || perfLite ? { scaleY: 1 } : { scaleY: spineScale }}
             />
+            {!reducedMotion && !perfLite && (
+              <m.span
+                aria-hidden="true"
+                className="absolute left-0 h-2.5 w-2.5 -translate-x-1/2 -translate-y-1/2 rounded-full bg-accent shadow-[0_0_14px_rgb(var(--accent-rgb)/1)]"
+                style={{ top: packetTop, opacity: packetOpacity }}
+              />
+            )}
             {t.experience.items.map((exp) => (
               <TimelineRow
                 key={exp.id}
