@@ -8,7 +8,7 @@ import { skillsMeta } from "@/lib/data";
 import { m, useReducedMotion } from "framer-motion";
 import { CONTAINER } from "@/lib/layout";
 import { useTilt3D } from "@/lib/useTilt3D";
-import { SectionBackdrop, usePerfLite } from "./SectionBackdrop";
+import { usePerfLite } from "./SectionBackdrop";
 
 const icons = {
   cyber: Shield,
@@ -83,7 +83,6 @@ export function Skills() {
 
   return (
     <section id="skills" className="relative overflow-hidden px-6 py-24 sm:px-10 sm:py-28 3xl:px-16">
-      <SectionBackdrop variant="hex" />
       <div className={`relative z-10 ${CONTAINER}`}>
         <SectionHeading
         index="02"

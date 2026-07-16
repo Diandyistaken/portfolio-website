@@ -9,7 +9,7 @@ import { GithubIcon, LinkedinIcon, InstagramIcon } from "./icons";
 import { useLanguage } from "@/lib/i18n/LanguageProvider";
 import { MagneticButton } from "./MagneticButton";
 import { CONTAINER } from "@/lib/layout";
-import { SectionBackdrop, usePerfLite } from "./SectionBackdrop";
+import { usePerfLite } from "./SectionBackdrop";
 
 type CopyState = "idle" | "copied" | "failed";
 
@@ -51,11 +51,10 @@ export function Contact() {
 
   return (
     <section id="contact" className="relative overflow-hidden px-6 py-24 sm:px-10 sm:py-28 3xl:px-16">
-      <SectionBackdrop variant="waves" />
       <div className={`relative z-10 ${CONTAINER}`}>
         <div className="mx-auto max-w-2xl 3xl:max-w-4xl">
         <SectionHeading
-        index="10"
+        index="11"
           kicker={t.contact.kicker}
           title={t.contact.title}
           description={t.contact.description}

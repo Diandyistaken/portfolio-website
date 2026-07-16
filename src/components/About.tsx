@@ -5,7 +5,7 @@ import { SectionHeading } from "./SectionHeading";
 import { useLanguage } from "@/lib/i18n/LanguageProvider";
 import { KpiStats } from "./KpiStats";
 import { CONTAINER } from "@/lib/layout";
-import { ReelPanel } from "./CinematicReel";
+import { AboutTerminal } from "./AboutTerminal";
 
 export function About() {
   const { t } = useLanguage();
@@ -28,9 +28,9 @@ export function About() {
         <KpiStats />
         <Reveal delay={0.15} className="mt-14 sm:mt-16">
           <p className="mb-5 font-display text-lg font-medium text-foreground/90 sm:text-xl">
-            {t.about.reelLead}
+            {t.about.terminalLead}
           </p>
-          <ReelPanel />
+          <AboutTerminal />
         </Reveal>
       </div>
     </section>

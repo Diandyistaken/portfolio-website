@@ -16,7 +16,7 @@ function ProjectRow({ project, index }: { project: ReturnType<typeof useLanguage
   const spotlight = useSpotlight<HTMLAnchorElement>();
   const tilt = useTilt3D<HTMLAnchorElement>();
   return (
-    <m.a {...tilt.handlers} style={tilt.motionStyle} onMouseMove={spotlight.onMouseMove} href={meta.url} target="_blank" rel="noopener noreferrer" variants={revealItem} className="spotlight-card group relative grid min-w-0 grid-cols-1 items-center gap-3 overflow-hidden border-b border-foreground/10 py-6 transition-[background-color,border-color,box-shadow] last:border-b-0 hover:border-accent/30 hover:bg-foreground/[0.04] hover:shadow-[0_16px_42px_rgb(var(--accent-rgb)/0.08)] sm:grid-cols-[3rem_minmax(0,1fr)_auto] sm:gap-6 sm:px-2 3xl:grid-cols-[4rem_minmax(0,1fr)_auto] 3xl:gap-10 3xl:py-8">
+    <m.a {...tilt.handlers} style={tilt.motionStyle} onMouseMove={spotlight.onMouseMove} href={meta.url} target="_blank" rel="noopener noreferrer" variants={revealItem} className="spotlight-card target-frame group relative grid min-w-0 grid-cols-1 items-center gap-3 overflow-hidden border-b border-foreground/10 py-6 transition-[background-color,border-color,box-shadow] last:border-b-0 hover:border-accent/30 hover:bg-foreground/[0.04] hover:shadow-[0_16px_42px_rgb(var(--accent-rgb)/0.08)] sm:grid-cols-[3rem_minmax(0,1fr)_auto] sm:gap-6 sm:px-2 3xl:grid-cols-[4rem_minmax(0,1fr)_auto] 3xl:gap-10 3xl:py-8">
       <div className="spotlight-overlay" aria-hidden="true" />
       <span className="font-mono relative z-10 hidden text-sm text-muted [transform:translateZ(12px)] sm:block">{String(index + 1).padStart(2, "0")}</span>
       <div className="relative z-10 min-w-0 [transform:translateZ(18px)]"><div className="flex min-w-0 items-center gap-2"><h3 className="font-display break-words text-lg font-semibold sm:text-xl 3xl:text-2xl">{project.title}</h3><ArrowUpRight size={16} className="shrink-0 text-muted transition-all duration-200 group-hover:-translate-y-0.5 group-hover:translate-x-0.5 group-hover:text-accent" /></div><p className="mt-1.5 max-w-xl break-words text-sm leading-relaxed text-muted 3xl:max-w-3xl 3xl:text-base">{project.description}</p></div>
@@ -41,7 +41,7 @@ export function Projects() {
           description={t.projects.description}
         />
 
-        <m.div {...featuredTilt.handlers} style={featuredTilt.motionStyle} className="surface mt-14 grid grid-cols-1 items-center gap-8 overflow-hidden rounded-xl p-6 transition-[border-color,box-shadow] hover:border-accent/40 hover:shadow-[0_18px_54px_rgb(var(--accent-rgb)/0.12)] sm:p-8 lg:grid-cols-[0.9fr_1.1fr] lg:gap-10 3xl:gap-16 3xl:p-12">
+        <m.div {...featuredTilt.handlers} style={featuredTilt.motionStyle} className="surface target-frame mt-14 grid grid-cols-1 items-center gap-8 overflow-hidden rounded-xl p-6 transition-[border-color,box-shadow] hover:border-accent/40 hover:shadow-[0_18px_54px_rgb(var(--accent-rgb)/0.12)] sm:p-8 lg:grid-cols-[0.9fr_1.1fr] lg:gap-10 3xl:gap-16 3xl:p-12">
           <m.div initial={{ opacity: 0, y: 16 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true, amount: 0.35 }} transition={{ duration: 0.5 }} className="[transform:translateZ(18px)]">
             <span className="font-mono text-xs text-accent">01 / FEATURED</span>
             <a href={featuredMeta.url} target="_blank" rel="noopener noreferrer" className="group mt-4 block">

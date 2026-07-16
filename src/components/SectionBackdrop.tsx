@@ -102,9 +102,9 @@ export function SectionBackdrop({ variant, flip = false }: SectionBackdropProps)
   return (
     <div
       aria-hidden="true"
-      className={`pointer-events-none absolute inset-y-[10%] w-[72%] max-w-4xl opacity-90 ${flip ? "-left-[22%]" : "-right-[22%]"}`}
+      className={`backdrop-drift pointer-events-none absolute inset-y-[10%] w-[72%] max-w-4xl opacity-90 ${flip ? "-left-[22%]" : "-right-[22%]"}`}
     >
-      <svg viewBox="0 0 380 250" className="h-full w-full" fill="none" stroke="rgb(var(--accent-rgb) / 0.07)" strokeWidth="1.2" vectorEffect="non-scaling-stroke">
+      <svg viewBox="0 0 380 250" className="h-full w-full" fill="none" stroke="rgb(var(--accent-rgb) / 0.13)" strokeWidth="1.2" vectorEffect="non-scaling-stroke">
         <Artwork variant={variant} />
       </svg>
     </div>

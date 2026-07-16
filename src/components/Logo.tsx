@@ -2,8 +2,7 @@ import type { SVGProps } from "react";
 
 /**
  * Shield + "M" monogram: the shield carries the cybersecurity brand, the M
- * anchors the name. Strokes use the live --accent variable, so the mark
- * shifts green → red → blue → gold in sync with the scroll-driven video.
+ * anchors the name. Strokes read the fixed --accent token.
  */
 export function Logo(props: SVGProps<SVGSVGElement>) {
   return (

@@ -1,7 +1,9 @@
+import { VelocityTrack } from "./VelocityTrack";
+
 /**
  * Infinite tool ticker between hero and about. Pure CSS transform animation
- * (GPU-composited, no JS); paused on hover, disabled in perf-lite and for
- * reduced motion.
+ * (GPU-composited, no JS) plus a scroll-velocity skew wrapper; paused on
+ * hover, disabled in perf-lite and for reduced motion.
  */
 
 const ITEMS = [
@@ -42,10 +44,12 @@ function Row({ hidden }: { hidden?: boolean }) {
 export function TechMarquee() {
   return (
     <div className="marquee relative overflow-hidden border-y border-white/6 py-3.5 3xl:py-5 4xl:py-6">
-      <div className="marquee-track flex w-max">
-        <Row />
-        <Row hidden />
-      </div>
+      <VelocityTrack>
+        <div className="marquee-track flex w-max">
+          <Row />
+          <Row hidden />
+        </div>
+      </VelocityTrack>
     </div>
   );
 }

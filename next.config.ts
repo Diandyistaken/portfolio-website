@@ -51,17 +51,6 @@ const nextConfig: NextConfig = {
           },
         ],
       },
-      {
-        // scrub frames never change without a redesign; let browsers and
-        // the CDN keep them for a year so repeat visits scrub instantly
-        source: "/scrub/:path*",
-        headers: [
-          {
-            key: "Cache-Control",
-            value: "public, max-age=31536000, immutable",
-          },
-        ],
-      },
     ];
   },
 };

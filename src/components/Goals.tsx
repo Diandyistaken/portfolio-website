@@ -8,7 +8,7 @@ import { SectionHeading } from "./SectionHeading";
 import { useLanguage } from "@/lib/i18n/LanguageProvider";
 import { goalsMeta } from "@/lib/data";
 import { CONTAINER } from "@/lib/layout";
-import { SectionBackdrop, usePerfLite } from "./SectionBackdrop";
+import { usePerfLite } from "./SectionBackdrop";
 
 const goalVariants: Variants = {
   hidden: ({ index, motionSafe }: { index: number; motionSafe: boolean }) =>
@@ -39,11 +39,10 @@ export function Goals() {
 
   return (
     <section id="goals" className="relative overflow-hidden px-6 py-24 sm:px-10 sm:py-28 3xl:px-16">
-      <SectionBackdrop variant="target" flip />
       <div className={`relative z-10 ${CONTAINER}`}>
         <div className="mx-auto max-w-3xl 3xl:max-w-5xl">
         <SectionHeading
-        index="09"
+        index="10"
           kicker={t.goals.kicker}
           title={t.goals.title}
           description={t.goals.description}

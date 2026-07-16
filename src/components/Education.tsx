@@ -7,7 +7,7 @@ import { useLanguage } from "@/lib/i18n/LanguageProvider";
 import { m, useReducedMotion } from "framer-motion";
 import { CONTAINER } from "@/lib/layout";
 import { useTilt3D } from "@/lib/useTilt3D";
-import { SectionBackdrop, usePerfLite } from "./SectionBackdrop";
+import { usePerfLite } from "./SectionBackdrop";
 
 function EducationSummary({ school, department, graduationLabel, graduation }: {
   school: string;
@@ -45,7 +45,6 @@ export function Education() {
 
   return (
     <section id="education" className="relative overflow-hidden px-6 py-24 sm:px-10 sm:py-28 3xl:px-16">
-      <SectionBackdrop variant="orbits" />
       <div className={`relative z-10 ${CONTAINER}`}>
         <div className="mx-auto max-w-3xl 3xl:max-w-5xl 4xl:max-w-6xl">
         <SectionHeading index="05" kicker={t.education.kicker} title={t.education.title} />

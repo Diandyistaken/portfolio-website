@@ -128,7 +128,7 @@ export function FreelanceHub() {
     <section id="freelance" className="px-6 py-24 sm:px-10 sm:py-28 3xl:px-16">
       <div className={CONTAINER}>
         <SectionHeading
-        index="08"
+        index="09"
           kicker={t.freelance.kicker}
           title={t.freelance.title}
           description={t.freelance.description}

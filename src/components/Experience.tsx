@@ -6,7 +6,7 @@ import { useLanguage } from "@/lib/i18n/LanguageProvider";
 import { experienceMeta } from "@/lib/data";
 import { m, useReducedMotion } from "framer-motion";
 import { CONTAINER } from "@/lib/layout";
-import { SectionBackdrop, usePerfLite } from "./SectionBackdrop";
+import { usePerfLite } from "./SectionBackdrop";
 
 export function Experience() {
   const { t } = useLanguage();
@@ -15,7 +15,6 @@ export function Experience() {
 
   return (
     <section id="experience" className="relative overflow-hidden px-6 py-24 sm:px-10 sm:py-28 3xl:px-16">
-      <SectionBackdrop variant="circuit" flip />
       <div className={`relative z-10 ${CONTAINER}`}>
         <div className="mx-auto max-w-3xl 3xl:max-w-5xl 4xl:max-w-6xl">
           <SectionHeading index="04" kicker={t.experience.kicker} title={t.experience.title} />

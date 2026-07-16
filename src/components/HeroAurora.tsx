@@ -11,16 +11,15 @@ type Blob = {
 };
 
 const BLOBS: Blob[] = [
-  { className: "left-[8%] top-[-10%]", size: "34rem", duration: 22, xRange: [0, 40, -10, 0], yRange: [0, 30, 10, 0] },
-  { className: "right-[2%] top-[10%]", size: "28rem", duration: 26, xRange: [0, -30, 20, 0], yRange: [0, -20, 25, 0] },
-  { className: "left-[30%] bottom-[-15%]", size: "30rem", duration: 30, xRange: [0, 25, -25, 0], yRange: [0, -15, 15, 0] },
+  { className: "left-[10%] top-[-12%]", size: "32rem", duration: 24, xRange: [0, 30, -10, 0], yRange: [0, 24, 10, 0] },
+  { className: "right-[4%] top-[8%]", size: "26rem", duration: 28, xRange: [0, -24, 16, 0], yRange: [0, -16, 20, 0] },
 ];
 
 /**
- * Generated atmosphere for the hero — soft, slow-drifting color blobs in the
- * scroll-cycling accent hue, masked to fade top and bottom (same technique
- * as a photo-background hero, minus the photo). Light/color, not objects —
- * deliberately not another "floating shapes" attempt.
+ * Fallback hero atmosphere for devices that don't get the 3D scene
+ * (HeroBackdrop decides): two soft, slow-drifting glows in the fixed accent
+ * hue, masked to fade top and bottom. Two, not more — restraint is the
+ * point of this direction.
  */
 export function HeroAurora() {
   const reduceMotion = useReducedMotion();

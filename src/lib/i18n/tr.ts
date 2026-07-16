@@ -66,28 +66,58 @@ export const tr: Content = {
       "> çalışma süresi: %99,98",
       "> tehdit: DÜŞÜK — kahve: KRİTİK",
     ],
+    statusCycle: [
+      "Yeni fırsatlara açık",
+      "durum: kahve %87",
+      "uptime: %99,98",
+      "mod: derin odak",
+      "vpn: aktif · iz yok",
+    ],
     scanLabel: "Kimlik taramasını başlat",
     verifiedLabel: "KİMLİK DOĞRULANDI",
     onlineLabel: "İST // ÇEVRİMİÇİ",
     scrollLabel: "KAYDIR",
   },
+  robot: {
+    label: "Robot asistan — tıkla, konuşsun",
+    dismissLabel: "Robotu gizle",
+    messages: [
+      "bip bop! hoş geldin ziyaretçi_",
+      "sistem taraması: her şey temiz ✓",
+      "maksut şu an kod yazıyor, ben nöbetteyim",
+      "beni tıkladın! +10 sevimlilik puanı",
+      "güvenlik duvarı: ben. şaka şaka… ya da değil",
+      "kahve seviyesi kritik, tekrar dolduruluyor…",
+      "bugün 0 saldırı engelledim. sakin gün.",
+      "psst… ⌘K ile komut paletini dene",
+    ],
+    sleepingMessage: "zzz… (fareyi oynat, uyanayım)",
+    hackMessage: "!! saldırı tespit edildi… şaka. sistem güvende ✓",
+  },
   about: {
     kicker: "Hakkımda",
     title: "Kim bu Muhammed Maksut?",
-    reelLead: "Renklerin sırrı: bu video, sitenin tamamını boyuyor.",
+    terminalLead: "Kısa bir tanışma — komut satırından.",
+    terminal: {
+      title: "maksut@istanbul: ~",
+      commands: [
+        { cmd: "whoami", out: "Muhammed Maksut Çakmaktaş — Bilgisayar Mühendisi" },
+        { cmd: "cat odak.txt", out: "güvenlik · yazılım geliştirme · sistem otomasyonu" },
+        { cmd: "ls yetenekler/", out: "nmap  metasploit  python  next.js  unity  sap-pi/po" },
+        { cmd: "durum --now", out: "● çalışmaya hazır · İstanbul · Ocak 2026 mezunu" },
+      ],
+      extras: [
+        { cmd: "sudo make coffee", out: "izin reddedildi: önce fincanını getir ☕" },
+        { cmd: "ping motivasyon", out: "64 bayt yanıt: süre=0.1ms — hep burada" },
+        { cmd: "rm -rf uyku/", out: "silindi. sınav haftası modu aktif." },
+        { cmd: "git push --force cesaret", out: "everything up-to-date ✓" },
+      ],
+      extraHint: "// tıkla — bir komut daha çalışsın",
+    },
     stats: [
       { value: 2026, suffix: "", label: "Mezuniyet yılı" },
       { value: 9, suffix: "", label: "Üretilen proje" },
       { value: 20, suffix: "+", label: "Kullanılan teknoloji" },
-    ],
-  },
-  reel: {
-    description: "Sitedeki bütün vurgu renkleri bu videodan örnekleniyor — hangi karedeysen arayüz o karenin rengine bürünür. Kaydırarak dene.",
-    captions: [
-      "sistem güvende",
-      "saldırı simülasyonu",
-      "savunma devrede",
-      "gün batımı — mesai bitti",
     ],
   },
   skills: {
@@ -306,6 +336,62 @@ export const tr: Content = {
       },
     ],
   },
+  classified: {
+    kicker: "Saha Kayıtları",
+    title: "Kayıt altında: teslim edilen işler",
+    description:
+      "Müşteri işleri ve kişisel ürünler — isimler, markalar ve içerikler gizlilik gereği kapalı. Künye yok, sonuç var.",
+    fileLabel: "DOSYA",
+    redactedLabel: "Proje adı gizlilik nedeniyle kapatıldı",
+    note: "> not: bu kayıtlardaki isim ve içerikler NDA/gizlilik kapsamında maskelendi. Detay yalnızca görüşmede.",
+    statuses: {
+      delivered: "Teslim edildi",
+      active: "Aktif kullanımda",
+      building: "Geliştiriliyor",
+    },
+    items: [
+      {
+        code: "KAYIT-01",
+        tag: "NDA",
+        type: "Kurumsal Tanıtım Sitesi",
+        blurb:
+          "Yaratıcı bir stüdyo için 3D sahneli, scroll-hikâyeli tanıtım sitesi. Marka ve içerik müşteriye ait — kapalı.",
+        year: "2026",
+        stack: ["Next.js", "TypeScript", "WebGL / R3F", "Tailwind", "Framer Motion"],
+        status: "delivered",
+      },
+      {
+        code: "KAYIT-02",
+        tag: "ÖZEL",
+        type: "İş Fırsatı Radarı",
+        blurb:
+          "Resmî API'ler üzerinden 7/24 ilan tarayan, puanlayan ve bildirim geçen kişisel otomasyon sistemi.",
+        year: "2026",
+        stack: ["Python", "REST API", "Bot", "Dashboard"],
+        status: "active",
+      },
+      {
+        code: "KAYIT-03",
+        tag: "ÖZEL",
+        type: "Yerel AI Atölye Uygulaması",
+        blurb:
+          "Yerel AI oturumlarıyla çalışan, API anahtarı gerektirmeyen içerik üretim atölyesi (web uygulaması).",
+        year: "2026",
+        stack: ["Node.js", "Express", "React"],
+        status: "building",
+      },
+      {
+        code: "KAYIT-04",
+        tag: "ÖZEL",
+        type: "Geliştirme Ortamı Optimizasyonu",
+        blurb:
+          "Ajan tabanlı geliştirme ortamında bağlam/maliyet analizi ve otomatik bakım düzeni kuran araç seti.",
+        year: "2026",
+        stack: ["CLI", "Otomasyon", "Veri Analizi"],
+        status: "active",
+      },
+    ],
+  },
   commandPalette: {
     openLabel: "Komut paletini aç",
     closeLabel: "Komut paletini kapat",
@@ -347,8 +433,8 @@ export const tr: Content = {
     visit: "Profili ziyaret et",
   },
   dividers: {
-    day: "> kahve.doldur() — devam_",
-    sunset: "> console.log(\"gün teslim edildi\")_",
+    day: "> kahve.doldur() — devam",
+    sunset: "> console.log(\"gün teslim edildi\")",
   },
   goals: {
     kicker: "Sırada Ne Var?",
@@ -383,5 +469,7 @@ export const tr: Content = {
   },
   footer: {
     rights: "Tüm hakları saklıdır.",
+    tagline: "İstanbul'dan, kahve ve terminal eşliğinde.",
+    backToTop: "Başa dön",
   },
 };

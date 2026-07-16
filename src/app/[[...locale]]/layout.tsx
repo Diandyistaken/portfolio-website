@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { Inter, JetBrains_Mono, Space_Grotesk } from "next/font/google";
+import { Geist, Geist_Mono } from "next/font/google";
 import { Analytics } from "@vercel/analytics/next";
 import "../globals.css";
 import { LanguageProvider } from "@/lib/i18n/LanguageProvider";
@@ -7,20 +7,16 @@ import { MotionProvider } from "@/components/MotionProvider";
 import { getDictionary, resolveLocale, localePath, supportedLocales } from "@/lib/i18n/route";
 import type { Content, Locale } from "@/lib/i18n/types";
 
-const inter = Inter({
-  variable: "--font-inter",
+// Quiet Machine direction: one thin, wide-tracking sans for both display and
+// body copy (no serif/geometric-sans pairing) — restraint is the point.
+const geist = Geist({
+  variable: "--font-geist",
   subsets: ["latin"],
   display: "swap",
 });
 
-const spaceGrotesk = Space_Grotesk({
-  variable: "--font-space-grotesk",
-  subsets: ["latin"],
-  display: "swap",
-});
-
-const jetbrainsMono = JetBrains_Mono({
-  variable: "--font-jetbrains-mono",
+const geistMono = Geist_Mono({
+  variable: "--font-geist-mono",
   subsets: ["latin"],
   display: "swap",
 });
@@ -146,7 +142,7 @@ export default async function RootLayout({
       lang={locale}
       data-scroll-behavior="smooth"
       suppressHydrationWarning
-      className={`${inter.variable} ${spaceGrotesk.variable} ${jetbrainsMono.variable} h-full antialiased`}
+      className={`${geist.variable} ${geistMono.variable} h-full antialiased`}
     >
       <head>
         {/* first video frame: paints the background before the JS bundle lands */}

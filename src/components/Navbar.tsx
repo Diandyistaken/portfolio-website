@@ -2,16 +2,73 @@
 
 import { useEffect, useId, useRef, useState } from "react";
 import dynamic from "next/dynamic";
-import { AnimatePresence, m } from "framer-motion";
+import { AnimatePresence, m, useReducedMotion } from "framer-motion";
 import { Menu, X } from "lucide-react";
 import { Logo } from "./Logo";
 import { LanguageSwitcher } from "./LanguageSwitcher";
 import { useLanguage } from "@/lib/i18n/LanguageProvider";
 import { CONTAINER } from "@/lib/layout";
+import { isPerfLite } from "@/lib/perfLite";
 
 // Overlay only opens on demand (⌘K or the trigger button): no reason to ship
 // it in the initial bundle.
 const CommandPalette = dynamic(() => import("./CommandPalette").then((mod) => mod.CommandPalette), { ssr: false });
+
+const SCRAMBLE_CHARS = "#$@%&<>/\\|=+*01";
+
+/** Nav link that scrambles into glyphs and resolves back on hover. */
+function ScrambleLink({ label, href, onNavigate }: { label: string; href: string; onNavigate: (href: string) => void }) {
+  const [display, setDisplay] = useState(label);
+  const timer = useRef<ReturnType<typeof setInterval> | null>(null);
+  const reducedMotion = useReducedMotion();
+
+  // Locale switch changes `label`: adjust state during render (React's
+  // sanctioned reset pattern) instead of via an effect.
+  const [previousLabel, setPreviousLabel] = useState(label);
+  if (previousLabel !== label) {
+    setPreviousLabel(label);
+    setDisplay(label);
+  }
+
+  useEffect(() => {
+    return () => {
+      if (timer.current) clearInterval(timer.current);
+    };
+  }, []);
+
+  const scramble = () => {
+    if (reducedMotion || isPerfLite() || timer.current) return;
+    let step = 0;
+    const total = 9;
+    timer.current = setInterval(() => {
+      step += 1;
+      const resolved = Math.floor((step / total) * label.length);
+      setDisplay(
+        Array.from(label, (char, i) =>
+          i < resolved || char === " "
+            ? char
+            : SCRAMBLE_CHARS[Math.floor(Math.random() * SCRAMBLE_CHARS.length)],
+        ).join(""),
+      );
+      if (step >= total) {
+        if (timer.current) clearInterval(timer.current);
+        timer.current = null;
+        setDisplay(label);
+      }
+    }, 32);
+  };
+
+  return (
+    <a
+      href={href}
+      onMouseEnter={scramble}
+      onClick={() => onNavigate(href)}
+      className="nav-link transition-colors hover:text-foreground"
+    >
+      {display}
+    </a>
+  );
+}
 
 export function Navbar() {
   const [open, setOpen] = useState(false);
@@ -20,6 +77,7 @@ export function Navbar() {
   // Only mount the palette (and fetch its chunk) once the visitor has
   // actually opened it once — keeps it out of the initial JS entirely.
   const [paletteEverOpened, setPaletteEverOpened] = useState(false);
+  const [activeSection, setActiveSection] = useState<string | null>(null);
   const paletteTriggerRef = useRef<HTMLButtonElement>(null);
   const { t } = useLanguage();
   const mobileMenuId = useId();
@@ -37,12 +95,45 @@ export function Navbar() {
     { label: t.nav.contact, href: "#contact" },
   ];
 
+  const activeLabel =
+    activeSection === "classified"
+      ? t.classified.kicker
+      : navLinks.find((link) => link.href === `#${activeSection}`)?.label ?? null;
+
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 12);
     onScroll();
     window.addEventListener("scroll", onScroll, { passive: true });
     return () => window.removeEventListener("scroll", onScroll);
   }, []);
+
+  // Section HUD: track which section owns the viewport so the logo's "MMÇ"
+  // tag can morph into a live "> bölüm" readout while scrolling.
+  useEffect(() => {
+    const sections = document.querySelectorAll<HTMLElement>("main section[id]");
+    if (sections.length === 0) return;
+    const observer = new IntersectionObserver(
+      (entries) => {
+        for (const entry of entries) {
+          if (entry.isIntersecting) setActiveSection(entry.target.id);
+        }
+      },
+      { rootMargin: "-35% 0px -55% 0px" },
+    );
+    sections.forEach((section) => observer.observe(section));
+    return () => observer.disconnect();
+  }, []);
+
+  // One-shot radar ripple on the target section after anchor navigation.
+  const pingSection = (href: string) => {
+    const target = document.querySelector<HTMLElement>(href);
+    if (!target) return;
+    target.classList.remove("radar-ping");
+    // restart the CSS animation even when re-pinging the same section
+    void target.offsetWidth;
+    target.classList.add("radar-ping");
+    window.setTimeout(() => target.classList.remove("radar-ping"), 1300);
+  };
 
   useEffect(() => {
     if (!open) return;
@@ -76,18 +167,34 @@ export function Navbar() {
       <nav className={`${CONTAINER} flex items-center justify-between px-6 py-4 sm:px-10 3xl:px-16`}>
         <a href="#top" aria-label="Home" className="flex items-center gap-2.5 text-foreground">
           <Logo className="h-7 w-7" />
-          <span className="font-mono text-xs tracking-[0.1em] text-muted">MMÇ</span>
+          {/* Morphs from the monogram into a live section readout once a
+              section owns the viewport — a tiny HUD, not just a logo. */}
+          <span className="font-mono relative h-4 min-w-24 text-xs tracking-[0.1em] text-muted">
+            <AnimatePresence mode="wait" initial={false}>
+              <m.span
+                key={scrolled && activeLabel ? activeLabel : "brand"}
+                initial={{ opacity: 0, y: 5 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0, y: -5 }}
+                transition={{ duration: 0.16 }}
+                className="absolute inset-0 whitespace-nowrap"
+              >
+                {scrolled && activeLabel ? (
+                  <>
+                    <span className="text-accent">&gt;</span> {activeLabel.toLocaleLowerCase("tr")}
+                  </>
+                ) : (
+                  "MMÇ"
+                )}
+              </m.span>
+            </AnimatePresence>
+          </span>
         </a>
 
         <ul className="hidden items-center gap-5 font-mono text-xs uppercase tracking-[0.08em] text-muted lg:flex">
           {navLinks.map((link) => (
             <li key={link.href}>
-              <a
-                href={link.href}
-                className="nav-link transition-colors hover:text-foreground"
-              >
-                {link.label}
-              </a>
+              <ScrambleLink label={link.label} href={link.href} onNavigate={pingSection} />
             </li>
           ))}
         </ul>
@@ -135,7 +242,10 @@ export function Navbar() {
                 <li key={link.href}>
                   <a
                     href={link.href}
-                    onClick={() => setOpen(false)}
+                    onClick={() => {
+                      setOpen(false);
+                      pingSection(link.href);
+                    }}
                     className="block rounded-md px-2 py-2.5 text-muted transition-colors hover:text-foreground"
                   >
                     {link.label}

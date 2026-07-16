@@ -90,20 +90,30 @@ export type Content = {
     cvOptionTr: string;
     cvOptionEn: string;
     ticker: string[];
+    statusCycle: string[];
     scanLabel: string;
     verifiedLabel: string;
     onlineLabel: string;
     scrollLabel: string;
   };
+  robot: {
+    label: string;
+    dismissLabel: string;
+    messages: string[];
+    sleepingMessage: string;
+    hackMessage: string;
+  };
   about: {
     kicker: string;
     title: string;
-    reelLead: string;
+    terminalLead: string;
+    terminal: {
+      title: string;
+      commands: { cmd: string; out: string }[];
+      extras: { cmd: string; out: string }[];
+      extraHint: string;
+    };
     stats: { value: number; suffix: string; label: string }[];
-  };
-  reel: {
-    description: string;
-    captions: [string, string, string, string];
   };
   skills: {
     kicker: string;
@@ -142,6 +152,24 @@ export type Content = {
       typing: string;
       time: string;
     };
+  };
+  classified: {
+    kicker: string;
+    title: string;
+    description: string;
+    fileLabel: string;
+    redactedLabel: string;
+    note: string;
+    statuses: { delivered: string; active: string; building: string };
+    items: {
+      code: string;
+      tag: string;
+      type: string;
+      blurb: string;
+      year: string;
+      stack: string[];
+      status: "delivered" | "active" | "building";
+    }[];
   };
   commandPalette: {
     openLabel: string;
@@ -196,5 +224,7 @@ export type Content = {
   };
   footer: {
     rights: string;
+    tagline: string;
+    backToTop: string;
   };
 };

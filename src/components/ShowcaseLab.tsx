@@ -22,10 +22,10 @@ function Pipeline({ labels }: { labels: string[] }) {
       ))}
       {labels.map((label, index) => (
         <m.g key={label} initial={reducedMotion ? false : { opacity: 0, y: 8 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true, amount: 0.5 }} transition={{ duration: 0.35, delay: index * 0.14 }}>
-          <rect x={25 + index * 170} y="68" width="105" height="74" rx="7" fill="rgb(10 14 22)" stroke="rgb(var(--accent-rgb))" strokeOpacity=".7" />
+          <rect x={25 + index * 170} y="68" width="105" height="74" rx="7" fill="rgb(var(--surface))" stroke="rgb(var(--accent-rgb))" strokeOpacity=".7" />
           <circle cx={48 + index * 170} cy="92" r="5" fill="rgb(var(--accent-rgb))" />
-          <text x={77 + index * 170} y="112" textAnchor="middle" fill="#e9eef6" fontSize="14" fontFamily="monospace">{label}</text>
-          <text x={77 + index * 170} y="132" textAnchor="middle" fill="#94a0b3" fontSize="9" fontFamily="monospace">0{index + 1}</text>
+          <text x={77 + index * 170} y="112" textAnchor="middle" fill="var(--foreground)" fontSize="14" fontFamily="monospace">{label}</text>
+          <text x={77 + index * 170} y="132" textAnchor="middle" fill="var(--muted)" fontSize="9" fontFamily="monospace">0{index + 1}</text>
         </m.g>
       ))}
     </svg>
@@ -69,7 +69,7 @@ export function ShowcaseLab() {
   return (
     <section id="showcase" className="px-6 py-24 sm:px-10 sm:py-28 3xl:px-16">
       <div className={CONTAINER}>
-        <SectionHeading index="07" kicker={t.showcase.kicker} title={t.showcase.title} description={t.showcase.description} />
+        <SectionHeading index="08" kicker={t.showcase.kicker} title={t.showcase.title} description={t.showcase.description} />
         <RevealGroup stagger={0.1} className="mt-14 grid gap-5 lg:grid-cols-2 3xl:gap-8">
           {t.showcase.items.map((item) => <ShowcaseCard key={item.id} item={item} pipeline={t.showcase.pipeline} onOpenScreenshot={setLightboxIndex} />)}
         </RevealGroup>

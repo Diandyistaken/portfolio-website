@@ -66,28 +66,58 @@ export const en: Content = {
       "> uptime 99.98%",
       "> threat: LOW — coffee: CRITICAL",
     ],
+    statusCycle: [
+      "Open to new opportunities",
+      "status: coffee 87%",
+      "uptime: 99.98%",
+      "mode: deep focus",
+      "vpn: on · no trace",
+    ],
     scanLabel: "Start ID scan",
     verifiedLabel: "ID VERIFIED",
     onlineLabel: "IST // ONLINE",
     scrollLabel: "SCROLL",
   },
+  robot: {
+    label: "Robot assistant — click to chat",
+    dismissLabel: "Hide robot",
+    messages: [
+      "beep boop! welcome, visitor_",
+      "system scan: all clear ✓",
+      "maksut is coding right now, I'm on watch",
+      "you clicked me! +10 cuteness points",
+      "firewall: me. kidding… or am I?",
+      "coffee level critical, refilling…",
+      "blocked 0 attacks today. quiet day.",
+      "psst… try the command palette with ⌘K",
+    ],
+    sleepingMessage: "zzz… (move the mouse to wake me)",
+    hackMessage: "!! intrusion detected… kidding. system secure ✓",
+  },
   about: {
     kicker: "About",
     title: "Who is Muhammed Maksut?",
-    reelLead: "The secret of the colors: this video colors the entire site.",
+    terminalLead: "A quick introduction — from the command line.",
+    terminal: {
+      title: "maksut@istanbul: ~",
+      commands: [
+        { cmd: "whoami", out: "Muhammed Maksut Çakmaktaş — Computer Engineer" },
+        { cmd: "cat focus.txt", out: "security · software development · system automation" },
+        { cmd: "ls skills/", out: "nmap  metasploit  python  next.js  unity  sap-pi/po" },
+        { cmd: "status --now", out: "● open to work · Istanbul · class of Jan 2026" },
+      ],
+      extras: [
+        { cmd: "sudo make coffee", out: "permission denied: bring your own cup first ☕" },
+        { cmd: "ping motivation", out: "64 bytes reply: time=0.1ms — always up" },
+        { cmd: "rm -rf sleep/", out: "removed. exam-week mode enabled." },
+        { cmd: "git push --force courage", out: "everything up-to-date ✓" },
+      ],
+      extraHint: "// click — run one more command",
+    },
     stats: [
       { value: 2026, suffix: "", label: "Graduation year" },
       { value: 9, suffix: "", label: "Projects built" },
       { value: 20, suffix: "+", label: "Technologies used" },
-    ],
-  },
-  reel: {
-    description: "Every accent color on the site is sampled from this video — the interface takes on the color of the current frame. Scroll to try it.",
-    captions: [
-      "system secure",
-      "attack simulation",
-      "defense active",
-      "sunset — workday over",
     ],
   },
   skills: {
@@ -304,6 +334,62 @@ export const en: Content = {
       },
     ],
   },
+  classified: {
+    kicker: "Field Records",
+    title: "On the record: delivered work",
+    description:
+      "Client work and private products — names, brands and contents stay sealed for confidentiality. No credits, just outcomes.",
+    fileLabel: "FILE",
+    redactedLabel: "Project name redacted for confidentiality",
+    note: "> note: names and contents in these records are masked under NDA/privacy. Details only in an interview.",
+    statuses: {
+      delivered: "Delivered",
+      active: "In active use",
+      building: "In development",
+    },
+    items: [
+      {
+        code: "RECORD-01",
+        tag: "NDA",
+        type: "Corporate Showcase Website",
+        blurb:
+          "A scroll-story showcase site with a 3D hero for a creative studio. Brand and content belong to the client — sealed.",
+        year: "2026",
+        stack: ["Next.js", "TypeScript", "WebGL / R3F", "Tailwind", "Framer Motion"],
+        status: "delivered",
+      },
+      {
+        code: "RECORD-02",
+        tag: "PRIVATE",
+        type: "Job Opportunity Radar",
+        blurb:
+          "A personal automation system that scans, scores and notifies about listings 24/7 via official APIs.",
+        year: "2026",
+        stack: ["Python", "REST API", "Bot", "Dashboard"],
+        status: "active",
+      },
+      {
+        code: "RECORD-03",
+        tag: "PRIVATE",
+        type: "Local AI Workshop App",
+        blurb:
+          "A content production workshop (web app) running on local AI sessions — no API keys required.",
+        year: "2026",
+        stack: ["Node.js", "Express", "React"],
+        status: "building",
+      },
+      {
+        code: "RECORD-04",
+        tag: "PRIVATE",
+        type: "Dev Environment Optimization",
+        blurb:
+          "A toolset that audits context/cost in an agent-based dev environment and sets up automated upkeep.",
+        year: "2026",
+        stack: ["CLI", "Automation", "Data Analysis"],
+        status: "active",
+      },
+    ],
+  },
   commandPalette: {
     openLabel: "Open command palette",
     closeLabel: "Close command palette",
@@ -345,8 +431,8 @@ export const en: Content = {
     visit: "Visit profile",
   },
   dividers: {
-    day: "> coffee.refill() — resuming_",
-    sunset: "> console.log(\"day shipped\")_",
+    day: "> coffee.refill() — resuming",
+    sunset: "> console.log(\"day shipped\")",
   },
   goals: {
     kicker: "What's Next?",
@@ -381,5 +467,7 @@ export const en: Content = {
   },
   footer: {
     rights: "All rights reserved.",
+    tagline: "From Istanbul, fueled by coffee and terminal windows.",
+    backToTop: "Back to top",
   },
 };

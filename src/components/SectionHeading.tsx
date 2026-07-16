@@ -1,13 +1,7 @@
 "use client";
 
-import { createContext, useContext, type ReactNode } from "react";
 import { Reveal } from "./Reveal";
-
-const SectionIndexContext = createContext<string | null>(null);
-
-export function SectionIndexOverride({ index, children }: { index: string; children: ReactNode }) {
-  return <SectionIndexContext.Provider value={index}>{children}</SectionIndexContext.Provider>;
-}
+import { DecryptText } from "./DecryptText";
 
 export function SectionHeading({
   index,
@@ -20,14 +14,14 @@ export function SectionHeading({
   title: string;
   description?: string;
 }) {
-  const indexOverride = useContext(SectionIndexContext);
-
   return (
     <Reveal>
       <div className="flex min-w-0 items-center gap-3 sm:gap-4">
-        <span className="kicker shrink-0">
-          [ {indexOverride ?? index} ] // {kicker}
-        </span>
+        <DecryptText
+          text={`[ ${index} ] // ${kicker}`}
+          className="kicker shrink-0"
+          delay={0.1}
+        />
         <span
           className="h-px flex-1"
           style={{
@@ -37,7 +31,7 @@ export function SectionHeading({
           aria-hidden="true"
         />
       </div>
-      <h2 className="font-display glow-text mt-4 max-w-2xl text-section font-semibold tracking-tight 3xl:max-w-4xl">
+      <h2 className="font-display glow-text mt-4 max-w-2xl text-section font-medium tracking-tight 3xl:max-w-4xl">
         {title}
       </h2>
       {description && (

@@ -5,10 +5,11 @@ import Image from "next/image";
 import { AnimatePresence, m, useReducedMotion } from "framer-motion";
 import { ArrowRight, ChevronDown, MapPin, ShieldCheck, Sparkles } from "lucide-react";
 import { Reveal } from "./Reveal";
-import { HeroAurora } from "./HeroAurora";
+import { HeroBackdrop } from "./HeroBackdrop";
 import { CvDownload } from "./CvDownload";
 import { FollowMenu } from "./FollowMenu";
 import { DecryptText } from "./DecryptText";
+import { MagneticButton } from "./MagneticButton";
 import { useLanguage } from "@/lib/i18n/LanguageProvider";
 import { CONTAINER } from "@/lib/layout";
 import { goalsMeta } from "@/lib/data";
@@ -25,11 +26,6 @@ const subscribeToRootClass = (onStoreChange: () => void) => {
 const getPerfLiteSnapshot = () =>
   document.documentElement.classList.contains("perf-lite");
 
-const fadeUp = {
-  hidden: { opacity: 0, y: 16 },
-  visible: { opacity: 1, y: 0, transition: { duration: 0.6, ease: [0.22, 1, 0.36, 1] } },
-};
-
 export function Hero() {
   const { t } = useLanguage();
   const reduceMotion = useReducedMotion();
@@ -37,6 +33,7 @@ export function Hero() {
   const [scanRun, setScanRun] = useState(0);
   const [verified, setVerified] = useState(false);
   const [tickerIndex, setTickerIndex] = useState(0);
+  const [statusIndex, setStatusIndex] = useState(0);
   const perfLite = useSyncExternalStore(
     subscribeToRootClass,
     getPerfLiteSnapshot,
@@ -72,20 +69,35 @@ export function Hero() {
       id="top"
       className="relative isolate flex min-h-screen min-h-[100svh] items-center overflow-hidden px-6 pt-28 pb-24 sm:px-10 3xl:px-16 3xl:pt-32 3xl:pb-28"
     >
-      <HeroAurora />
+      <HeroBackdrop />
 
-      <div className={`${CONTAINER} relative z-10 grid grid-cols-1 items-center gap-14 lg:grid-cols-[1.1fr_0.9fr] 3xl:gap-20`}>
+      <div className={`${CONTAINER} relative z-10 grid grid-cols-1 items-center gap-16 lg:grid-cols-[1.1fr_0.9fr] 3xl:gap-24`}>
         <div>
           <Reveal>
-            <div className="surface-hover surface inline-flex items-center gap-2 rounded-full px-3.5 py-1.5">
+            {/* Status badge doubles as a toy: each click cycles a new
+                tongue-in-cheek status line. */}
+            <button
+              type="button"
+              onClick={() => setStatusIndex((index) => (index + 1) % t.hero.statusCycle.length)}
+              className="surface-hover surface tap-pop inline-flex cursor-pointer items-center gap-2 rounded-full px-3.5 py-1.5"
+            >
               <span className="relative flex h-2 w-2">
                 <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-accent opacity-60" />
                 <span className="relative inline-flex h-2 w-2 rounded-full bg-accent" />
               </span>
-              <span className="font-mono text-[0.68rem] tracking-[0.08em] text-muted">
-                {t.hero.badge}
-              </span>
-            </div>
+              <AnimatePresence mode="wait" initial={false}>
+                <m.span
+                  key={statusIndex}
+                  initial={reduceMotion ? false : { opacity: 0, y: 6 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  exit={reduceMotion ? undefined : { opacity: 0, y: -6 }}
+                  transition={{ duration: 0.18 }}
+                  className="font-mono text-[0.68rem] tracking-[0.08em] text-muted"
+                >
+                  {statusIndex === 0 ? t.hero.badge : t.hero.statusCycle[statusIndex]}
+                </m.span>
+              </AnimatePresence>
+            </button>
           </Reveal>
 
           <Reveal delay={0.08}>
@@ -101,7 +113,7 @@ export function Hero() {
             initial={reduceMotion ? false : "hidden"}
             animate="visible"
             variants={{ visible: { transition: { staggerChildren: 0.06, delayChildren: 0.14 } } }}
-            className="font-display mt-4 flex flex-wrap gap-x-[0.22em] text-hero font-semibold leading-[1.05] tracking-tight text-foreground"
+            className="font-display mt-6 flex flex-wrap gap-x-[0.22em] text-hero font-medium leading-[1.02] tracking-tight text-foreground"
           >
             {t.personalInfo.name.split(" ").map((word, index) => (
               <span key={`${word}-${index}`} className="inline-block overflow-hidden pb-[0.08em]">
@@ -169,22 +181,26 @@ export function Hero() {
 
           <Reveal delay={0.34}>
             <div className="mt-9 flex flex-wrap items-center gap-4">
-              <a
-                href="#contact"
-                className="tap-pop group flex items-center gap-2 rounded-full bg-foreground px-6 py-3 text-sm font-medium text-background transition-[transform,box-shadow] hover:scale-[1.02] hover:shadow-[0_0_32px_rgb(var(--accent-rgb)/0.3)]"
-              >
-                {t.hero.ctaPrimary}
-                <ArrowRight
-                  size={16}
-                  className="transition-transform duration-200 group-hover:translate-x-1"
-                />
-              </a>
-              <a
-                href="#projects"
-                className="tap-pop surface-hover rounded-full border border-foreground/12 px-6 py-3 text-sm font-medium text-foreground transition-colors hover:border-accent/50 hover:text-accent"
-              >
-                {t.hero.ctaSecondary}
-              </a>
+              <MagneticButton>
+                <a
+                  href="#contact"
+                  className="tap-pop group flex items-center gap-2 rounded-full bg-foreground px-6 py-3 text-sm font-medium text-background transition-[transform,box-shadow] hover:scale-[1.02] hover:shadow-[0_0_32px_rgb(var(--accent-rgb)/0.3)]"
+                >
+                  {t.hero.ctaPrimary}
+                  <ArrowRight
+                    size={16}
+                    className="transition-transform duration-200 group-hover:translate-x-1"
+                  />
+                </a>
+              </MagneticButton>
+              <MagneticButton>
+                <a
+                  href="#projects"
+                  className="tap-pop surface-hover block rounded-full border border-foreground/12 px-6 py-3 text-sm font-medium text-foreground transition-colors hover:border-accent/50 hover:text-accent"
+                >
+                  {t.hero.ctaSecondary}
+                </a>
+              </MagneticButton>
             </div>
           </Reveal>
 

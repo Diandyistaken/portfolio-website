@@ -2,22 +2,21 @@
 
 @custom-variant dark (&:where(.dark, .dark *));
 
-/* Dark theme (redesign v3): airy night-blue base — deliberately NOT
-   near-black, per repeated feedback that flat black reads as oppressive.
-   --accent / --accent-rgb are driven live by AccentCycler as the visitor
-   scrolls (green → red → blue → gold) — the values below are just the
-   pre-hydration fallback (phase 0 / green). */
+/* "Quiet Machine" direction: near-black base, one cool accent, restraint
+   everywhere else. Motion carries the site, not color — see HANDOFF.md for
+   the full rationale behind the v8 ground-up redesign. */
 :root,
 .dark {
-  --background: #11213f;
-  --background-rgb: 17 33 63;
-  --foreground: #eef2fb;
-  --surface: 30 45 75;
-  --surface-border: 238 242 251;
-  --accent: rgb(79 224 141);
-  --accent-rgb: 79 224 141;
-  --muted: #9aa5bf;
-  --focus-color: #4fe08d;
+  --background: #050608;
+  --background-rgb: 5 6 8;
+  --foreground: #f4f6fa;
+  --foreground-rgb: 244 246 250;
+  --surface: 13 15 19;
+  --surface-border: 244 246 250;
+  --accent: #5ec8ff;
+  --accent-rgb: 94 200 255;
+  --muted: #8993a3;
+  --focus-color: #5ec8ff;
 }
 
 /* Breakpoints and fluid type live in a plain @theme block: `@theme inline`
@@ -26,8 +25,8 @@
 @theme {
   --breakpoint-3xl: 120rem;
   --breakpoint-4xl: 150rem;
-  --text-hero: clamp(2.75rem, 1rem + 4.5vw, 7.5rem);
-  --text-section: clamp(1.875rem, 1.625rem + 0.625vw, 3.75rem);
+  --text-hero: clamp(3rem, 0.5rem + 7vw, 9.5rem);
+  --text-section: clamp(2rem, 1.5rem + 1.5vw, 4.5rem);
 }
 
 @theme inline {
@@ -35,9 +34,9 @@
   --color-foreground: var(--foreground);
   --color-accent: var(--accent);
   --color-muted: var(--muted);
-  --font-sans: var(--font-inter);
-  --font-display: var(--font-space-grotesk);
-  --font-mono: var(--font-jetbrains-mono);
+  --font-sans: var(--font-geist);
+  --font-display: var(--font-geist);
+  --font-mono: var(--font-geist-mono);
 }
 
 * {
@@ -101,7 +100,7 @@ body {
 .intro-loader__track {
   height: 1px;
   overflow: hidden;
-  background: rgb(233 238 246 / 0.18);
+  background: rgb(var(--foreground-rgb) / 0.18);
 }
 
 .intro-loader__track span {
@@ -109,7 +108,7 @@ body {
   width: 100%;
   height: 100%;
   background: var(--accent);
-  box-shadow: 0 0 12px rgb(var(--accent-rgb) / 0.8);
+  box-shadow: 0 0 12px rgb(var(--accent-rgb) / 0.6);
   transform-origin: left;
 }
 
@@ -147,26 +146,26 @@ html.custom-cursor [role="button"] {
 }
 
 .custom-cursor__dot {
-  width: 6px;
-  height: 6px;
+  width: 5px;
+  height: 5px;
   background: var(--foreground);
   mix-blend-mode: difference;
 }
 
 .custom-cursor__ring {
-  width: 30px;
-  height: 30px;
-  border: 1px solid rgb(233 238 246 / 0.75);
+  width: 32px;
+  height: 32px;
+  border: 1px solid rgb(var(--foreground-rgb) / 0.6);
   mix-blend-mode: difference;
   transition:
-    width 0.2s ease,
-    height 0.2s ease,
-    border-color 0.2s ease;
+    width 0.25s cubic-bezier(0.16, 1, 0.3, 1),
+    height 0.25s cubic-bezier(0.16, 1, 0.3, 1),
+    border-color 0.25s ease;
 }
 
 .custom-cursor__ring--interactive {
-  width: 48px;
-  height: 48px;
+  width: 56px;
+  height: 56px;
   border-color: var(--accent);
   mix-blend-mode: normal;
 }
@@ -179,45 +178,34 @@ html.custom-cursor [role="button"] {
   font-family: var(--font-mono);
 }
 
-/* Glass panel floating over the video; accent glow answers the current phase. */
+/* Minimal glass panel: hairline border, near-opaque fill. No heavy blur —
+   Quiet Machine reads as flat, precise surfaces, not frosted glass. */
 .surface {
-  background: linear-gradient(
-    165deg,
-    rgb(var(--surface) / 0.78),
-    rgb(var(--surface) / 0.55)
-  );
-  border: 1px solid rgb(255 255 255 / 0.09);
-  /* only the standard property: Lightning CSS adds the -webkit- prefix
-     itself; hand-writing both makes it collapse to prefix-only output */
+  background: rgb(var(--surface) / 0.72);
+  border: 1px solid rgb(var(--surface-border) / 0.08);
   backdrop-filter: blur(12px);
   box-shadow: 0 10px 36px rgb(0 0 0 / 0.4);
 }
 
 /* Low-end / small-screen fast path: backdrop-filter over an animating canvas
    is the single most expensive effect on weak GPUs, so phones and perf-lite
-   devices trade the glass blur for a more opaque panel. Same for the
-   decorative glows and the scanline sweep. */
+   devices trade the glass blur for a more opaque panel. */
 @media (max-width: 767px) {
   .surface {
     backdrop-filter: none;
-    background: rgb(var(--surface) / 0.9);
+    background: rgb(var(--surface) / 0.92);
   }
 }
 
 .perf-lite .surface {
   backdrop-filter: none;
-  background: rgb(var(--surface) / 0.9);
+  background: rgb(var(--surface) / 0.92);
   box-shadow: none;
 }
 
 .perf-lite .glow-text,
 .perf-lite .kicker {
   text-shadow: none;
-}
-
-.perf-lite .scanline::after,
-.perf-lite .hud-dot {
-  animation: none;
 }
 
 .perf-lite .surface-hover:hover {
@@ -227,103 +215,28 @@ html.custom-cursor [role="button"] {
 
 .surface-hover {
   transition:
-    border-color 0.25s ease,
-    box-shadow 0.25s ease,
-    transform 0.25s ease;
+    border-color 0.3s cubic-bezier(0.16, 1, 0.3, 1),
+    box-shadow 0.3s cubic-bezier(0.16, 1, 0.3, 1),
+    transform 0.3s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
 .surface-hover:hover {
-  border-color: rgb(var(--accent-rgb) / 0.5);
+  border-color: rgb(var(--accent-rgb) / 0.4);
   box-shadow:
-    0 10px 44px rgb(0 0 0 / 0.45),
-    0 0 32px rgb(var(--accent-rgb) / 0.14);
+    0 16px 48px rgb(0 0 0 / 0.5),
+    0 0 28px rgb(var(--accent-rgb) / 0.1);
   transform: translateY(-3px);
 }
 
 .kicker {
   font-family: var(--font-mono);
   font-size: 0.75rem;
-  letter-spacing: 0.08em;
+  letter-spacing: 0.14em;
   color: var(--accent);
-  text-shadow: 0 0 20px rgb(var(--accent-rgb) / 0.55);
 }
 
 .glow-text {
-  text-shadow:
-    0 0 30px rgb(var(--accent-rgb) / 0.35),
-    0 2px 24px rgb(0 0 0 / 0.6);
-}
-
-/* HUD corner brackets for framed media (hero portrait, photos) */
-.hud-corners {
-  position: relative;
-}
-
-.hud-corners::before,
-.hud-corners::after {
-  content: "";
-  position: absolute;
-  width: 22px;
-  height: 22px;
-  border: 2px solid rgb(var(--accent-rgb) / 0.9);
-  filter: drop-shadow(0 0 6px rgb(var(--accent-rgb) / 0.6));
-  pointer-events: none;
-  z-index: 2;
-}
-
-.hud-corners::before {
-  top: -2px;
-  left: -2px;
-  border-right: none;
-  border-bottom: none;
-}
-
-.hud-corners::after {
-  bottom: -2px;
-  right: -2px;
-  border-left: none;
-  border-top: none;
-}
-
-@keyframes hud-pulse {
-  0%,
-  100% {
-    opacity: 1;
-  }
-  50% {
-    opacity: 0.35;
-  }
-}
-
-.hud-dot {
-  animation: hud-pulse 1.6s ease-in-out infinite;
-}
-
-@keyframes scanline {
-  0% {
-    top: -10%;
-  }
-  100% {
-    top: 110%;
-  }
-}
-
-.scanline::after {
-  content: "";
-  position: absolute;
-  left: 0;
-  right: 0;
-  height: 18%;
-  top: -10%;
-  background: linear-gradient(
-    to bottom,
-    transparent,
-    rgb(var(--accent-rgb) / 0.14),
-    transparent
-  );
-  animation: scanline 4.5s linear infinite;
-  pointer-events: none;
-  z-index: 1;
+  text-shadow: 0 2px 30px rgb(0 0 0 / 0.6);
 }
 
 /* tactile press feedback used across all clickable chrome */
@@ -332,7 +245,7 @@ html.custom-cursor [role="button"] {
 }
 
 .tap-pop:active {
-  transform: scale(0.95);
+  transform: scale(0.96);
 }
 
 /* navbar links: accent underline sweeps in from the left */
@@ -350,7 +263,7 @@ html.custom-cursor [role="button"] {
   background: var(--accent);
   transform: scaleX(0);
   transform-origin: left;
-  transition: transform 0.25s ease;
+  transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
 .nav-link:hover::after {
@@ -372,16 +285,208 @@ html.custom-cursor [role="button"] {
   inset: 0;
   pointer-events: none;
   opacity: 0;
-  background: radial-gradient(360px circle at var(--spotlight-x, 50%) var(--spotlight-y, 50%), rgb(var(--accent-rgb) / 0.12), transparent 68%);
+  background: radial-gradient(360px circle at var(--spotlight-x, 50%) var(--spotlight-y, 50%), rgb(var(--accent-rgb) / 0.1), transparent 68%);
   transition: opacity 0.25s ease;
 }
 
 .spotlight-card:hover .spotlight-overlay { opacity: 1; }
 
+/* Section-break terminal interstitial: a framed command chip floating over a
+   faint dot-grid that fades at the edges. Calm by default — the accent
+   hairlines and blinking cursor carry just enough life so the band reads as
+   an intentional breather, not as empty black space. */
+.divider-grid {
+  background-image: radial-gradient(rgb(var(--foreground-rgb) / 0.05) 1px, transparent 1px);
+  background-size: 24px 24px;
+  -webkit-mask-image: radial-gradient(56% 130% at 50% 50%, #000 0%, transparent 72%);
+  mask-image: radial-gradient(56% 130% at 50% 50%, #000 0%, transparent 72%);
+}
+
+/* Terminal panel chrome (About + dividers): mono window with a hairline top
+   glow. Kept flat to match the Quiet Machine surfaces. */
+.terminal-panel {
+  background:
+    linear-gradient(180deg, rgb(var(--accent-rgb) / 0.04), transparent 18%),
+    rgb(var(--surface) / 0.72);
+}
+
+.perf-lite .terminal-panel {
+  background: rgb(var(--surface) / 0.92);
+}
+
+/* Classified-file redaction bar: censored-name look with a faint diagonal
+   hatch and a slow shimmer sweep, like light catching censor tape. */
+.redacted-bar {
+  position: relative;
+  overflow: hidden;
+  background:
+    repeating-linear-gradient(
+      -45deg,
+      rgb(var(--foreground-rgb) / 0.16) 0 6px,
+      rgb(var(--foreground-rgb) / 0.09) 6px 12px
+    );
+}
+
+.redacted-bar::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  transform: translateX(-120%);
+  background: linear-gradient(
+    100deg,
+    transparent 20%,
+    rgb(var(--accent-rgb) / 0.22) 50%,
+    transparent 80%
+  );
+  animation: redacted-sheen 4.5s ease-in-out infinite;
+}
+
+@keyframes redacted-sheen {
+  0%, 55% { transform: translateX(-120%); }
+  85%, 100% { transform: translateX(120%); }
+}
+
+.perf-lite .redacted-bar::after {
+  animation: none;
+}
+
+/* "Target acquired" corner brackets: two accent L-corners sweep in on hover
+   (top-left + bottom-right pseudo-elements). */
+.target-frame::before,
+.target-frame::after {
+  content: "";
+  position: absolute;
+  width: 18px;
+  height: 18px;
+  opacity: 0;
+  transition: opacity 0.25s ease, transform 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+  pointer-events: none;
+  z-index: 5;
+}
+
+.target-frame::before {
+  top: 8px;
+  left: 8px;
+  border-top: 2px solid rgb(var(--accent-rgb) / 0.8);
+  border-left: 2px solid rgb(var(--accent-rgb) / 0.8);
+  transform: translate(6px, 6px);
+}
+
+.target-frame::after {
+  bottom: 8px;
+  right: 8px;
+  border-bottom: 2px solid rgb(var(--accent-rgb) / 0.8);
+  border-right: 2px solid rgb(var(--accent-rgb) / 0.8);
+  transform: translate(-6px, -6px);
+}
+
+.target-frame:hover::before,
+.target-frame:hover::after {
+  opacity: 1;
+  transform: translate(0, 0);
+}
+
+.perf-lite .target-frame::before,
+.perf-lite .target-frame::after {
+  display: none;
+}
+
+/* One-shot radar ripple dropped on a section heading after anchor-nav —
+   an expanding accent ring that fades out. */
+.radar-ping {
+  position: relative;
+}
+
+.radar-ping::before {
+  content: "";
+  position: absolute;
+  top: 0.4rem;
+  left: 0;
+  width: 14px;
+  height: 14px;
+  border-radius: 999px;
+  border: 2px solid var(--accent);
+  animation: radar-ping-ring 1.1s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+  pointer-events: none;
+}
+
+@keyframes radar-ping-ring {
+  0% { opacity: 0.9; transform: scale(0.4); }
+  100% { opacity: 0; transform: scale(5); }
+}
+
+/* Footer heartbeat: a traveling glow runs along the footer's top hairline
+   every few seconds — the site has a pulse. */
+.footer-ecg {
+  background:
+    linear-gradient(
+      to right,
+      transparent,
+      rgb(var(--accent-rgb) / 0.9) 12%,
+      transparent 24%
+    ),
+    linear-gradient(to right, transparent, rgb(var(--accent-rgb) / 0.35), transparent);
+  background-size: 220% 100%, 100% 100%;
+  background-repeat: no-repeat;
+  animation: footer-ecg-sweep 6s ease-in-out infinite;
+}
+
+@keyframes footer-ecg-sweep {
+  0%, 55% { background-position: -120% 0, 0 0; }
+  90%, 100% { background-position: 220% 0, 0 0; }
+}
+
+.perf-lite .footer-ecg {
+  animation: none;
+  background: linear-gradient(to right, transparent, rgb(var(--accent-rgb) / 0.5), transparent);
+  background-size: 100% 100%;
+}
+
+/* Robot buddy: blink + antenna pulse + gentle idle hover. Head tilt itself
+   is JS-driven (springs toward the cursor). */
+@keyframes robot-blink {
+  0%, 92%, 100% { transform: scaleY(1); }
+  95%, 97% { transform: scaleY(0.08); }
+}
+
+.robot-eye {
+  animation: robot-blink 4.6s ease-in-out infinite;
+  transform-origin: center;
+}
+
+@keyframes robot-antenna {
+  0%, 100% { opacity: 0.5; box-shadow: 0 0 4px rgb(var(--accent-rgb) / 0.4); }
+  50% { opacity: 1; box-shadow: 0 0 10px rgb(var(--accent-rgb) / 0.9); }
+}
+
+.robot-antenna-tip {
+  animation: robot-antenna 2.4s ease-in-out infinite;
+}
+
+@keyframes robot-bob {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-3px); }
+}
+
+.robot-body {
+  animation: robot-bob 3.8s ease-in-out infinite;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .robot-eye,
+  .robot-antenna-tip,
+  .robot-body,
+  .redacted-bar::after,
+  .footer-ecg,
+  .radar-ping::before {
+    animation: none !important;
+  }
+}
+
 @keyframes name-marquee { to { transform: translateX(-50%); } }
 .name-marquee-track {
   color: transparent;
-  -webkit-text-stroke: 1px rgb(233 238 246 / 0.28);
+  -webkit-text-stroke: 1px rgb(var(--foreground-rgb) / 0.22);
   animation: name-marquee 42s linear infinite;
 }
 
@@ -427,7 +532,58 @@ html.custom-cursor [role="button"] {
   animation: none;
 }
 
-/* one-shot identity scan sweep over the hero portrait */
+/* Slow, GPU-cheap breathing motion for SectionBackdrop artwork — transform +
+   opacity only, so sections don't read as static line art pasted on black. */
+@keyframes backdrop-drift {
+  0%,
+  100% {
+    transform: translate3d(0, 0, 0) scale(1);
+    opacity: 0.85;
+  }
+  50% {
+    transform: translate3d(0, -1.5%, 0) scale(1.025);
+    opacity: 1;
+  }
+}
+
+.backdrop-drift {
+  animation: backdrop-drift 16s ease-in-out infinite;
+}
+
+.perf-lite .backdrop-drift {
+  animation: none;
+}
+
+/* Hero photo card interactions: a slow accent sweep on hover, and a one-shot
+   "verification" sweep on click. Single-tone (ice-blue), not the old
+   multi-color HUD scan — restrained enough to fit Quiet Machine. */
+@keyframes scanline {
+  0% {
+    top: -10%;
+  }
+  100% {
+    top: 110%;
+  }
+}
+
+.scanline::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  right: 0;
+  height: 18%;
+  top: -10%;
+  background: linear-gradient(
+    to bottom,
+    transparent,
+    rgb(var(--accent-rgb) / 0.12),
+    transparent
+  );
+  animation: scanline 5s linear infinite;
+  pointer-events: none;
+  z-index: 1;
+}
+
 @keyframes id-scan {
   0% {
     top: -12%;
@@ -452,12 +608,16 @@ html.custom-cursor [role="button"] {
   background: linear-gradient(
     to bottom,
     transparent,
-    rgb(var(--accent-rgb) / 0.5),
+    rgb(var(--accent-rgb) / 0.45),
     transparent
   );
   animation: id-scan 0.7s ease-in-out forwards;
   pointer-events: none;
   z-index: 3;
+}
+
+.perf-lite .scanline::after {
+  animation: none;
 }
 
 ::selection {
@@ -479,7 +639,7 @@ html.custom-cursor [role="button"] {
 }
 
 ::-webkit-scrollbar-thumb {
-  background: rgb(var(--accent-rgb) / 0.35);
+  background: rgb(var(--accent-rgb) / 0.3);
   border-radius: 999px;
 }
 
@@ -492,7 +652,8 @@ html.custom-cursor [role="button"] {
   .spotlight-overlay { display: none; }
 }
 
-/* Cursor-tracked holographic portrait layer. */
+/* Cursor-tracked sheen layer: a single cool-white pass, not a rainbow
+   holographic effect — restrained to match the accent-light palette. */
 .holo-card {
   --holo-x: 50%;
   --holo-y: 50%;
@@ -508,33 +669,17 @@ html.custom-cursor [role="button"] {
   border-radius: 0.5rem;
   pointer-events: none;
   opacity: 0;
-  background:
-    radial-gradient(
-      circle at var(--holo-x) var(--holo-y),
-      rgb(255 255 255 / 0.28),
-      transparent 28%
-    ),
-    linear-gradient(
-      118deg,
-      transparent 20%,
-      rgb(90 255 216 / 0.22) 38%,
-      rgb(124 112 255 / 0.2) 51%,
-      rgb(255 83 195 / 0.18) 62%,
-      transparent 80%
-    );
-  background-position:
-    center,
-    var(--holo-x) var(--holo-y);
-  background-size:
-    auto,
-    180% 180%;
+  background: radial-gradient(
+    circle at var(--holo-x) var(--holo-y),
+    rgb(var(--accent-rgb) / 0.22),
+    transparent 45%
+  );
   mix-blend-mode: screen;
-  filter: saturate(1.35) hue-rotate(12deg);
-  transition: opacity 0.25s ease;
+  transition: opacity 0.3s ease;
 }
 
 .holo-card[data-hovered="true"] .holo-glare {
-  opacity: 0.72;
+  opacity: 1;
 }
 
 @keyframes ops-cursor-blink {

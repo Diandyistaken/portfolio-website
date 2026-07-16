@@ -15,10 +15,9 @@ import { TechMarquee } from "@/components/TechMarquee";
 import { ScrollProgress } from "@/components/ScrollProgress";
 import { NameMarquee } from "@/components/NameMarquee";
 import { IntroLoader } from "@/components/IntroLoader";
-import { ParallaxQuote } from "@/components/ParallaxDivider";
 import { GenerativeDivider } from "@/components/GenerativeDivider";
+import { ClassifiedWork } from "@/components/ClassifiedWork";
 import { ClientChrome } from "@/components/ClientChrome";
-import { AccentCycler } from "@/components/AccentCycler";
 
 // Real content below the fold: keep SSR (SEO), just split out of the main chunk.
 const ShowcaseLab = dynamic(() => import("@/components/ShowcaseLab").then((mod) => mod.ShowcaseLab));
@@ -29,7 +28,6 @@ export default function Home() {
     <>
       <IntroLoader />
       <ClientChrome />
-      <AccentCycler />
       <ScrollProgress />
       <SkipLink />
       <Navbar />
@@ -39,19 +37,16 @@ export default function Home() {
           <TechMarquee />
           <About />
           <Skills />
-          <GenerativeDivider>
-            <ParallaxQuote id="day" />
-          </GenerativeDivider>
+          <GenerativeDivider quoteId="day" />
           <Services />
           <Experience />
           <Education />
           <Projects />
+          <ClassifiedWork />
           <ShowcaseLab />
           <FreelanceHub />
           <Goals />
-          <GenerativeDivider>
-            <ParallaxQuote id="sunset" />
-          </GenerativeDivider>
+          <GenerativeDivider quoteId="sunset" />
           <Contact />
         </main>
         <NameMarquee />

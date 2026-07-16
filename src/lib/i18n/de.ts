@@ -66,28 +66,58 @@ export const de: Content = {
       "> Verfügbarkeit: 99,98 %",
       "> Bedrohung: NIEDRIG — Kaffee: KRITISCH",
     ],
+    statusCycle: [
+      "Offen für neue Chancen",
+      "status: kaffee 87%",
+      "uptime: 99,98%",
+      "modus: tiefe konzentration",
+      "vpn: an · keine spur",
+    ],
     scanLabel: "ID-Scan starten",
     verifiedLabel: "ID BESTÄTIGT",
     onlineLabel: "IST // ONLINE",
     scrollLabel: "SCROLLEN",
   },
+  robot: {
+    label: "Roboter-Assistent — zum Reden klicken",
+    dismissLabel: "Roboter ausblenden",
+    messages: [
+      "piep bup! willkommen, besucher_",
+      "systemscan: alles sauber ✓",
+      "maksut codet gerade, ich halte Wache",
+      "du hast mich geklickt! +10 niedlichkeitspunkte",
+      "firewall: ich. spaß… oder doch nicht?",
+      "kaffeestand kritisch, wird nachgefüllt…",
+      "heute 0 angriffe blockiert. ruhiger tag.",
+      "psst… probier die Befehlspalette mit ⌘K",
+    ],
+    sleepingMessage: "zzz… (beweg die Maus, dann wache ich auf)",
+    hackMessage: "!! Angriff erkannt… Spaß. System sicher ✓",
+  },
   about: {
     kicker: "Über mich",
     title: "Wer ist Muhammed Maksut?",
-    reelLead: "Das Geheimnis der Farben: Dieses Video färbt die gesamte Website.",
+    terminalLead: "Eine kurze Vorstellung — über die Kommandozeile.",
+    terminal: {
+      title: "maksut@istanbul: ~",
+      commands: [
+        { cmd: "whoami", out: "Muhammed Maksut Çakmaktaş — Informatik-Ingenieur" },
+        { cmd: "cat fokus.txt", out: "Sicherheit · Softwareentwicklung · Systemautomatisierung" },
+        { cmd: "ls faehigkeiten/", out: "nmap  metasploit  python  next.js  unity  sap-pi/po" },
+        { cmd: "status --now", out: "● offen für Angebote · Istanbul · Jahrgang Jan 2026" },
+      ],
+      extras: [
+        { cmd: "sudo make coffee", out: "zugriff verweigert: erst die eigene Tasse holen ☕" },
+        { cmd: "ping motivation", out: "64 Bytes Antwort: Zeit=0.1ms — immer erreichbar" },
+        { cmd: "rm -rf schlaf/", out: "gelöscht. Prüfungswochen-Modus aktiv." },
+        { cmd: "git push --force mut", out: "everything up-to-date ✓" },
+      ],
+      extraHint: "// klicken — noch einen Befehl ausführen",
+    },
     stats: [
       { value: 2026, suffix: "", label: "Abschlussjahr" },
       { value: 9, suffix: "", label: "Realisierte Projekte" },
       { value: 20, suffix: "+", label: "Eingesetzte Technologien" },
-    ],
-  },
-  reel: {
-    description: "Alle Akzentfarben der Website werden aus diesem Video abgetastet — die Oberfläche nimmt die Farbe des aktuellen Bildes an. Scrolle, um es auszuprobieren.",
-    captions: [
-      "System sicher",
-      "Angriffssimulation",
-      "Abwehr aktiv",
-      "Sonnenuntergang — Feierabend",
     ],
   },
   skills: {
@@ -304,6 +334,62 @@ export const de: Content = {
       },
     ],
   },
+  classified: {
+    kicker: "Feldakten",
+    title: "Aktenkundig: gelieferte Arbeiten",
+    description:
+      "Kundenprojekte und private Produkte — Namen, Marken und Inhalte bleiben aus Vertraulichkeit versiegelt. Keine Credits, nur Ergebnisse.",
+    fileLabel: "AKTE",
+    redactedLabel: "Projektname aus Vertraulichkeitsgründen geschwärzt",
+    note: "> hinweis: Namen und Inhalte dieser Akten sind unter NDA/Datenschutz maskiert. Details nur im Gespräch.",
+    statuses: {
+      delivered: "Geliefert",
+      active: "Im aktiven Einsatz",
+      building: "In Entwicklung",
+    },
+    items: [
+      {
+        code: "AKTE-01",
+        tag: "NDA",
+        type: "Corporate-Showcase-Website",
+        blurb:
+          "Scroll-Story-Website mit 3D-Hero für ein Kreativstudio. Marke und Inhalt gehören dem Kunden — versiegelt.",
+        year: "2026",
+        stack: ["Next.js", "TypeScript", "WebGL / R3F", "Tailwind", "Framer Motion"],
+        status: "delivered",
+      },
+      {
+        code: "AKTE-02",
+        tag: "PRIVAT",
+        type: "Job-Chancen-Radar",
+        blurb:
+          "Persönliches Automationssystem, das Ausschreibungen rund um die Uhr über offizielle APIs scannt, bewertet und meldet.",
+        year: "2026",
+        stack: ["Python", "REST API", "Bot", "Dashboard"],
+        status: "active",
+      },
+      {
+        code: "AKTE-03",
+        tag: "PRIVAT",
+        type: "Lokale KI-Workshop-App",
+        blurb:
+          "Produktionswerkstatt (Web-App) auf Basis lokaler KI-Sitzungen — ganz ohne API-Schlüssel.",
+        year: "2026",
+        stack: ["Node.js", "Express", "React"],
+        status: "building",
+      },
+      {
+        code: "AKTE-04",
+        tag: "PRIVAT",
+        type: "Dev-Umgebungs-Optimierung",
+        blurb:
+          "Toolset, das Kontext/Kosten in einer agentenbasierten Dev-Umgebung analysiert und automatische Pflege einrichtet.",
+        year: "2026",
+        stack: ["CLI", "Automation", "Datenanalyse"],
+        status: "active",
+      },
+    ],
+  },
   commandPalette: {
     openLabel: "Befehlspalette öffnen",
     closeLabel: "Befehlspalette schließen",
@@ -345,8 +431,8 @@ export const de: Content = {
     visit: "Profil besuchen",
   },
   dividers: {
-    day: "> kaffee.auffüllen() — weiter_",
-    sunset: "> console.log(\"tag erledigt\")_",
+    day: "> kaffee.auffüllen() — weiter",
+    sunset: "> console.log(\"tag erledigt\")",
   },
   goals: {
     kicker: "Was kommt als Nächstes?",
@@ -381,5 +467,7 @@ export const de: Content = {
   },
   footer: {
     rights: "Alle Rechte vorbehalten.",
+    tagline: "Aus Istanbul, mit Kaffee und Terminal-Fenstern.",
+    backToTop: "Nach oben",
   },
 };
