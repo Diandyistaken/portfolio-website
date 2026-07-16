@@ -109,6 +109,17 @@ export type Content = {
     unlocked: string;
     items: { id: string; title: string }[];
   };
+  robotChat: {
+    title: string;
+    subtitle: string;
+    placeholder: string;
+    send: string;
+    close: string;
+    greeting: string;
+    chips: string[];
+    fallbacks: string[];
+    intents: { id: string; keywords: string[]; responses: string[] }[];
+  };
   honeypot: {
     button: string;
     intro: string;
@@ -179,6 +190,8 @@ export type Content = {
     fileLabel: string;
     redactedLabel: string;
     note: string;
+    bonusLabel: string;
+    bonus: string;
     statuses: { delivered: string; active: string; building: string };
     items: {
       code: string;
@@ -240,6 +253,7 @@ export type Content = {
     copyLabel: string;
     copiedLabel: string;
     copyFailedLabel: string;
+    signalLabel: string;
   };
   footer: {
     rights: string;

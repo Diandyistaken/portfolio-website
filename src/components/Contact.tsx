@@ -31,6 +31,55 @@ export function Contact() {
   }, [t]);
   const mailtoHref = revealedEmail ? `mailto:${revealedEmail}` : undefined;
 
+  // #5 Decrypt-on-approach: the email renders as cipher noise and resolves
+  // character by character as the cursor closes in on the card, with a
+  // signal-strength readout. Click/keyboard always works (real mailto).
+  const cardRef = useRef<HTMLDivElement>(null);
+  const [signal, setSignal] = useState(0); // 0..1
+  const signalRef = useRef(0);
+
+  useEffect(() => {
+    if (reducedMotion || perfLite) return;
+    if (window.matchMedia("(hover: none)").matches) return;
+    let raf = 0;
+    const onMove = (event: MouseEvent) => {
+      if (raf) return;
+      raf = requestAnimationFrame(() => {
+        raf = 0;
+        const card = cardRef.current;
+        if (!card) return;
+        const bounds = card.getBoundingClientRect();
+        if (bounds.bottom < 0 || bounds.top > window.innerHeight) return;
+        const clampedX = Math.max(bounds.left, Math.min(event.clientX, bounds.right));
+        const clampedY = Math.max(bounds.top, Math.min(event.clientY, bounds.bottom));
+        const distance = Math.hypot(event.clientX - clampedX, event.clientY - clampedY);
+        const next = Math.max(0, Math.min(1, 1 - distance / 420));
+        if (Math.abs(next - signalRef.current) >= 0.04) {
+          signalRef.current = next;
+          setSignal(next);
+        }
+      });
+    };
+    window.addEventListener("mousemove", onMove, { passive: true });
+    return () => {
+      window.removeEventListener("mousemove", onMove);
+      if (raf) cancelAnimationFrame(raf);
+    };
+  }, [reducedMotion, perfLite]);
+
+  const CIPHER = "#$%&@0123456789abcdef";
+  const displayEmail = (() => {
+    if (!revealedEmail) return null;
+    if (reducedMotion || perfLite || signal >= 0.97) return revealedEmail;
+    const resolved = Math.floor(signal * revealedEmail.length);
+    return Array.from(revealedEmail, (char, index) =>
+      index < resolved || char === "@" || char === "."
+        ? char
+        : CIPHER[(index * 7 + Math.floor(signal * 40)) % CIPHER.length],
+    ).join("");
+  })();
+  const signalBars = Math.round(signal * 4);
+
   useEffect(() => {
     return () => {
       if (resetTimerRef.current !== null) clearTimeout(resetTimerRef.current);
@@ -63,6 +112,7 @@ export function Contact() {
 
         <Reveal delay={0.1} className="mt-12">
           <m.div
+            ref={cardRef}
             initial="idle"
             whileHover={reducedMotion || perfLite ? undefined : "hover"}
             className="surface relative overflow-hidden rounded-lg p-6 text-center sm:p-10 3xl:p-12"
@@ -83,10 +133,28 @@ export function Contact() {
             <MagneticButton className="flex max-w-full flex-col items-center gap-3">
               <a
                 href={mailtoHref}
-                className="font-display max-w-full break-all text-xl font-semibold tracking-tight transition-colors hover:text-accent sm:text-3xl md:text-4xl 3xl:text-5xl"
+                aria-label={revealedEmail ?? undefined}
+                className="font-mono max-w-full break-all text-xl font-semibold tracking-tight transition-colors hover:text-accent sm:text-3xl md:text-4xl 3xl:text-5xl"
               >
-                {revealedEmail ?? "···"}
+                <span aria-hidden="true">{displayEmail ?? "···"}</span>
               </a>
+              {!reducedMotion && !perfLite && (
+                <span className="flex items-center gap-2 font-mono text-[0.62rem] tracking-[0.16em] text-muted" aria-hidden="true">
+                  {t.contact.signalLabel}:
+                  <span className="flex items-end gap-[2px]">
+                    {[0, 1, 2, 3].map((bar) => (
+                      <span
+                        key={bar}
+                        className={`w-[3px] rounded-sm transition-colors duration-150 ${
+                          bar < signalBars ? "bg-accent" : "bg-foreground/15"
+                        }`}
+                        style={{ height: `${5 + bar * 3}px` }}
+                      />
+                    ))}
+                  </span>
+                  <span className={signal >= 0.97 ? "text-accent" : ""}>%{Math.round(signal * 100)}</span>
+                </span>
+              )}
               <div className="flex flex-wrap items-center justify-center gap-x-5 gap-y-1.5">
                 <a
                   href={mailtoHref}

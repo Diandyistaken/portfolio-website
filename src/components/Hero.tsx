@@ -304,7 +304,7 @@ export function Hero() {
           </div>
 
           <Reveal delay={0.5} className="w-full">
-            <div className="surface relative overflow-hidden rounded-2xl p-5">
+            <div data-prox data-prox-radius="360" className="surface relative overflow-hidden rounded-2xl p-5">
               <div
                 className="pointer-events-none absolute -right-10 -top-10 h-32 w-32 rounded-full bg-accent/10 blur-3xl"
                 aria-hidden="true"
@@ -314,7 +314,7 @@ export function Hero() {
                   <Sparkles size={18} className="text-accent" />
                 </div>
                 <div>
-                  <p className="text-2xl font-semibold text-foreground">{projectsStat.value}{projectsStat.suffix}</p>
+                  <p className="redact-near text-2xl font-semibold text-foreground">{projectsStat.value}{projectsStat.suffix}</p>
                   <p className="text-xs text-muted">{projectsStat.label}</p>
                 </div>
               </div>
@@ -336,12 +336,12 @@ export function Hero() {
 
               <div className="relative mt-5 flex items-center justify-between border-t border-foreground/10 pt-4">
                 <div>
-                  <p className="text-lg font-semibold text-foreground">{techStat.value}{techStat.suffix}</p>
+                  <p className="redact-near text-lg font-semibold text-foreground">{techStat.value}{techStat.suffix}</p>
                   <p className="text-[0.68rem] text-muted">{techStat.label}</p>
                 </div>
                 <div className="h-8 w-px bg-foreground/10" aria-hidden="true" />
                 <div className="text-right">
-                  <p className="text-lg font-semibold text-foreground">2</p>
+                  <p className="redact-near text-lg font-semibold text-foreground">2</p>
                   <p className="text-[0.68rem] text-muted">{t.nav.experience}</p>
                 </div>
               </div>

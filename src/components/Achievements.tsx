@@ -15,7 +15,8 @@ export type AchievementId =
   | "explorer"
   | "first-contact"
   | "status-dj"
-  | "honeypot";
+  | "honeypot"
+  | "chatterbox";
 
 /** Event → achievement wiring. Components dispatch, this component listens. */
 const EVENT_MAP: Record<string, AchievementId> = {
@@ -29,6 +30,7 @@ const EVENT_MAP: Record<string, AchievementId> = {
 const COUNTED: Record<string, { id: AchievementId; count: number }> = {
   "app:terminal-extra": { id: "shell-runner", count: 3 },
   "app:status-cycled": { id: "status-dj", count: 5 },
+  "app:robot-chat": { id: "chatterbox", count: 5 },
 };
 
 function loadUnlocked(): Set<AchievementId> {
@@ -80,6 +82,7 @@ export function Achievements() {
         // storage may be unavailable (private mode) — toasts still work
       }
       queueRef.current.push(id);
+      window.dispatchEvent(new Event("app:achievement-unlocked"));
       if (!timerRef.current) showNext();
     };
 

@@ -31,7 +31,7 @@ export function SectionHeading({
           aria-hidden="true"
         />
       </div>
-      <h2 className="font-display glow-text mt-4 max-w-2xl text-section font-medium tracking-tight 3xl:max-w-4xl">
+      <h2 data-prox data-prox-radius="420" className="prox-title font-display mt-4 max-w-2xl text-section font-medium tracking-tight 3xl:max-w-4xl">
         {title}
       </h2>
       {description && (

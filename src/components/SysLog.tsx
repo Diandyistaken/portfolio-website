@@ -49,6 +49,7 @@ export function SysLog() {
       ["app:email-copied", "[contact] email copied to clipboard"],
       ["app:terminal-extra", "[shell] bonus command executed"],
       ["app:status-cycled", "[status] hero badge cycled"],
+      ["app:robot-chat", "[robot] chat message parsed"],
     ];
     const handlers: [string, () => void][] = events.map(([event, text]) => {
       const handler = () => {

@@ -25,11 +25,11 @@
   THE unified site-wide proximity system (merges five duplicate card-glow pitches): one rAF loop measures cursor distance to registered elements (cards, chips, kickers, buttons) and writes a --threat CSS var 0→1 within ~220px, driving border alpha, accent glow intensity, and a tiny corner label ticking IDLE → TRACKING → LOCKED on cards. The whole page lights up around the cursor like a torch in a dark server room; disables cleanly in perf-lite.
   _tech: single rAF distance loop writing CSS vars, pure CSS transitions as consumers_
 
-- [ ] **5. Decrypt-on-Approach Email** (hook 9, M, contact)
+- [x] **5. Decrypt-on-Approach Email** (hook 9, M, contact)
   The contact email displays as shifting hex/cipher garbage; each character resolves based on cursor distance, with ASCII signal bars ▂▄▆█ and a 'SIGNAL: 43%…97%' readout filling alongside (merged from Signal-Strength Contact Card). Walk away and it re-encrypts; click still copies instantly, confirmed by a 3-line SYN → SYN-ACK → COPIED handshake typing in. Keyboard focus and touch resolve instantly for accessibility.
   _tech: per-char distance interpolation + charset scramble, framer for handshake typing_
 
-- [ ] **6. Robot Section Moods** (hook 9, M, global (corner robot))
+- [x] **6. Robot Section Moods** (hook 9, M, global (corner robot))
   The robot's eye shape morphs per section: crosshair pupils in classified/NDA, '>' prompt eyes at the About terminal, upward-arrow eyes at goals, one heart-blink at the showcase gallery. Each mood is a 300ms morph driven by the existing navbar section-HUD state, so the eyes visibly react to where you are.
   _tech: framer animate between SVG path/clip variants driven by existing section HUD state_
 
@@ -57,7 +57,7 @@
   The contact heading is a live prompt ('$ say_hello _') with a blinking block caret that actually accepts keystrokes when clicked; whatever the visitor types renders in real time, and Enter triggers a cheeky typed response ('message queued... just kidding, use the email button →') plus a pulse on the email card. A static heading becomes a toy people show friends.
   _tech: hidden input capture + typed-text render, framer caret blink_
 
-- [ ] **13. NDA Clearance Level** (hook 9, M, classified/NDA section)
+- [x] **13. NDA Clearance Level** (hook 9, M, classified/NDA section)
   The classified section shows 'CLEARANCE: LEVEL 0' for new visitors; achievements earned elsewhere raise the level, and at LEVEL 3 one NDA card's redaction bars animate open to reveal one extra real, pre-approved sentence of detail. Converts play into actual recruiter-relevant content — the strongest possible reward loop on the site.
   _tech: achievement count from localStorage + framer clip-path reveal_
 
@@ -65,11 +65,11 @@
   Skill chips idle at 35% opacity in dim gray-blue; a ~200px cursor radius lights them to full accent and lifts them 2px, with half-lit chips at the falloff edge making the gradient itself the visual (absorbs the signal-scanner variant — nearest chips can show a tiny 4-bar signal indicator). Sweeping the mouse across the grid feels like a flashlight over a wall of tools.
   _tech: per-chip --d CSS variable set in one rAF loop, CSS radial falloff_
 
-- [ ] **15. Redacted-Until-Near Stats** (hook 8, S, hero stats card)
+- [x] **15. Redacted-Until-Near Stats** (hook 8, S, hero stats card)
   Hero stat card numbers display as ▮▮▮ redaction blocks that flicker-decode into real digits when the cursor comes within ~180px, then re-redact after 2s of absence. Forces a delightful double-take in the very first viewport; decoded-by-default on touch and reduced-motion.
   _tech: distance gate + existing decrypt-text pattern reuse_
 
-- [ ] **16. Brute-Force Skill Chips** (hook 8, S, skills)
+- [x] **16. Brute-Force Skill Chips** (hook 8, S, skills)
   Clicking any skill chip runs a 300ms cracking animation — the label cycles random chars with a small [▓▓▓░░] bar inside the chip, then resolves to 'ACCESS GRANTED: <skill> — 4 yrs' revealing a hidden proficiency detail (absorbs the squish/overload variant). Cracked chips keep a subtle unlocked-padlock glyph, rewarding visitors who click everything.
   _tech: char scramble interval + framer, local state_
 
@@ -77,7 +77,7 @@
   The robot's body language maps to scroll velocity: fast scrolling makes it lean hard into the direction with wind-line dashes and squinted eyes, slow scrolling gets a relaxed sway, and a sudden stop makes it wobble forward once like braking. Reuses the velocity value already computed for the marquee skew — one new consumer, big personality gain.
   _tech: framer useVelocity mapped to rotate/skew springs on robot root_
 
-- [ ] **18. Number Base Cycler** (hook 8, S, hero stats + about KPIs + goals)
+- [x] **18. Number Base Cycler** (hook 8, S, hero stats + about KPIs + goals)
   Every stat number becomes clickable: each click cycles dec → hex (0x1C) → binary → back with a vertical odometer flip per digit and a tiny 'BIN' base label fading in beside it. A zero-cost engineer flex that makes people click every number on the page.
   _tech: shared StatValue component, framer digit flip, toString(radix)_
 
@@ -89,7 +89,7 @@
   After 20s idle the robot deploys a rotating radar cone — a soft accent gradient wedge sweeping from its head (absorbs the separate idle-patrol pitch). When the mouse re-enters, the cone snaps to the cursor, eyes go wide, and a bubble logs 'movement detected, sector 7'. Ties the eye-tracking to a visible beam so the tracking finally reads as deliberate surveillance.
   _tech: idle timer + framer rotate, conic-gradient wedge_
 
-- [ ] **21. Proximity Ignition Headlines** (hook 8, M, global (headings + hero name))
+- [x] **21. Proximity Ignition Headlines** (hook 8, M, global (headings + hero name))
   Section headings (and the hero name — merged from the hero-only variant) respond per-letter to cursor approach within ~120px: each glyph independently ramps weight and blends from dim gray toward #5ec8ff with distance falloff, so a hot zone of ignited letters follows the cursor across the text, springing back with slight overshoot. The typographic answer to 'color shifts as the mouse approaches'.
   _tech: framer motion values + single mousemove listener, per-char spans, color/weight interpolation_
 
@@ -133,7 +133,7 @@
   A micro-bot walks along each goals bar pushing the fill forward as it animates into view, wiping sweat-drop dashes at 25/50/75% milestones; bars at 100% show it sitting on the end cap with slow-blinking 'done' eyes. Reduced motion: bars just fill normally.
   _tech: framer timeline synced to bar width, SVG micro-bot with 2 walk frames_
 
-- [ ] **32. Gallery Focal Zoom** (hook 8, M, showcase lab)
+- [x] **32. Gallery Focal Zoom** (hook 8, M, showcase lab)
   The showcase image nearest viewport center scales to 1.06 at full brightness while neighbors shrink to 0.94 and dim to 60%, continuously interpolated from scroll position like a camera racking focus through the gallery (merged duplicate from two lenses). Clicking the focused image opens the existing lightbox via shared-layout zoom. Directly answers 'images that grow/shrink'.
   _tech: useScroll element offsets → useTransform scale/filter, framer layoutId zoom_
 

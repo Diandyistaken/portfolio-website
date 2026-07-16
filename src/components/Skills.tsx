@@ -6,6 +6,7 @@ import { SectionHeading } from "./SectionHeading";
 import { useLanguage } from "@/lib/i18n/LanguageProvider";
 import { skillsMeta } from "@/lib/data";
 import { m, useReducedMotion } from "framer-motion";
+import { useRef, useState } from "react";
 import { CONTAINER } from "@/lib/layout";
 import { useTilt3D } from "@/lib/useTilt3D";
 import { usePerfLite } from "./SectionBackdrop";
@@ -16,6 +17,46 @@ const icons = {
   corporate: Network,
   other: Layers,
 } as const;
+
+
+const BRUTE_CHARS = "abcdef0123456789#$%&";
+
+/** #16 Brute-force chip: hovering "cracks" the tool name character by
+ *  character, like a password brute-forcer locking in each position. */
+function BruteChip({ label }: { label: string }) {
+  const [display, setDisplay] = useState(label);
+  const timer = useRef<ReturnType<typeof setInterval> | null>(null);
+  const reducedMotion = useReducedMotion();
+  const perfLite = usePerfLite();
+
+  const crack = () => {
+    if (reducedMotion || perfLite || timer.current) return;
+    let step = 0;
+    const total = 10;
+    timer.current = setInterval(() => {
+      step += 1;
+      const locked = Math.floor((step / total) * label.length);
+      setDisplay(
+        Array.from(label, (char, index) =>
+          index < locked || char === " " || char === "·"
+            ? char
+            : BRUTE_CHARS[Math.floor(Math.random() * BRUTE_CHARS.length)],
+        ).join(""),
+      );
+      if (step >= total) {
+        if (timer.current) clearInterval(timer.current);
+        timer.current = null;
+        setDisplay(label);
+      }
+    }, 28);
+  };
+
+  return (
+    <span onMouseEnter={crack} className="inline-block">
+      {display}
+    </span>
+  );
+}
 
 type SkillCategory = ReturnType<typeof useLanguage>["t"]["skills"]["categories"][number];
 
@@ -70,7 +111,7 @@ function SkillCard({ category }: { category: SkillCategory }) {
               data-prox
               className="prox-chip font-mono rounded-sm border border-foreground/12 px-2.5 py-1 text-[0.7rem] text-muted"
             >
-              {tool}
+              <BruteChip label={tool} />
             </m.span>
           ))}
         </div>

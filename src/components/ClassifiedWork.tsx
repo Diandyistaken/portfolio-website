@@ -1,11 +1,23 @@
 "use client";
 
-import { Lock, ShieldCheck, Wrench, Zap } from "lucide-react";
+import { useEffect, useState } from "react";
+import { Lock, ShieldCheck, Unlock, Wrench, Zap } from "lucide-react";
+import { AnimatePresence, m } from "framer-motion";
 import { RevealGroup, revealItem } from "./Reveal";
 import { SectionHeading } from "./SectionHeading";
 import { useLanguage } from "@/lib/i18n/LanguageProvider";
 import { CONTAINER } from "@/lib/layout";
-import { m } from "framer-motion";
+
+const CLEARANCE_TARGET = 3;
+
+function readClearance(): number {
+  try {
+    const raw = localStorage.getItem("mm-achievements-v1");
+    return raw ? (JSON.parse(raw) as unknown[]).length : 0;
+  } catch {
+    return 0;
+  }
+}
 
 /**
  * Anonymized client & private work: type + stack + status only. Names,
@@ -14,6 +26,21 @@ import { m } from "framer-motion";
  */
 export function ClassifiedWork() {
   const { t } = useLanguage();
+
+  // #13 NDA Clearance Level: achievements earned around the site raise the
+  // visitor's clearance; at 3+ the first record declassifies one extra,
+  // pre-approved sentence. Play converts into real recruiter content.
+  const [clearance, setClearance] = useState(0);
+  useEffect(() => {
+    const sync = () => setClearance(readClearance());
+    const initial = setTimeout(sync, 0);
+    window.addEventListener("app:achievement-unlocked", sync);
+    return () => {
+      clearTimeout(initial);
+      window.removeEventListener("app:achievement-unlocked", sync);
+    };
+  }, []);
+  const cleared = clearance >= CLEARANCE_TARGET;
 
   const statusIcon = {
     delivered: <ShieldCheck size={12} aria-hidden="true" />,
@@ -71,6 +98,20 @@ export function ClassifiedWork() {
                 ))}
               </div>
 
+              {item.code === t.classified.items[0].code && (
+                <AnimatePresence>
+                  {cleared && (
+                    <m.p
+                      initial={{ opacity: 0, height: 0 }}
+                      animate={{ opacity: 1, height: "auto" }}
+                      className="mt-4 border-l-2 border-accent/50 pl-3 font-mono text-[0.7rem] leading-relaxed text-accent/90"
+                    >
+                      {t.classified.bonus}
+                    </m.p>
+                  )}
+                </AnimatePresence>
+              )}
+
               <div className="mt-6 flex items-center justify-between border-t border-foreground/10 pt-4">
                 <span className="font-mono text-[0.68rem] text-muted">{item.year}</span>
                 <span
@@ -86,9 +127,17 @@ export function ClassifiedWork() {
           ))}
         </RevealGroup>
 
-        <p className="mt-6 font-mono text-xs leading-relaxed text-muted">
-          {t.classified.note}
-        </p>
+        <div className="mt-6 flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
+          <p className="font-mono text-xs leading-relaxed text-muted">{t.classified.note}</p>
+          <span
+            className={`flex shrink-0 items-center gap-1.5 rounded-full border px-3 py-1.5 font-mono text-[0.65rem] tracking-[0.14em] transition-colors ${
+              cleared ? "border-accent/60 text-accent" : "border-foreground/15 text-muted"
+            }`}
+          >
+            {cleared ? <Unlock size={11} aria-hidden="true" /> : <Lock size={11} aria-hidden="true" />}
+            {t.classified.bonusLabel}: {Math.min(clearance, CLEARANCE_TARGET)}/{CLEARANCE_TARGET}
+          </span>
+        </div>
       </div>
     </section>
   );

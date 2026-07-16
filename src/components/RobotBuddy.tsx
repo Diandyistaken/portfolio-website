@@ -5,6 +5,7 @@ import { AnimatePresence, m, useReducedMotion, useSpring, useTransform } from "f
 import { X } from "lucide-react";
 import { useLanguage } from "@/lib/i18n/LanguageProvider";
 import { usePerfLite } from "./SectionBackdrop";
+import { RobotChat } from "./RobotChat";
 
 const PATROL_AFTER_MS = 7000;
 const SLEEP_AFTER_MS = 19000;
@@ -31,6 +32,10 @@ export function RobotBuddy() {
   const [waving, setWaving] = useState(false);
   const [bubble, setBubble] = useState<string | null>(null);
   const [alerted, setAlerted] = useState(false);
+  const [chatOpen, setChatOpen] = useState(false);
+  // Section moods: pupils morph per section (crosshair in classified, ">"
+  // at the terminal, arrow at goals) — the robot visibly reads along.
+  const [sectionMood, setSectionMood] = useState<"default" | "classified" | "about" | "goals">("default");
   // Eyes widen when the cursor gets close — makes the tracking unmissable.
   const [near, setNear] = useState(false);
   const nearRef = useRef(false);
@@ -46,7 +51,6 @@ export function RobotBuddy() {
 
   const bubbleTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
   const waveTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
-  const messageIndex = useRef(0);
 
   useEffect(() => {
     // Fine pointer + hover only — there is no cursor to follow on touch.
@@ -61,6 +65,28 @@ export function RobotBuddy() {
       wide.removeEventListener("change", update);
     };
   }, []);
+
+  useEffect(() => {
+    if (!enabled || dismissed) return;
+    const moodMap: Record<string, "classified" | "about" | "goals"> = {
+      classified: "classified",
+      about: "about",
+      goals: "goals",
+    };
+    const sections = document.querySelectorAll<HTMLElement>("main section[id]");
+    const observer = new IntersectionObserver(
+      (entries) => {
+        for (const entry of entries) {
+          if (!entry.isIntersecting) continue;
+          const id = (entry.target as HTMLElement).id;
+          setSectionMood(moodMap[id] ?? "default");
+        }
+      },
+      { rootMargin: "-35% 0px -55% 0px" },
+    );
+    sections.forEach((section) => observer.observe(section));
+    return () => observer.disconnect();
+  }, [enabled, dismissed]);
 
   useEffect(() => {
     if (!enabled || dismissed || reducedMotion || perfLite) return;
@@ -190,12 +216,6 @@ export function RobotBuddy() {
     };
   }, []);
 
-  const showBubble = (text: string) => {
-    if (bubbleTimer.current) clearTimeout(bubbleTimer.current);
-    setBubble(text);
-    bubbleTimer.current = setTimeout(() => setBubble(null), BUBBLE_MS);
-  };
-
   const handleClick = () => {
     window.dispatchEvent(new Event("app:robot-click"));
     if (sleeping) {
@@ -205,14 +225,18 @@ export function RobotBuddy() {
     if (waveTimer.current) clearTimeout(waveTimer.current);
     setWaving(true);
     waveTimer.current = setTimeout(() => setWaving(false), 2300);
-    const messages = t.robot.messages;
-    showBubble(messages[messageIndex.current % messages.length]);
-    messageIndex.current += 1;
+    if (bubbleTimer.current) clearTimeout(bubbleTimer.current);
+    setBubble(null);
+    // big form: clicking toggles the full-body chat companion
+    setChatOpen((value) => !value);
   };
+
 
   if (!enabled || dismissed || reducedMotion || perfLite) return null;
 
   return (
+    <>
+    <RobotChat open={chatOpen} onClose={() => setChatOpen(false)} />
     <div ref={rootRef} className="group/robot fixed bottom-6 right-6 z-40 hidden lg:block" style={{ perspective: 400 }}>
       <AnimatePresence>
         {bubble && (
@@ -293,13 +317,21 @@ export function RobotBuddy() {
                           : "h-[1.15rem] w-3.5"
                     }`}
                   >
-                    {!sleeping && (
+                    {!sleeping && sectionMood === "default" && (
                       <m.span
                         style={{ x: pupilX, y: pupilY }}
                         className={`robot-pupil absolute inset-x-0 top-1/2 mx-auto h-2.5 w-2.5 -translate-y-1/2 rounded-full ${
                           alerted ? "bg-amber-400" : "bg-accent"
                         } shadow-[0_0_8px_rgb(var(--accent-rgb)/1)]`}
                       />
+                    )}
+                    {!sleeping && sectionMood !== "default" && (
+                      <m.span
+                        style={{ x: pupilX, y: pupilY }}
+                        className="robot-pupil absolute inset-0 flex items-center justify-center font-mono text-[0.6rem] font-bold text-accent [text-shadow:0_0_8px_rgb(var(--accent-rgb)/1)]"
+                      >
+                        {sectionMood === "classified" ? "+" : sectionMood === "about" ? ">" : "▲"}
+                      </m.span>
                     )}
                   </span>
                 ))}
@@ -333,5 +365,6 @@ export function RobotBuddy() {
         <X size={10} />
       </button>
     </div>
+    </>
   );
 }
