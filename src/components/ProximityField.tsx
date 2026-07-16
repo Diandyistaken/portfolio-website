@@ -50,7 +50,7 @@ export function ProximityField() {
           const centerX = bounds.left + bounds.width / 2;
           const centerY = bounds.top + bounds.height / 2;
           const distance = Math.hypot(event.clientX - centerX, event.clientY - centerY);
-          const radius = Number(element.dataset.proxRadius ?? 240);
+          const radius = Number(element.dataset.proxRadius ?? 300);
           const proximity = Math.max(0, 1 - distance / radius);
           element.style.setProperty("--prox", proximity < 0.01 ? "0" : proximity.toFixed(3));
         }

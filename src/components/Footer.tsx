@@ -5,6 +5,8 @@ import { AnimatePresence, m } from "framer-motion";
 import { ArrowUp } from "lucide-react";
 import { useLanguage } from "@/lib/i18n/LanguageProvider";
 import { CONTAINER } from "@/lib/layout";
+import { Honeypot } from "./Honeypot";
+import { SysLog } from "./SysLog";
 
 const FREELANCE_LINKS = [
   { label: "Freelancer", href: "https://www.freelancer.com/u/muhammedmaksut" },
@@ -26,6 +28,8 @@ export function Footer() {
   ];
 
   return (
+    <>
+    <SysLog />
     <footer className="relative overflow-hidden border-t border-foreground/10 py-12 sm:py-16 3xl:py-20">
       <div
         className="footer-ecg pointer-events-none absolute inset-x-0 top-0 h-px"
@@ -61,6 +65,7 @@ export function Footer() {
         <p className="font-mono text-xs text-muted">
           © {new Date().getFullYear()} {t.personalInfo.name}. {t.footer.rights}
         </p>
+        <Honeypot />
         <a
           href="#top"
           onClick={launch}
@@ -87,5 +92,6 @@ export function Footer() {
         </a>
       </div>
     </footer>
+    </>
   );
 }

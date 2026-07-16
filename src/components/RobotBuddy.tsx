@@ -167,8 +167,20 @@ export function RobotBuddy() {
       bubbleTimer.current = setTimeout(() => setBubble(null), BUBBLE_MS);
       setTimeout(() => setAlerted(false), 2600);
     };
+    const onHoneypot = () => {
+      setSleeping(false);
+      setAlerted(true);
+      if (bubbleTimer.current) clearTimeout(bubbleTimer.current);
+      setBubble(t.robot.honeypotMessage);
+      bubbleTimer.current = setTimeout(() => setBubble(null), BUBBLE_MS);
+      setTimeout(() => setAlerted(false), 2600);
+    };
     window.addEventListener("app:hack-egg", onHack);
-    return () => window.removeEventListener("app:hack-egg", onHack);
+    window.addEventListener("app:honeypot", onHoneypot);
+    return () => {
+      window.removeEventListener("app:hack-egg", onHack);
+      window.removeEventListener("app:honeypot", onHoneypot);
+    };
   }, [t]);
 
   useEffect(() => {

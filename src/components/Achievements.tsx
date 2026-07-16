@@ -14,13 +14,15 @@ export type AchievementId =
   | "shell-runner"
   | "explorer"
   | "first-contact"
-  | "status-dj";
+  | "status-dj"
+  | "honeypot";
 
 /** Event → achievement wiring. Components dispatch, this component listens. */
 const EVENT_MAP: Record<string, AchievementId> = {
   "app:robot-click": "robot-friend",
   "app:hack-egg": "white-hat",
   "app:email-copied": "first-contact",
+  "app:honeypot": "honeypot",
 };
 
 /** Counted events: unlock after N occurrences. */

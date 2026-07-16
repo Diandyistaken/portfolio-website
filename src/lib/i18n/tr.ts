@@ -94,6 +94,7 @@ export const tr: Content = {
     ],
     sleepingMessage: "zzz… (fareyi oynat, uyanayım)",
     hackMessage: "!! saldırı tespit edildi… şaka. sistem güvende ✓",
+    honeypotMessage: "o butona basmamalıydın... neyse ki ben tatlıyım 👀",
   },
   about: {
     kicker: "Hakkımda",
@@ -114,6 +115,8 @@ export const tr: Content = {
         { cmd: "git push --force cesaret", out: "everything up-to-date ✓" },
       ],
       extraHint: "// tıkla — bir komut daha çalışsın",
+      sentryDetected: "> yakınlık uyarısı: ziyaretçi tespit edildi [mesafe: {px}px]",
+      sentryLost: "> hedef kayboldu_",
     },
     stats: [
       { value: 2026, suffix: "", label: "Mezuniyet yılı" },
@@ -346,7 +349,19 @@ export const tr: Content = {
       { id: "explorer", title: "Kâşif — tüm bölümleri gezdin" },
       { id: "first-contact", title: "İlk Temas — e-postayı kopyaladın" },
       { id: "status-dj", title: "Durum DJ'i — rozeti 5 kez çevirdin" },
+      { id: "honeypot", title: "Bal Küpü — tıklamaman gerekeni tıkladın" },
     ],
+  },
+  honeypot: {
+    button: "[ SAKIN TIKLAMA — YÖNETİCİ ]",
+    intro: "> İZİNSİZ ERİŞİM GİRİŞİMİ TESPİT EDİLDİ",
+    profile: "> profil çıkarılıyor: {browser} · {viewport} · tık sayısı: {clicks}",
+    verdict: "> tehdit analizi: zararsız (muhtemelen işe alımcı) ✓",
+    closed: "> kayıt kapatıldı_",
+    again: "> yine mi sen? dosyana not düşüldü.",
+  },
+  syslog: {
+    label: "canlı sistem kaydı",
   },
   classified: {
     kicker: "Saha Kayıtları",

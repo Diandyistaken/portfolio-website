@@ -103,10 +103,22 @@ export type Content = {
     messages: string[];
     sleepingMessage: string;
     hackMessage: string;
+    honeypotMessage: string;
   };
   achievements: {
     unlocked: string;
     items: { id: string; title: string }[];
+  };
+  honeypot: {
+    button: string;
+    intro: string;
+    profile: string;
+    verdict: string;
+    closed: string;
+    again: string;
+  };
+  syslog: {
+    label: string;
   };
   about: {
     kicker: string;
@@ -117,6 +129,8 @@ export type Content = {
       commands: { cmd: string; out: string }[];
       extras: { cmd: string; out: string }[];
       extraHint: string;
+      sentryDetected: string;
+      sentryLost: string;
     };
     stats: { value: number; suffix: string; label: string }[];
   };

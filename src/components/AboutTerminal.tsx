@@ -15,7 +15,7 @@ type Line = { kind: "cmd" | "out"; text: string };
  */
 export function AboutTerminal() {
   const { t } = useLanguage();
-  const { title, commands, extras, extraHint } = t.about.terminal;
+  const { title, commands, extras, extraHint, sentryDetected, sentryLost } = t.about.terminal;
   const ref = useRef<HTMLDivElement>(null);
   const inView = useInView(ref, { once: true, amount: 0.35 });
   const reducedMotion = useReducedMotion();
@@ -27,6 +27,57 @@ export function AboutTerminal() {
   const [extraPartial, setExtraPartial] = useState<string | null>(null);
   const extraIndex = useRef(0);
   const extraTimer = useRef<ReturnType<typeof setInterval> | null>(null);
+
+  // Sentry mode: the terminal notices the cursor closing in and prints a
+  // live distance readout ("proximity alert … [distance: 142px]"), then a
+  // deadpan "target lost" when you back away. The terminal feels sentient.
+  const [sentryPx, setSentryPx] = useState<number | null>(null);
+  const [lostVisible, setLostVisible] = useState(false);
+  const sentryPxRef = useRef<number | null>(null);
+  const lostTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
+
+  useEffect(() => {
+    if (instant || !inView) return;
+    if (window.matchMedia("(hover: none)").matches) return;
+    let raf = 0;
+
+    const onMove = (event: MouseEvent) => {
+      if (raf) return;
+      raf = requestAnimationFrame(() => {
+        raf = 0;
+        const panel = ref.current;
+        if (!panel) return;
+        const bounds = panel.getBoundingClientRect();
+        if (bounds.bottom < 0 || bounds.top > window.innerHeight) return;
+        const clampedX = Math.max(bounds.left, Math.min(event.clientX, bounds.right));
+        const clampedY = Math.max(bounds.top, Math.min(event.clientY, bounds.bottom));
+        const distance = Math.round(Math.hypot(event.clientX - clampedX, event.clientY - clampedY));
+        const previous = sentryPxRef.current;
+
+        if (distance > 0 && distance < 170) {
+          if (previous === null || Math.abs(previous - distance) >= 3) {
+            sentryPxRef.current = distance;
+            setSentryPx(distance);
+            setLostVisible(false);
+            if (lostTimer.current) clearTimeout(lostTimer.current);
+          }
+        } else if (previous !== null) {
+          sentryPxRef.current = null;
+          setSentryPx(null);
+          setLostVisible(true);
+          if (lostTimer.current) clearTimeout(lostTimer.current);
+          lostTimer.current = setTimeout(() => setLostVisible(false), 1600);
+        }
+      });
+    };
+
+    window.addEventListener("mousemove", onMove, { passive: true });
+    return () => {
+      window.removeEventListener("mousemove", onMove);
+      if (raf) cancelAnimationFrame(raf);
+      if (lostTimer.current) clearTimeout(lostTimer.current);
+    };
+  }, [instant, inView]);
 
   useEffect(() => {
     return () => {
@@ -212,6 +263,17 @@ export function AboutTerminal() {
                 {extraHint}
               </span>
             )}
+          </p>
+        )}
+
+        {sentryPx !== null && (
+          <p className="mt-2 font-mono text-accent/70" aria-hidden="true">
+            {sentryDetected.replace("{px}", String(sentryPx))}
+          </p>
+        )}
+        {lostVisible && sentryPx === null && (
+          <p className="mt-2 font-mono text-muted/75" aria-hidden="true">
+            {sentryLost}
           </p>
         )}
 

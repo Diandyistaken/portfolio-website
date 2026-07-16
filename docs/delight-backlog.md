@@ -13,11 +13,11 @@
   Merge of the two robot-eye upgrades: pupils get 2x travel with parallax between eye-white and pupil layers, tracking gain and pupil size scale with cursor distance (lazy glance far away, wide-eyed at <250px, spring flinch with a '!' bubble at <60px), and hovering any interactive element snaps the eyes to it with tiny corner brackets flashing on the pupils. Locking onto the CTA triggers one excited blink. Directly answers the 'more noticeable eye-tracking' ask by extending existing math, not rebuilding.
   _tech: extend existing tracking math with distance-scaled gain, framer springs, pointerover delegation_
 
-- [ ] **2. Honeypot Button** (hook 10, M, footer / global overlay)
+- [x] **2. Honeypot Button** (hook 10, M, footer / global overlay)
   A bracketed 'DO NOT CLICK — ADMIN ONLY' button near the footer. Clicking triggers an 'INTRUSION DETECTED' skit: scanning border sweep on screen edges, the robot wakes and glares at the cursor, a mono toast logs the visitor's fake attacker profile (browser, viewport, click count), then stands down with 'threat assessed: harmless recruiter'. Second click gets a drier log line — highly screenshot-shareable.
   _tech: framer overlay + existing robot API hook, navigator data_
 
-- [ ] **3. Terminal Sentry Prompt** (hook 9, M, about terminal)
+- [x] **3. Terminal Sentry Prompt** (hook 9, M, about terminal)
   The About terminal's cursor block blinks faster as the pointer approaches, and at <150px a ghost line types 'proximity alert: visitor detected [distance: 142px]' with the live px number counting down in real time. Backing away types 'target lost'. Absurdly on-brand screenshot bait that makes the terminal feel sentient.
   _tech: distance readout piped into existing typed-terminal component, throttled updates_
 
@@ -49,7 +49,7 @@
   Press-and-hold the hero Contact CTA to fill a thin ice-blue progress ring with a rising WebAudio synth pitch; release early and it decays with a spring wobble, hold to 100% and it 'breaches' — shockwave ring, 300ms text glitch nearby, then smooth-scroll to Contact. Normal tap still works, so the hold is a discoverable bonus with zero conversion friction.
   _tech: framer useMotionValue ring, pointerdown/up timers, WebAudio oscillator_
 
-- [ ] **11. Live Syslog Ticker** (hook 9, M, footer / global)
+- [x] **11. Live Syslog Ticker** (hook 9, M, footer / global)
   A one-line monospace log stream pinned above the footer typing real visitor events in syslog format: '14:02:11 [nav] user hovered SERVICES', '[idle] 12s — robot yawns', '[scroll] velocity 2400px/s'. Old lines scroll up and fade like tail -f. Makes the site feel alive and watching — exactly the robot's spirit, and recruiters screenshot this.
   _tech: event bus + typed-line queue component, CSS translate stack_
 

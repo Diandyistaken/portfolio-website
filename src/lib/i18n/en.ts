@@ -94,6 +94,7 @@ export const en: Content = {
     ],
     sleepingMessage: "zzz… (move the mouse to wake me)",
     hackMessage: "!! intrusion detected… kidding. system secure ✓",
+    honeypotMessage: "you weren't supposed to press that… lucky I'm cute 👀",
   },
   about: {
     kicker: "About",
@@ -114,6 +115,8 @@ export const en: Content = {
         { cmd: "git push --force courage", out: "everything up-to-date ✓" },
       ],
       extraHint: "// click — run one more command",
+      sentryDetected: "> proximity alert: visitor detected [distance: {px}px]",
+      sentryLost: "> target lost_",
     },
     stats: [
       { value: 2026, suffix: "", label: "Graduation year" },
@@ -344,7 +347,19 @@ export const en: Content = {
       { id: "explorer", title: "Explorer — visited every section" },
       { id: "first-contact", title: "First Contact — copied the email" },
       { id: "status-dj", title: "Status DJ — cycled the badge 5 times" },
+      { id: "honeypot", title: "Honeypot — clicked what you shouldn't have" },
     ],
+  },
+  honeypot: {
+    button: "[ DO NOT CLICK — ADMIN ONLY ]",
+    intro: "> UNAUTHORIZED ACCESS ATTEMPT DETECTED",
+    profile: "> profiling: {browser} · {viewport} · clicks: {clicks}",
+    verdict: "> threat assessment: harmless (probably a recruiter) ✓",
+    closed: "> log closed_",
+    again: "> you again? noted in your file.",
+  },
+  syslog: {
+    label: "live system log",
   },
   classified: {
     kicker: "Field Records",

@@ -94,6 +94,7 @@ export const de: Content = {
     ],
     sleepingMessage: "zzz… (beweg die Maus, dann wache ich auf)",
     hackMessage: "!! Angriff erkannt… Spaß. System sicher ✓",
+    honeypotMessage: "das solltest du nicht drücken… zum Glück bin ich süß 👀",
   },
   about: {
     kicker: "Über mich",
@@ -114,6 +115,8 @@ export const de: Content = {
         { cmd: "git push --force mut", out: "everything up-to-date ✓" },
       ],
       extraHint: "// klicken — noch einen Befehl ausführen",
+      sentryDetected: "> Näherungsalarm: Besucher erkannt [Abstand: {px}px]",
+      sentryLost: "> Ziel verloren_",
     },
     stats: [
       { value: 2026, suffix: "", label: "Abschlussjahr" },
@@ -344,7 +347,19 @@ export const de: Content = {
       { id: "explorer", title: "Entdecker — alle Bereiche besucht" },
       { id: "first-contact", title: "Erstkontakt — E-Mail kopiert" },
       { id: "status-dj", title: "Status-DJ — Badge 5-mal gewechselt" },
+      { id: "honeypot", title: "Honigtopf — geklickt, was du nicht solltest" },
     ],
+  },
+  honeypot: {
+    button: "[ NICHT KLICKEN — NUR ADMIN ]",
+    intro: "> UNBEFUGTER ZUGRIFFSVERSUCH ERKANNT",
+    profile: "> Profil wird erstellt: {browser} · {viewport} · Klicks: {clicks}",
+    verdict: "> Bedrohungsanalyse: harmlos (vermutlich Recruiter) ✓",
+    closed: "> Protokoll geschlossen_",
+    again: "> schon wieder du? In deiner Akte vermerkt.",
+  },
+  syslog: {
+    label: "Live-Systemprotokoll",
   },
   classified: {
     kicker: "Feldakten",
