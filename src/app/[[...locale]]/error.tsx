@@ -15,14 +15,14 @@ export default function Error({
   }, [error]);
 
   return (
-    <div className="flex min-h-screen flex-col items-center justify-center gap-6 bg-[#05070c] px-6 text-center text-[#e9eef6]">
+    <div className="flex min-h-screen flex-col items-center justify-center gap-6 bg-[#11213f] px-6 text-center text-[#eef2fb]">
       <p className="font-mono text-xs uppercase tracking-[0.2em] text-[#f0787c]">
         Bir şeyler ters gitti
       </p>
       <h1 className="font-display text-2xl font-semibold sm:text-3xl">
         Sayfa yüklenirken bir hata oluştu
       </h1>
-      <p className="max-w-md text-sm text-[#94a0b3]">
+      <p className="max-w-md text-sm text-[#9aa5bf]">
         Sorun kaydedildi. Tekrar denemek için aşağıdaki butona tıklayabilir ya da sayfayı
         yenileyebilirsin.
       </p>
@@ -36,7 +36,7 @@ export default function Error({
         </button>
         <Link
           href="/"
-          className="rounded-md border border-white/10 px-4 py-2 text-sm text-[#e9eef6] transition-colors hover:border-white/30"
+          className="rounded-md border border-white/10 px-4 py-2 text-sm text-[#eef2fb] transition-colors hover:border-white/30"
         >
           Ana sayfaya dön
         </Link>

@@ -95,10 +95,9 @@ export function Goals() {
                 <div className="mt-4 h-1 w-full overflow-hidden rounded-full bg-foreground/8">
                   <m.div
                     key={`bar-${runKey}`}
-                    initial={motionSafe ? { scaleX: 0 } : false}
-                    whileInView={{ scaleX: progress / 100 }}
-                    viewport={{ once: true, amount: 0.5 }}
-                    transition={{ duration: 0.8, ease: [0.22, 1, 0.36, 1] }}
+                    initial={motionSafe ? { scaleX: 0 } : { scaleX: progress / 100 }}
+                    animate={{ scaleX: progress / 100 }}
+                    transition={{ duration: 0.8, delay: 0.15, ease: [0.22, 1, 0.36, 1] }}
                     className="h-full origin-left rounded-full bg-accent"
                     style={{ width: "100%", boxShadow: "0 0 12px rgb(var(--accent-rgb) / 0.6)" }}
                   />

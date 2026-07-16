@@ -13,12 +13,6 @@ export type ExperienceContent = {
   description: string;
 };
 
-export type GraduationPhotoContent = {
-  id: string;
-  alt: string;
-  caption: string;
-};
-
 export type ProjectContent = {
   id: string;
   title: string;
@@ -86,6 +80,7 @@ export type Content = {
   };
   hero: {
     greeting: string;
+    badge: string;
     ctaPrimary: string;
     ctaSecondary: string;
     followLabel: string;
@@ -135,8 +130,6 @@ export type Content = {
     department: string;
     graduationLabel: string;
     graduation: string;
-    photosIntro: string;
-    photos: GraduationPhotoContent[];
   };
   projects: {
     kicker: string;

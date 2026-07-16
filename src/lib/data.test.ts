@@ -4,7 +4,6 @@ import {
   skillsMeta,
   servicesMeta,
   experienceMeta,
-  educationPhotosMeta,
   projectsMeta,
   goalsMeta,
 } from "./data";
@@ -26,11 +25,6 @@ describe("content <-> structural data referential integrity", () => {
   it("every experience id has an experienceMeta entry, and vice versa", () => {
     const contentIds = tr.experience.items.map((e) => e.id).sort();
     expect(Object.keys(experienceMeta).sort()).toEqual(contentIds);
-  });
-
-  it("every education photo id has an educationPhotosMeta entry, and vice versa", () => {
-    const contentIds = tr.education.photos.map((p) => p.id).sort();
-    expect(Object.keys(educationPhotosMeta).sort()).toEqual(contentIds);
   });
 
   it("every project id has a projectsMeta entry, and vice versa", () => {

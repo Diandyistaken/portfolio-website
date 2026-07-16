@@ -11,15 +11,14 @@ import { Projects } from "@/components/Projects";
 import { Goals } from "@/components/Goals";
 import { Contact } from "@/components/Contact";
 import { Footer } from "@/components/Footer";
-import { ScrollVideoProvider } from "@/components/scrub/ScrollVideoProvider";
-import { BackgroundLayer } from "@/components/BackgroundLayer";
-import { PhaseHud } from "@/components/scrub/PhaseHud";
 import { TechMarquee } from "@/components/TechMarquee";
 import { ScrollProgress } from "@/components/ScrollProgress";
 import { NameMarquee } from "@/components/NameMarquee";
 import { IntroLoader } from "@/components/IntroLoader";
-import { ParallaxDivider, ParallaxQuote } from "@/components/ParallaxDivider";
+import { ParallaxQuote } from "@/components/ParallaxDivider";
+import { GenerativeDivider } from "@/components/GenerativeDivider";
 import { ClientChrome } from "@/components/ClientChrome";
+import { AccentCycler } from "@/components/AccentCycler";
 
 // Real content below the fold: keep SSR (SEO), just split out of the main chunk.
 const ShowcaseLab = dynamic(() => import("@/components/ShowcaseLab").then((mod) => mod.ShowcaseLab));
@@ -27,11 +26,10 @@ const FreelanceHub = dynamic(() => import("@/components/FreelanceHub").then((mod
 
 export default function Home() {
   return (
-    <ScrollVideoProvider>
+    <>
       <IntroLoader />
       <ClientChrome />
-      <BackgroundLayer />
-      <PhaseHud />
+      <AccentCycler />
       <ScrollProgress />
       <SkipLink />
       <Navbar />
@@ -41,9 +39,9 @@ export default function Home() {
           <TechMarquee />
           <About />
           <Skills />
-          <ParallaxDivider src="/istanbul/bosphorus-day.webp" alt="Bosphorus in daylight">
+          <GenerativeDivider>
             <ParallaxQuote id="day" />
-          </ParallaxDivider>
+          </GenerativeDivider>
           <Services />
           <Experience />
           <Education />
@@ -51,14 +49,14 @@ export default function Home() {
           <ShowcaseLab />
           <FreelanceHub />
           <Goals />
-          <ParallaxDivider src="/istanbul/galata-sunset.webp" alt="Galata Bridge at sunset">
+          <GenerativeDivider>
             <ParallaxQuote id="sunset" />
-          </ParallaxDivider>
+          </GenerativeDivider>
           <Contact />
         </main>
         <NameMarquee />
         <Footer />
       </div>
-    </ScrollVideoProvider>
+    </>
   );
 }

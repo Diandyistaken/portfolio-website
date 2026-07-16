@@ -51,6 +51,7 @@ export const de: Content = {
   },
   hero: {
     greeting: "Hallo, ich bin",
+    badge: "Offen für neue Rollen",
     ctaPrimary: "Kontakt aufnehmen",
     ctaSecondary: "Projekte ansehen",
     followLabel: "Folgen",
@@ -243,19 +244,6 @@ export const de: Content = {
     department: "Informatik (Computer Engineering)",
     graduationLabel: "Abschluss",
     graduation: "Januar 2026",
-    photosIntro: "Zwei Aufnahmen vom Abschlusstag — ein kurzer persönlicher Moment.",
-    photos: [
-      {
-        id: "mother",
-        alt: "Muhammed Maksut Çakmaktaş mit seiner Mutter bei der Abschlussfeier",
-        caption: "Mit meiner Mutter",
-      },
-      {
-        id: "sibling",
-        alt: "Muhammed Maksut Çakmaktaş mit seinem Geschwister bei der Abschlussfeier",
-        caption: "Mit meinem Geschwister",
-      },
-    ],
   },
   projects: {
     kicker: "Projekte",
@@ -357,8 +345,8 @@ export const de: Content = {
     visit: "Profil besuchen",
   },
   dividers: {
-    day: "Kurze Pause zwischen den Codezeilen: Istanbul.",
-    sunset: "Feierabend: Systeme sicher, die Sonne geht unter.",
+    day: "> kaffee.auffüllen() — weiter_",
+    sunset: "> console.log(\"tag erledigt\")_",
   },
   goals: {
     kicker: "Was kommt als Nächstes?",

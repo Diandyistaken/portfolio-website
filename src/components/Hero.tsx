@@ -3,15 +3,15 @@
 import { useEffect, useState, useSyncExternalStore } from "react";
 import Image from "next/image";
 import { AnimatePresence, m, useReducedMotion } from "framer-motion";
-import { ArrowRight, ChevronDown, MapPin, ShieldCheck } from "lucide-react";
+import { ArrowRight, ChevronDown, MapPin, ShieldCheck, Sparkles } from "lucide-react";
 import { Reveal } from "./Reveal";
-import { TiltCard } from "./TiltCard";
-import { HeroTerminal } from "./HeroTerminal";
+import { HeroAurora } from "./HeroAurora";
 import { CvDownload } from "./CvDownload";
 import { FollowMenu } from "./FollowMenu";
 import { DecryptText } from "./DecryptText";
 import { useLanguage } from "@/lib/i18n/LanguageProvider";
 import { CONTAINER } from "@/lib/layout";
+import { goalsMeta } from "@/lib/data";
 
 const subscribeToRootClass = (onStoreChange: () => void) => {
   const observer = new MutationObserver(onStoreChange);
@@ -25,12 +25,15 @@ const subscribeToRootClass = (onStoreChange: () => void) => {
 const getPerfLiteSnapshot = () =>
   document.documentElement.classList.contains("perf-lite");
 
+const fadeUp = {
+  hidden: { opacity: 0, y: 16 },
+  visible: { opacity: 1, y: 0, transition: { duration: 0.6, ease: [0.22, 1, 0.36, 1] } },
+};
+
 export function Hero() {
   const { t } = useLanguage();
   const reduceMotion = useReducedMotion();
-  const nameWords = t.personalInfo.name.split(" ");
   const titleWords = t.personalInfo.title.split(" ");
-  // increments per click so the scan CSS animation can re-trigger via key
   const [scanRun, setScanRun] = useState(0);
   const [verified, setVerified] = useState(false);
   const [tickerIndex, setTickerIndex] = useState(0);
@@ -59,21 +62,33 @@ export function Hero() {
     setTimeout(() => setVerified(false), 2400);
   };
 
+  const projectsStat = t.about.stats[1];
+  const techStat = t.about.stats[2];
+  const learningGoal = t.goals.items[1];
+  const learningProgress = goalsMeta[learningGoal.id]?.progress ?? 0;
+
   return (
     <section
       id="top"
-      className="relative flex min-h-screen min-h-[100svh] items-center px-6 pt-28 pb-24 sm:px-10 3xl:px-16 3xl:pt-32 3xl:pb-28"
+      className="relative isolate flex min-h-screen min-h-[100svh] items-center overflow-hidden px-6 pt-28 pb-24 sm:px-10 3xl:px-16 3xl:pt-32 3xl:pb-28"
     >
-      <div className={`${CONTAINER} grid grid-cols-1 items-center gap-12 lg:grid-cols-[1.15fr_0.85fr] 3xl:gap-20`}>
+      <HeroAurora />
+
+      <div className={`${CONTAINER} relative z-10 grid grid-cols-1 items-center gap-14 lg:grid-cols-[1.1fr_0.9fr] 3xl:gap-20`}>
         <div>
-          {/* z-40: the console dropdown must beat the sibling h1's stacking
-              context (framer transforms promote each Reveal to its own layer,
-              so the panel's inner z-30 alone can't win) */}
-          <Reveal className="relative z-40">
-            <HeroTerminal />
+          <Reveal>
+            <div className="surface-hover surface inline-flex items-center gap-2 rounded-full px-3.5 py-1.5">
+              <span className="relative flex h-2 w-2">
+                <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-accent opacity-60" />
+                <span className="relative inline-flex h-2 w-2 rounded-full bg-accent" />
+              </span>
+              <span className="font-mono text-[0.68rem] tracking-[0.08em] text-muted">
+                {t.hero.badge}
+              </span>
+            </div>
           </Reveal>
 
-          <Reveal delay={0.05}>
+          <Reveal delay={0.08}>
             <DecryptText
               text={`> ${t.hero.greeting}_`}
               className="kicker mt-6 block"
@@ -85,16 +100,16 @@ export function Hero() {
             aria-label={t.personalInfo.name}
             initial={reduceMotion ? false : "hidden"}
             animate="visible"
-            variants={{ visible: { transition: { staggerChildren: 0.06, delayChildren: 0.1 } } }}
-            className="font-display glow-text mt-4 flex flex-wrap gap-x-[0.22em] text-hero font-semibold leading-[1.05] tracking-tight"
+            variants={{ visible: { transition: { staggerChildren: 0.06, delayChildren: 0.14 } } }}
+            className="font-display mt-4 flex flex-wrap gap-x-[0.22em] text-hero font-semibold leading-[1.05] tracking-tight text-foreground"
           >
-            {nameWords.map((word, index) => (
+            {t.personalInfo.name.split(" ").map((word, index) => (
               <span key={`${word}-${index}`} className="inline-block overflow-hidden pb-[0.08em]">
                 <m.span
                   aria-hidden="true"
                   variants={{
-                    hidden: { y: "110%", filter: "blur(12px)" },
-                    visible: { y: "0%", filter: "blur(0px)", transition: { duration: 0.65, ease: [0.22, 1, 0.36, 1] } },
+                    hidden: { y: "110%", opacity: 0 },
+                    visible: { y: "0%", opacity: 1, transition: { duration: 0.6, ease: [0.22, 1, 0.36, 1] } },
                   }}
                   className="inline-block"
                 >
@@ -104,17 +119,25 @@ export function Hero() {
             ))}
           </m.h1>
 
-          <Reveal delay={0.15}>
+          <Reveal delay={0.22}>
             <p className="mt-5 max-w-xl text-sm text-muted sm:text-base 3xl:max-w-3xl 3xl:text-xl 4xl:text-2xl">
               {titleWords.map((word, index) => (
-                <span key={`${word}-${index}`} className={index === titleWords.length - 1 ? "bg-gradient-to-r from-accent to-cyan-400 bg-clip-text font-medium text-transparent" : undefined}>
-                  {word}{index < titleWords.length - 1 ? " " : ""}
+                <span
+                  key={`${word}-${index}`}
+                  className={
+                    index === titleWords.length - 1
+                      ? "bg-gradient-to-r from-foreground to-accent bg-clip-text font-medium text-transparent"
+                      : undefined
+                  }
+                >
+                  {word}
+                  {index < titleWords.length - 1 ? " " : ""}
                 </span>
               ))}
             </p>
           </Reveal>
 
-          <Reveal delay={0.2}>
+          <Reveal delay={0.28}>
             <div className="mt-2 font-mono text-xs text-muted 3xl:text-sm">
               <p className="flex flex-wrap items-center gap-1.5">
                 <MapPin size={13} className="text-accent" />
@@ -144,11 +167,11 @@ export function Hero() {
             </div>
           </Reveal>
 
-          <Reveal delay={0.25}>
+          <Reveal delay={0.34}>
             <div className="mt-9 flex flex-wrap items-center gap-4">
               <a
                 href="#contact"
-                className="tap-pop group flex items-center gap-2 rounded-md bg-foreground px-6 py-3 text-sm font-medium text-background transition-[opacity,box-shadow] hover:opacity-90 hover:shadow-[0_0_32px_rgb(var(--accent-rgb)/0.35)]"
+                className="tap-pop group flex items-center gap-2 rounded-full bg-foreground px-6 py-3 text-sm font-medium text-background transition-[transform,box-shadow] hover:scale-[1.02] hover:shadow-[0_0_32px_rgb(var(--accent-rgb)/0.3)]"
               >
                 {t.hero.ctaPrimary}
                 <ArrowRight
@@ -158,14 +181,14 @@ export function Hero() {
               </a>
               <a
                 href="#projects"
-                className="tap-pop rounded-md border border-foreground/15 px-6 py-3 text-sm font-medium text-foreground transition-colors hover:border-accent/50 hover:text-accent"
+                className="tap-pop surface-hover rounded-full border border-foreground/12 px-6 py-3 text-sm font-medium text-foreground transition-colors hover:border-accent/50 hover:text-accent"
               >
                 {t.hero.ctaSecondary}
               </a>
             </div>
           </Reveal>
 
-          <Reveal delay={0.3}>
+          <Reveal delay={0.4}>
             <div className="mt-4 flex flex-wrap items-center gap-3">
               <CvDownload />
               <FollowMenu />
@@ -173,67 +196,121 @@ export function Hero() {
           </Reveal>
         </div>
 
-        <m.div
-          initial={{ opacity: 0, y: 24 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.7, delay: 0.25, ease: [0.22, 1, 0.36, 1] }}
-          className="relative mx-auto w-64 sm:w-80 lg:w-full lg:max-w-sm 3xl:max-w-md 4xl:max-w-lg"
-        >
-          <TiltCard className="hud-corners">
-            <div
-              role="button"
-              tabIndex={0}
-              aria-label={t.hero.scanLabel}
-              onClick={startScan}
-              onKeyDown={(e) => {
-                if (e.key === "Enter" || e.key === " ") {
-                  e.preventDefault();
-                  startScan();
-                }
-              }}
-              className="surface scanline relative aspect-[4/5] cursor-pointer overflow-hidden rounded-lg p-2 outline-none"
+        <div className="relative mx-auto flex w-full max-w-sm flex-col items-center gap-6">
+          <div className="relative w-64 sm:w-72 lg:w-full lg:max-w-xs 3xl:max-w-sm">
+            <m.div
+              initial={reduceMotion ? false : { scale: 0.75, opacity: 0 }}
+              animate={{ scale: 1, opacity: 1 }}
+              transition={{ duration: 0.8, ease: [0.22, 1, 0.36, 1], delay: 0.1 }}
+              className="absolute left-1/2 top-1/2 -z-10 aspect-square w-[118%] -translate-x-1/2 -translate-y-1/2 rounded-full bg-accent/[0.18] blur-2xl"
+              aria-hidden="true"
+            />
+            <m.div
+              initial={reduceMotion ? false : { y: 28, opacity: 0 }}
+              animate={{ y: 0, opacity: 1 }}
+              transition={{ duration: 0.7, ease: [0.22, 1, 0.36, 1], delay: 0.28 }}
+              className="relative"
             >
-              <div className="relative h-full w-full overflow-hidden rounded-md">
-                <Image
-                  src="/profil-fotografi.jpg"
-                  alt={t.personalInfo.name}
-                  fill
-                  priority
-                  quality={90}
-                  sizes="(min-width: 2400px) 32rem, (min-width: 1920px) 28rem, (min-width: 1024px) 24rem, 20rem"
-                  className="object-cover object-[center_25%]"
-                />
-                <div
-                  className="pointer-events-none absolute inset-0"
-                  style={{
-                    background:
-                      "linear-gradient(to top, rgb(var(--accent-rgb) / 0.16), transparent 45%)",
-                  }}
-                />
-                {scanRun > 0 && (
-                  <div key={scanRun} className="id-scan absolute inset-0" />
-                )}
-                <AnimatePresence>
-                  {verified && (
-                    <m.div
-                      initial={{ opacity: 0, scale: 0.6, rotate: -8 }}
-                      animate={{ opacity: 1, scale: 1, rotate: -4 }}
-                      exit={{ opacity: 0, scale: 0.9 }}
-                      transition={{ type: "spring", stiffness: 320, damping: 18 }}
-                className="absolute bottom-4 left-1/2 z-10 flex -translate-x-1/2 items-center gap-2 rounded-md border border-accent/70 bg-[#05070c]/85 px-3.5 py-2 font-mono text-[0.65rem] tracking-[0.2em] text-accent"
-                    >
-                      <ShieldCheck size={14} />
-                      {t.hero.verifiedLabel}
-                    </m.div>
+              <div
+                role="button"
+                tabIndex={0}
+                aria-label={t.hero.scanLabel}
+                onClick={startScan}
+                onKeyDown={(e) => {
+                  if (e.key === "Enter" || e.key === " ") {
+                    e.preventDefault();
+                    startScan();
+                  }
+                }}
+                className="surface scanline relative aspect-[4/5] cursor-pointer overflow-hidden rounded-2xl p-2 outline-none"
+              >
+                <div className="relative h-full w-full overflow-hidden rounded-xl">
+                  <Image
+                    src="/profil-fotografi.jpg"
+                    alt={t.personalInfo.name}
+                    fill
+                    priority
+                    quality={90}
+                    sizes="(min-width: 2400px) 32rem, (min-width: 1920px) 28rem, (min-width: 1024px) 24rem, 20rem"
+                    className="object-cover object-[center_25%]"
+                  />
+                  <div
+                    className="pointer-events-none absolute inset-0"
+                    style={{
+                      background:
+                        "linear-gradient(to top, rgb(var(--accent-rgb) / 0.14), transparent 45%)",
+                    }}
+                  />
+                  {scanRun > 0 && (
+                    <div key={scanRun} className="id-scan absolute inset-0" />
                   )}
-                </AnimatePresence>
+                  <AnimatePresence>
+                    {verified && (
+                      <m.div
+                        initial={{ opacity: 0, scale: 0.6, rotate: -8 }}
+                        animate={{ opacity: 1, scale: 1, rotate: -4 }}
+                        exit={{ opacity: 0, scale: 0.9 }}
+                        transition={{ type: "spring", stiffness: 320, damping: 18 }}
+                        className="absolute bottom-4 left-1/2 z-10 flex -translate-x-1/2 items-center gap-2 rounded-full border border-accent/70 bg-background/85 px-3.5 py-2 font-mono text-[0.65rem] tracking-[0.2em] text-accent"
+                      >
+                        <ShieldCheck size={14} />
+                        {t.hero.verifiedLabel}
+                      </m.div>
+                    )}
+                  </AnimatePresence>
+                </div>
+              </div>
+              <span className="surface font-mono absolute -bottom-3 -right-3 z-10 rounded-full px-2.5 py-1 text-[0.65rem] tracking-wide text-accent">
+                {t.hero.onlineLabel}
+              </span>
+            </m.div>
+          </div>
+
+          <Reveal delay={0.5} className="w-full">
+            <div className="surface relative overflow-hidden rounded-2xl p-5">
+              <div
+                className="pointer-events-none absolute -right-10 -top-10 h-32 w-32 rounded-full bg-accent/10 blur-3xl"
+                aria-hidden="true"
+              />
+              <div className="relative flex items-center gap-3">
+                <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-accent/12">
+                  <Sparkles size={18} className="text-accent" />
+                </div>
+                <div>
+                  <p className="text-2xl font-semibold text-foreground">{projectsStat.value}{projectsStat.suffix}</p>
+                  <p className="text-xs text-muted">{projectsStat.label}</p>
+                </div>
+              </div>
+
+              <div className="relative mt-5 space-y-2">
+                <div className="flex items-center justify-between text-xs">
+                  <span className="text-muted">{learningGoal.title}</span>
+                  <span className="font-mono text-accent">{learningProgress}%</span>
+                </div>
+                <div className="h-1.5 w-full overflow-hidden rounded-full bg-foreground/10">
+                  <m.div
+                    initial={reduceMotion ? false : { width: 0 }}
+                    animate={{ width: `${learningProgress}%` }}
+                    transition={{ duration: 1, delay: 0.7, ease: [0.22, 1, 0.36, 1] }}
+                    className="h-full rounded-full bg-accent"
+                  />
+                </div>
+              </div>
+
+              <div className="relative mt-5 flex items-center justify-between border-t border-foreground/10 pt-4">
+                <div>
+                  <p className="text-lg font-semibold text-foreground">{techStat.value}{techStat.suffix}</p>
+                  <p className="text-[0.68rem] text-muted">{techStat.label}</p>
+                </div>
+                <div className="h-8 w-px bg-foreground/10" aria-hidden="true" />
+                <div className="text-right">
+                  <p className="text-lg font-semibold text-foreground">2</p>
+                  <p className="text-[0.68rem] text-muted">{t.nav.experience}</p>
+                </div>
               </div>
             </div>
-          </TiltCard>
-          <span className="surface font-mono absolute -bottom-3 -right-3 z-10 rounded-md px-2.5 py-1 text-[0.65rem] tracking-wide text-accent">
-            {t.hero.onlineLabel}
-          </span>
-        </m.div>
+          </Reveal>
+        </div>
       </div>
 
       <m.a

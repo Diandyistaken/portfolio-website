@@ -10,8 +10,8 @@ export function OgImageContent() {
         flexDirection: "column",
         justifyContent: "center",
         padding: "90px",
-        background: "#05070c",
-        color: "#e9eef6",
+        background: "#11213f",
+        color: "#eef2fb",
       }}
     >
       <div

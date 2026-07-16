@@ -10,9 +10,15 @@ import type { NextConfig } from "next";
 // dynamic (per-request) rendering purely for CSP purposes, which isn't
 // worth the lost static export/CDN caching for a site with no auth, forms,
 // or user data.
+// Next dev's React Server Components client uses eval() for debugging
+// (stack-trace reconstruction) — never in production, per Next's own
+// warning text. Dev-only relaxation so `next dev` doesn't silently fail to
+// hydrate under this CSP; production keeps the strict policy.
+const isDev = process.env.NODE_ENV === "development";
+
 const csp = [
   "default-src 'self'",
-  "script-src 'self' 'unsafe-inline'",
+  `script-src 'self' 'unsafe-inline'${isDev ? " 'unsafe-eval'" : ""}`,
   "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com",
   "font-src 'self' https://fonts.gstatic.com data:",
   "img-src 'self' data: blob:",

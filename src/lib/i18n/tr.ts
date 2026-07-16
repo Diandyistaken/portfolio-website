@@ -51,6 +51,7 @@ export const tr: Content = {
   },
   hero: {
     greeting: "Merhaba, ben",
+    badge: "Yeni fırsatlara açık",
     ctaPrimary: "İletişime Geç",
     ctaSecondary: "Projeleri Gör",
     followLabel: "Takip Et",
@@ -244,19 +245,6 @@ export const tr: Content = {
     department: "Bilgisayar Mühendisliği (Computer Engineering)",
     graduationLabel: "Mezuniyet",
     graduation: "Ocak 2026",
-    photosIntro: "Mezuniyet günümden iki kare — kısa bir kişisel ara.",
-    photos: [
-      {
-        id: "mother",
-        alt: "Muhammed Maksut Çakmaktaş annesiyle mezuniyet töreninde",
-        caption: "Annemle",
-      },
-      {
-        id: "sibling",
-        alt: "Muhammed Maksut Çakmaktaş kardeşiyle mezuniyet töreninde",
-        caption: "Kardeşimle",
-      },
-    ],
   },
   projects: {
     kicker: "Projeler",
@@ -359,8 +347,8 @@ export const tr: Content = {
     visit: "Profili ziyaret et",
   },
   dividers: {
-    day: "Kod arası nefes molası: İstanbul.",
-    sunset: "Günün sonu: sistemler güvende, gün batıyor.",
+    day: "> kahve.doldur() — devam_",
+    sunset: "> console.log(\"gün teslim edildi\")_",
   },
   goals: {
     kicker: "Sırada Ne Var?",

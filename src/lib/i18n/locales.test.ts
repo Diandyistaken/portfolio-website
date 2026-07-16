@@ -51,12 +51,6 @@ describe("locale content parity", () => {
     });
   }
 
-  it("every locale's education.photos ids match tr's", () => {
-    const trIds = tr.education.photos.map((p) => p.id).sort();
-    expect(en.education.photos.map((p) => p.id).sort()).toEqual(trIds);
-    expect(de.education.photos.map((p) => p.id).sort()).toEqual(trIds);
-  });
-
   it("every locale's project ids match tr's, in the same order", () => {
     const trIds = tr.projects.items.map((p) => p.id);
     expect(en.projects.items.map((p) => p.id)).toEqual(trIds);

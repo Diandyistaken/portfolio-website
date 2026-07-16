@@ -28,11 +28,6 @@ export const experienceMeta: Record<string, { company: string }> = {
   iskur: { company: "İŞKUR" },
 };
 
-export const educationPhotosMeta: Record<string, { src: string }> = {
-  mother: { src: "/mezuniyet-anne.jpg" },
-  sibling: { src: "/mezuniyet-kardes.jpg" },
-};
-
 export const projectsMeta: Record<string, { url: string; size: "lg" | "md"; tags: string[] }> = {
   "daily-ai-researcher": {
     url: "https://github.com/diandyistaken/daily-ai-researcher",

@@ -51,6 +51,7 @@ export const en: Content = {
   },
   hero: {
     greeting: "Hi, I'm",
+    badge: "Open to new roles",
     ctaPrimary: "Get in Touch",
     ctaSecondary: "See Projects",
     followLabel: "Follow",
@@ -243,19 +244,6 @@ export const en: Content = {
     department: "Computer Engineering",
     graduationLabel: "Graduation",
     graduation: "January 2026",
-    photosIntro: "Two frames from graduation day — a short personal aside.",
-    photos: [
-      {
-        id: "mother",
-        alt: "Muhammed Maksut Çakmaktaş with his mother at his graduation ceremony",
-        caption: "With my mom",
-      },
-      {
-        id: "sibling",
-        alt: "Muhammed Maksut Çakmaktaş with his sibling at his graduation ceremony",
-        caption: "With my sibling",
-      },
-    ],
   },
   projects: {
     kicker: "Projects",
@@ -357,8 +345,8 @@ export const en: Content = {
     visit: "Visit profile",
   },
   dividers: {
-    day: "A breather between lines of code: Istanbul.",
-    sunset: "End of the day: systems secure, sun going down.",
+    day: "> coffee.refill() — resuming_",
+    sunset: "> console.log(\"day shipped\")_",
   },
   goals: {
     kicker: "What's Next?",

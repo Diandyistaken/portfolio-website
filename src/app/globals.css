@@ -2,21 +2,21 @@
 
 @custom-variant dark (&:where(.dark, .dark *));
 
-/* Dark-only cinematic theme: the scroll-scrubbed video is the real background,
-   so both :root and .dark share one palette. --accent / --accent-rgb are
-   animated at runtime by ScrollVideoProvider to follow the video's phases
-   (green → red → blue → gold). */
+/* Dark theme (redesign v3): airy night-blue base — deliberately NOT
+   near-black, per repeated feedback that flat black reads as oppressive.
+   --accent / --accent-rgb are driven live by AccentCycler as the visitor
+   scrolls (green → red → blue → gold) — the values below are just the
+   pre-hydration fallback (phase 0 / green). */
 :root,
 .dark {
-  --background: #05070c;
-  --foreground: #e9eef6;
-  --surface: 10 14 22;
-  --surface-border: 233 238 246;
+  --background: #11213f;
+  --background-rgb: 17 33 63;
+  --foreground: #eef2fb;
+  --surface: 30 45 75;
+  --surface-border: 238 242 251;
   --accent: rgb(79 224 141);
   --accent-rgb: 79 224 141;
-  --muted: #94a0b3;
-  /* Fixed, not scroll-synced: focus rings must stay legible and not read as
-     an alert even during the "red team" phase, when --accent turns red. */
+  --muted: #9aa5bf;
   --focus-color: #4fe08d;
 }
 
@@ -63,7 +63,7 @@ body {
   z-index: 9998;
   display: grid;
   place-items: center;
-  background: #05070c;
+  background: var(--background);
   clip-path: inset(0 0 0 0);
   transition: clip-path 0.6s cubic-bezier(0.76, 0, 0.24, 1);
 }
