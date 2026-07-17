@@ -3,6 +3,32 @@
 > Kullanıcı talebi: "bunları şunları ekledim diye log sun." Her parti buraya
 > işlenir; kaynak sıralama `delight-backlog.md`.
 
+## Parti 7 — 2026-07-17 (Fable 5 · 10 fikir)
+
+- **#7 Clearance Check Denied:** NDA kartına tıkla → tarama çizgisi süpürür,
+  "YETKİ DOĞRULANIYOR" yazar, kart sarsılır, "[ ACCESS DENIED ]" damgası vurur;
+  redaksiyon barında 400ms bir teasing kelime (fintech/gov/retail/ai) belirir;
+  tekrar tıklamada giderek kuruyan ret cümleleri.
+- **#12 Typable Ghost Prompt:** İletişim başlığının altında "$ say_hello ▊"
+  satırı — tıklayınca gerçekten yazabilirsin, Enter → esprili cevap yazılır +
+  e-posta kartı nabız atar.
+- **#23 Clearance Scroll HUD:** sol üstte scroll derinliğine göre GUEST → USER
+  → ANALYST → ROOT keycard-flip; ROOT'ta "tam erişim: beni işe al".
+- **#27 Elastic Email:** e-postayı yatay sürükle → macun gibi uzar, eşiği
+  geçince kopyalar + geri toplanır (normal tık hâlâ mailto).
+- **#30 Goal Bar Overclock:** hedef kartına hızlı tıkla → bar +%2 dolar,
+  basınç göstergesi gibi geri sızar; %100'de "PROGRAMIN ÖNÜNDE" etiketi.
+- **#31 Goal Loader Bot:** her hedef barının ucunda küçük bir bot yürür/oturur.
+- **#34 Project Peek-Zoom:** metin proje satırında gezerken imleci takip eden
+  yüzen terminal kartı (başlık + etiket + "GET /id → 200 OK · build 47s").
+- **#38 Hero Name Letter Drop:** isme tıkla → harfler fizikle düşüp zıplayıp
+  yerine oturur (5sn bekleme).
+- **#40 Firewall Brick-Break:** "day" divider'ında 8 FW-0x tuğlası — iki tıkta
+  kırılıp parçalanır, hepsi kırılınca "güvenlik duvarı AŞILDI", 10sn sonra
+  yeniden örülür.
+- **#20 Robot Sentry:** 14sn boşta robot dönen radar konisi açar; fare gelince
+  "hareket algılandı — sektör 7" der.
+
 ## Parti 6 — 2026-07-17 (loop iter 1 · 6 fikir)
 
 - **#22 Velocity Overdrive HUD:** hızlı scroll'da sağ üstte px/s hız göstergesi

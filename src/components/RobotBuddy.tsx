@@ -8,7 +8,8 @@ import { usePerfLite } from "./SectionBackdrop";
 import { RobotChat } from "./RobotChat";
 
 const PATROL_AFTER_MS = 7000;
-const SLEEP_AFTER_MS = 19000;
+const SENTRY_AFTER_MS = 14000;
+const SLEEP_AFTER_MS = 26000;
 const BUBBLE_MS = 3400;
 const MAX_TILT = 17;
 
@@ -29,6 +30,8 @@ export function RobotBuddy() {
   const [dismissed, setDismissed] = useState(false);
   const [sleeping, setSleeping] = useState(false);
   const [patrol, setPatrol] = useState(false);
+  const [sentry, setSentry] = useState(false);
+  const sentryOnRef = useRef(false);
   const [waving, setWaving] = useState(false);
   const [bubble, setBubble] = useState<string | null>(null);
   const [alerted, setAlerted] = useState(false);
@@ -93,16 +96,24 @@ export function RobotBuddy() {
 
     let raf = 0;
     let patrolTimer: ReturnType<typeof setTimeout> | null = null;
+    let sentryTimer: ReturnType<typeof setTimeout> | null = null;
     let sleepTimer: ReturnType<typeof setTimeout> | null = null;
     let lastScrollY = window.scrollY;
     let scrollResetTimer: ReturnType<typeof setTimeout> | null = null;
 
     const armIdleTimers = () => {
       if (patrolTimer) clearTimeout(patrolTimer);
+      if (sentryTimer) clearTimeout(sentryTimer);
       if (sleepTimer) clearTimeout(sleepTimer);
       patrolTimer = setTimeout(() => setPatrol(true), PATROL_AFTER_MS);
+      sentryTimer = setTimeout(() => {
+        sentryOnRef.current = true;
+        setSentry(true);
+      }, SENTRY_AFTER_MS);
       sleepTimer = setTimeout(() => {
         setPatrol(false);
+        setSentry(false);
+        sentryOnRef.current = false;
         setSleeping(true);
       }, SLEEP_AFTER_MS);
     };
@@ -110,6 +121,16 @@ export function RobotBuddy() {
     const onMove = (event: MouseEvent) => {
       setSleeping(false);
       setPatrol(false);
+      // #20 sentry: if the robot was scanning, "detect" the returning cursor
+      if (sentryOnRef.current) {
+        sentryOnRef.current = false;
+        setSentry(false);
+        if (bubbleTimer.current) clearTimeout(bubbleTimer.current);
+        setBubble(t.robot.sentryMessage);
+        bubbleTimer.current = setTimeout(() => setBubble(null), 1800);
+      } else {
+        setSentry(false);
+      }
       armIdleTimers();
       if (raf) return;
       raf = requestAnimationFrame(() => {
@@ -164,10 +185,11 @@ export function RobotBuddy() {
       window.removeEventListener("scroll", onScroll);
       if (raf) cancelAnimationFrame(raf);
       if (patrolTimer) clearTimeout(patrolTimer);
+      if (sentryTimer) clearTimeout(sentryTimer);
       if (sleepTimer) clearTimeout(sleepTimer);
       if (scrollResetTimer) clearTimeout(scrollResetTimer);
     };
-  }, [enabled, dismissed, reducedMotion, perfLite, rotateX, rotateY, pupilX, pupilY]);
+  }, [enabled, dismissed, reducedMotion, perfLite, rotateX, rotateY, pupilX, pupilY, t]);
 
   // Entry greeting: wave + intro bubble shortly after the robot pops in, so
   // visitors discover both the robot and its cursor-tracking eyes.
@@ -238,6 +260,17 @@ export function RobotBuddy() {
     <>
     <RobotChat open={chatOpen} onClose={() => setChatOpen(false)} />
     <div ref={rootRef} className="group/robot fixed bottom-6 right-6 z-40 hidden lg:block" style={{ perspective: 400 }}>
+      {sentry && !sleeping && (
+        <m.span
+          aria-hidden="true"
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1, rotate: 360 }}
+          exit={{ opacity: 0 }}
+          transition={{ rotate: { duration: 3, repeat: Infinity, ease: "linear" }, opacity: { duration: 0.4 } }}
+          className="pointer-events-none absolute -left-8 -top-8 -z-10 h-32 w-32 rounded-full"
+          style={{ background: "conic-gradient(from 0deg, rgb(var(--accent-rgb) / 0.18), transparent 45deg)" }}
+        />
+      )}
       <AnimatePresence>
         {bubble && (
           <m.div

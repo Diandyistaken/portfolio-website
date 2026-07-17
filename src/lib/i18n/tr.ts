@@ -95,6 +95,7 @@ export const tr: Content = {
     sleepingMessage: "zzz… (fareyi oynat, uyanayım)",
     hackMessage: "!! saldırı tespit edildi… şaka. sistem güvende ✓",
     honeypotMessage: "o butona basmamalıydın... neyse ki ben tatlıyım 👀",
+    sentryMessage: "hareket algılandı — sektör 7 👁",
   },
   about: {
     kicker: "Hakkımda",
@@ -381,6 +382,11 @@ export const tr: Content = {
       { id: "coffee", keywords: ["kahve", "çay", "içecek"], responses: ["kahve seviyem: %87 ve düşüyor. Maksut'unki: KRİTİK. ikimiz de dolduruyoruz ☕"] },
     ],
   },
+  hud: {
+    levels: ["GUEST", "USER", "ANALYST", "ROOT"],
+    escalation: "yetki yükseltme onaylandı",
+    fullAccess: "tam erişim: beni işe al ✓",
+  },
   honeypot: {
     button: "[ SAKIN TIKLAMA — YÖNETİCİ ]",
     intro: "> İZİNSİZ ERİŞİM GİRİŞİMİ TESPİT EDİLDİ",
@@ -402,6 +408,8 @@ export const tr: Content = {
     note: "> not: bu kayıtlardaki isim ve içerikler NDA/gizlilik kapsamında maskelendi. Detay yalnızca görüşmede.",
     bonusLabel: "YETKİ SEVİYESİ",
     bonus: "> yetki 3+ doğrulandı — ek kayıt: teslim edilen sitede scroll-tabanlı 3D kamera sahnesi, filtreli galeri ve çok dilli kurumsal içerik yapısı kuruldu.",
+    checkVerifying: "> YETKİ DOĞRULANIYOR…",
+    deniedLines: ["> ERİŞİM REDDEDİLDİ — yetki yetersiz", "> yine mi? cevap hâlâ hayır.", "> ısrar kaydedildi ve dosyana eklendi."],
     statuses: {
       delivered: "Teslim edildi",
       active: "Aktif kullanımda",
@@ -493,11 +501,13 @@ export const tr: Content = {
   dividers: {
     day: "> kahve.doldur() — devam",
     sunset: "> console.log(\"gün teslim edildi\")",
+    bypass: "> güvenlik duvarı AŞILDI — içeri buyur_",
   },
   goals: {
     kicker: "Sırada Ne Var?",
     title: "Devam eden hedefler",
     description: "Şu anda pentest temelleri, TryHackMe laboratuvarları ve eJPT için çalışıyorum.",
+    aheadTag: "PROGRAMIN ÖNÜNDE",
     items: [
       {
         id: "udemy",
@@ -525,6 +535,8 @@ export const tr: Content = {
     copiedLabel: "Kopyalandı",
     copyFailedLabel: "Kopyalanamadı — e-postayı seçip elle kopyala",
     signalLabel: "SİNYAL",
+    ghostPrompt: "say_hello",
+    ghostResponse: "mesaj kuyruğa alındı… şaka — gerçek kanal hemen aşağıda, e-postayı kopyala →",
   },
   receipt: {
     title: "OTURUM FİŞİ",

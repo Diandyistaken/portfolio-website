@@ -34,6 +34,15 @@ export function Hero() {
   const [verified, setVerified] = useState(false);
   const [tickerIndex, setTickerIndex] = useState(0);
   const [statusIndex, setStatusIndex] = useState(0);
+  // #38 name letter-drop: clicking the h1 detonates the letters (5s cooldown)
+  const [dropRun, setDropRun] = useState(0);
+  const dropCooldown = useRef(0);
+  const dropTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
+  useEffect(() => {
+    return () => {
+      if (dropTimer.current) clearTimeout(dropTimer.current);
+    };
+  }, []);
   const perfLite = useSyncExternalStore(
     subscribeToRootClass,
     getPerfLiteSnapshot,
@@ -71,6 +80,18 @@ export function Hero() {
     setTimeout(() => setVerified(true), 700);
     setTimeout(() => setVerified(false), 2400);
   };
+
+  const detonateName = () => {
+    if (staticHero) return;
+    const now = performance.now();
+    if (now - dropCooldown.current < 5000) return;
+    dropCooldown.current = now;
+    setDropRun((run) => run + 1);
+    if (dropTimer.current) clearTimeout(dropTimer.current);
+    dropTimer.current = setTimeout(() => setDropRun(0), 1700);
+  };
+
+  const nameChars = Array.from(t.personalInfo.name);
 
   const projectsStat = t.about.stats[1];
   const techStat = t.about.stats[2];
@@ -125,28 +146,64 @@ export function Hero() {
             />
           </Reveal>
 
-          <m.h1
-            aria-label={t.personalInfo.name}
-            initial={reduceMotion ? false : "hidden"}
-            animate="visible"
-            variants={{ visible: { transition: { staggerChildren: 0.06, delayChildren: 0.14 } } }}
-            className="font-display mt-6 flex flex-wrap gap-x-[0.22em] text-hero font-medium leading-[1.02] tracking-tight text-foreground"
-          >
-            {t.personalInfo.name.split(" ").map((word, index) => (
-              <span key={`${word}-${index}`} className="inline-block overflow-hidden pb-[0.08em]">
-                <m.span
-                  aria-hidden="true"
-                  variants={{
-                    hidden: { y: "110%", opacity: 0 },
-                    visible: { y: "0%", opacity: 1, transition: { duration: 0.6, ease: [0.22, 1, 0.36, 1] } },
-                  }}
-                  className="inline-block"
-                >
-                  {word}
-                </m.span>
-              </span>
-            ))}
-          </m.h1>
+          {dropRun === 0 ? (
+            <m.h1
+              aria-label={t.personalInfo.name}
+              onClick={detonateName}
+              initial={reduceMotion ? false : "hidden"}
+              animate="visible"
+              variants={{ visible: { transition: { staggerChildren: 0.06, delayChildren: 0.14 } } }}
+              className={`font-display mt-6 flex flex-wrap gap-x-[0.22em] text-hero font-medium leading-[1.02] tracking-tight text-foreground ${staticHero ? "" : "cursor-pointer"}`}
+            >
+              {t.personalInfo.name.split(" ").map((word, index) => (
+                <span key={`${word}-${index}`} className="inline-block overflow-hidden pb-[0.08em]">
+                  <m.span
+                    aria-hidden="true"
+                    variants={{
+                      hidden: { y: "110%", opacity: 0 },
+                      visible: { y: "0%", opacity: 1, transition: { duration: 0.6, ease: [0.22, 1, 0.36, 1] } },
+                    }}
+                    className="inline-block"
+                  >
+                    {word}
+                  </m.span>
+                </span>
+              ))}
+            </m.h1>
+          ) : (
+            // #38 detonated: per-letter physics drop, reverts to words after ~1.7s
+            <h1
+              aria-label={t.personalInfo.name}
+              onClick={detonateName}
+              className="font-display mt-6 flex cursor-pointer flex-wrap text-hero font-medium leading-[1.02] tracking-tight text-foreground"
+            >
+              {nameChars.map((char, index) =>
+                char === " " ? (
+                  <span key={index} className="inline-block w-[0.28em]" />
+                ) : (
+                  <m.span
+                    key={`${dropRun}-${index}`}
+                    aria-hidden="true"
+                    className="inline-block"
+                    initial={{ y: 0, rotate: 0 }}
+                    animate={{
+                      y: [0, 42 + ((index * 37) % 44), 42 + ((index * 37) % 44) - 14, 0],
+                      rotate: [0, ((index * 13) % 17) - 8, 0],
+                      textShadow: [
+                        "0 0 0 rgb(94 200 255 / 0)",
+                        "0 0 0 rgb(94 200 255 / 0)",
+                        "0 4px 18px rgb(94 200 255 / 0.7)",
+                        "0 0 0 rgb(94 200 255 / 0)",
+                      ],
+                    }}
+                    transition={{ duration: 1.5, delay: index * 0.02, ease: [0.34, 1.4, 0.64, 1], times: [0, 0.35, 0.75, 1] }}
+                  >
+                    {char}
+                  </m.span>
+                ),
+              )}
+            </h1>
+          )}
 
           <Reveal delay={0.22}>
             <p className="mt-5 max-w-xl text-sm text-muted sm:text-base 3xl:max-w-3xl 3xl:text-xl 4xl:text-2xl">

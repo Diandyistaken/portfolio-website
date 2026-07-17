@@ -16,6 +16,7 @@ const ProximityField = dynamic(() => import("./ProximityField").then((mod) => mo
 const SectionRail = dynamic(() => import("./SectionRail").then((mod) => mod.SectionRail), { ssr: false });
 const Achievements = dynamic(() => import("./Achievements").then((mod) => mod.Achievements), { ssr: false });
 const OverdriveHud = dynamic(() => import("./OverdriveHud").then((mod) => mod.OverdriveHud), { ssr: false });
+const ClearanceHud = dynamic(() => import("./ClearanceHud").then((mod) => mod.ClearanceHud), { ssr: false });
 
 export function ClientChrome() {
   useEffect(() => {
@@ -33,6 +34,7 @@ export function ClientChrome() {
       <SectionRail />
       <Achievements />
       <OverdriveHud />
+      <ClearanceHud />
     </>
   );
 }

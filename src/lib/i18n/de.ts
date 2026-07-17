@@ -95,6 +95,7 @@ export const de: Content = {
     sleepingMessage: "zzz… (beweg die Maus, dann wache ich auf)",
     hackMessage: "!! Angriff erkannt… Spaß. System sicher ✓",
     honeypotMessage: "das solltest du nicht drücken… zum Glück bin ich süß 👀",
+    sentryMessage: "Bewegung erkannt — Sektor 7 👁",
   },
   about: {
     kicker: "Über mich",
@@ -379,6 +380,11 @@ export const de: Content = {
       { id: "coffee", keywords: ["kaffee", "tee"], responses: ["mein Kaffeestand: 87% und sinkend. Maksuts: KRITISCH ☕"] },
     ],
   },
+  hud: {
+    levels: ["GUEST", "USER", "ANALYST", "ROOT"],
+    escalation: "Rechteausweitung gewährt",
+    fullAccess: "Vollzugriff: stell mich ein ✓",
+  },
   honeypot: {
     button: "[ NICHT KLICKEN — NUR ADMIN ]",
     intro: "> UNBEFUGTER ZUGRIFFSVERSUCH ERKANNT",
@@ -400,6 +406,8 @@ export const de: Content = {
     note: "> hinweis: Namen und Inhalte dieser Akten sind unter NDA/Datenschutz maskiert. Details nur im Gespräch.",
     bonusLabel: "FREIGABESTUFE",
     bonus: "> Freigabe 3+ bestätigt — Zusatzeintrag: die gelieferte Seite erhielt eine scrollgesteuerte 3D-Kameraszene, eine filterbare Galerie und eine mehrsprachige Inhaltsstruktur.",
+    checkVerifying: "> FREIGABE WIRD GEPRÜFT…",
+    deniedLines: ["> ZUGRIFF VERWEIGERT — Freigabe unzureichend", "> schon wieder? immer noch nein.", "> Beharrlichkeit notiert und in deiner Akte vermerkt."],
     statuses: {
       delivered: "Geliefert",
       active: "Im aktiven Einsatz",
@@ -491,11 +499,13 @@ export const de: Content = {
   dividers: {
     day: "> kaffee.auffüllen() — weiter",
     sunset: "> console.log(\"tag erledigt\")",
+    bypass: "> FIREWALL UMGANGEN — komm rein_",
   },
   goals: {
     kicker: "Was kommt als Nächstes?",
     title: "Laufende Ziele",
     description: "Aktuell arbeite ich an Pentest-Grundlagen, TryHackMe-Labs und der eJPT.",
+    aheadTag: "DEM PLAN VORAUS",
     items: [
       {
         id: "udemy",
@@ -523,6 +533,8 @@ export const de: Content = {
     copiedLabel: "Kopiert",
     copyFailedLabel: "Kopieren fehlgeschlagen — E-Mail bitte manuell markieren und kopieren",
     signalLabel: "SIGNAL",
+    ghostPrompt: "say_hello",
+    ghostResponse: "Nachricht eingereiht… Spaß — der echte Kanal ist direkt darunter, E-Mail kopieren →",
   },
   receipt: {
     title: "SITZUNGSBELEG",

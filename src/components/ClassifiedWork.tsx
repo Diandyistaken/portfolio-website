@@ -1,7 +1,7 @@
 "use client";
 
-import { useEffect, useState } from "react";
-import { Lock, ShieldCheck, Unlock, Wrench, Zap } from "lucide-react";
+import { useEffect, useRef, useState, type ReactNode } from "react";
+import { Lock, ShieldAlert, ShieldCheck, Unlock, Wrench, Zap } from "lucide-react";
 import { AnimatePresence, m } from "framer-motion";
 import { RevealGroup, revealItem } from "./Reveal";
 import { SectionHeading } from "./SectionHeading";
@@ -9,6 +9,8 @@ import { useLanguage } from "@/lib/i18n/LanguageProvider";
 import { CONTAINER } from "@/lib/layout";
 
 const CLEARANCE_TARGET = 3;
+// teasing words that flicker into view for a beat during the DENIED skit
+const TEASE_WORDS = ["fintech", "gov", "retail", "ai"];
 
 function readClearance(): number {
   try {
@@ -17,6 +19,197 @@ function readClearance(): number {
   } catch {
     return 0;
   }
+}
+
+type ClassifiedItem = ReturnType<typeof useLanguage>["t"]["classified"]["items"][number];
+
+/** One NDA card + the #7 "clearance check denied" click skit. */
+function ClassifiedCard({
+  item,
+  index,
+  isFirst,
+  cleared,
+  bonus,
+  statusIcon,
+  labels,
+}: {
+  item: ClassifiedItem;
+  index: number;
+  isFirst: boolean;
+  cleared: boolean;
+  bonus: string;
+  statusIcon: Record<ClassifiedItem["status"], ReactNode>;
+  labels: {
+    fileLabel: string;
+    redactedLabel: string;
+    verifying: string;
+    denied: string[];
+    bonusLabel: string;
+    statuses: Record<ClassifiedItem["status"], string>;
+  };
+}) {
+  const [active, setActive] = useState(false);
+  const [phase, setPhase] = useState<"scan" | "denied">("scan");
+  const [denyLine, setDenyLine] = useState("");
+  const clickCount = useRef(0);
+  const timers = useRef<ReturnType<typeof setTimeout>[]>([]);
+
+  useEffect(() => {
+    return () => timers.current.forEach((timer) => clearTimeout(timer));
+  }, []);
+
+  const runSkit = () => {
+    timers.current.forEach((timer) => clearTimeout(timer));
+    timers.current = [];
+    clickCount.current += 1;
+    setActive(true);
+    setPhase("scan");
+    setDenyLine("");
+    // after the scan sweep, slam the DENIED stamp + a cycling denial line
+    timers.current.push(
+      setTimeout(() => {
+        setPhase("denied");
+        const lines = labels.denied;
+        setDenyLine(clickCount.current === 1 ? labels.verifying : lines[(clickCount.current - 1) % lines.length]);
+      }, 620),
+    );
+    timers.current.push(setTimeout(() => setActive(false), 2600));
+  };
+
+  return (
+    <m.article
+      variants={revealItem}
+      onClick={runSkit}
+      animate={active ? { x: [0, -4, 4, -3, 3, 0] } : undefined}
+      transition={active ? { duration: 0.4 } : undefined}
+      role="button"
+      tabIndex={0}
+      onKeyDown={(event) => {
+        if (event.key === "Enter" || event.key === " ") {
+          event.preventDefault();
+          runSkit();
+        }
+      }}
+      className="surface surface-hover target-frame group relative cursor-pointer overflow-hidden rounded-lg p-6 outline-none sm:p-7 3xl:p-9"
+    >
+      {/* #7 scan sweep */}
+      <AnimatePresence>
+        {active && phase === "scan" && (
+          <m.span
+            aria-hidden="true"
+            initial={{ x: "-120%" }}
+            animate={{ x: "120%" }}
+            transition={{ duration: 0.6, ease: "easeInOut" }}
+            className="pointer-events-none absolute inset-y-0 z-20 w-1/3 bg-gradient-to-r from-transparent via-accent/25 to-transparent"
+          />
+        )}
+      </AnimatePresence>
+
+      <div className="flex items-center justify-between gap-3">
+        <span className="font-mono text-[0.68rem] tracking-[0.14em] text-muted">
+          {`${labels.fileLabel} // ${item.code}`}
+        </span>
+        <span className="flex items-center gap-1.5 rounded-full border border-accent/40 px-2.5 py-1 font-mono text-[0.62rem] tracking-[0.16em] text-accent">
+          <Lock size={10} aria-hidden="true" />
+          {item.tag}
+        </span>
+      </div>
+
+      {/* Redacted "name" line: the bar IS the point — reads as a censored
+          classified file, backed by a screen-reader label. During the skit
+          the first bar flickers a teasing word into view. */}
+      <div className="mt-5 flex items-center gap-3">
+        <span className="sr-only">{labels.redactedLabel}</span>
+        <span className="redacted-bar relative h-6 w-36 rounded-sm sm:w-44" aria-hidden="true">
+          <AnimatePresence>
+            {active && phase === "denied" && (
+              <m.span
+                initial={{ opacity: 0 }}
+                animate={{ opacity: [0, 1, 1, 0] }}
+                transition={{ duration: 0.5, times: [0, 0.2, 0.6, 1] }}
+                className="absolute inset-0 flex items-center justify-center font-mono text-[0.6rem] uppercase tracking-widest text-background"
+              >
+                {TEASE_WORDS[index % TEASE_WORDS.length]}
+              </m.span>
+            )}
+          </AnimatePresence>
+        </span>
+        <span className="redacted-bar h-6 w-14 rounded-sm sm:w-20" aria-hidden="true" />
+      </div>
+
+      <h3 className="font-display mt-4 text-lg font-semibold sm:text-xl">{item.type}</h3>
+      <p className="mt-2 text-sm leading-relaxed text-muted">{item.blurb}</p>
+
+      <div className="mt-5 flex flex-wrap gap-2">
+        {item.stack.map((tech) => (
+          <span
+            key={tech}
+            data-prox
+            className="prox-chip font-mono rounded-sm border border-foreground/12 px-2.5 py-1 text-[0.7rem] text-muted"
+          >
+            {tech}
+          </span>
+        ))}
+      </div>
+
+      {/* #7 denial line + stamp */}
+      <AnimatePresence>
+        {active && phase === "denied" && (
+          <m.div
+            initial={{ opacity: 0, y: 4 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0 }}
+            className="mt-3 flex items-center gap-2 font-mono text-[0.68rem] text-accent"
+          >
+            <ShieldAlert size={12} aria-hidden="true" />
+            {denyLine}
+          </m.div>
+        )}
+      </AnimatePresence>
+
+      {isFirst && (
+        <AnimatePresence>
+          {cleared && (
+            <m.p
+              initial={{ opacity: 0, height: 0 }}
+              animate={{ opacity: 1, height: "auto" }}
+              className="mt-4 border-l-2 border-accent/50 pl-3 font-mono text-[0.7rem] leading-relaxed text-accent/90"
+            >
+              {bonus}
+            </m.p>
+          )}
+        </AnimatePresence>
+      )}
+
+      <div className="mt-6 flex items-center justify-between border-t border-foreground/10 pt-4">
+        <span className="font-mono text-[0.68rem] text-muted">{item.year}</span>
+        <span
+          className={`flex items-center gap-1.5 font-mono text-[0.68rem] uppercase tracking-[0.14em] ${
+            item.status === "delivered" ? "text-accent" : "text-foreground/70"
+          }`}
+        >
+          {statusIcon[item.status]}
+          {labels.statuses[item.status]}
+        </span>
+      </div>
+
+      {/* ACCESS DENIED stamp */}
+      <AnimatePresence>
+        {active && phase === "denied" && (
+          <m.span
+            aria-hidden="true"
+            initial={{ opacity: 0, scale: 1.4, rotate: -10 }}
+            animate={{ opacity: 1, scale: 1, rotate: -6 }}
+            exit={{ opacity: 0 }}
+            transition={{ type: "spring", stiffness: 360, damping: 16 }}
+            className="pointer-events-none absolute right-4 top-1/2 z-20 -translate-y-1/2 rounded border-2 border-accent/80 px-3 py-1 font-mono text-xs font-bold uppercase tracking-[0.2em] text-accent"
+          >
+            ACCESS DENIED
+          </m.span>
+        )}
+      </AnimatePresence>
+    </m.article>
+  );
 }
 
 /**
@@ -59,71 +252,24 @@ export function ClassifiedWork() {
         />
 
         <RevealGroup stagger={0.08} className="mt-14 grid grid-cols-1 gap-5 md:grid-cols-2 3xl:gap-7">
-          {t.classified.items.map((item) => (
-            <m.article
+          {t.classified.items.map((item, index) => (
+            <ClassifiedCard
               key={item.code}
-              variants={revealItem}
-              className="surface surface-hover target-frame group relative overflow-hidden rounded-lg p-6 sm:p-7 3xl:p-9"
-            >
-              <div className="flex items-center justify-between gap-3">
-                <span className="font-mono text-[0.68rem] tracking-[0.14em] text-muted">
-                  {`${t.classified.fileLabel} // ${item.code}`}
-                </span>
-                <span className="flex items-center gap-1.5 rounded-full border border-accent/40 px-2.5 py-1 font-mono text-[0.62rem] tracking-[0.16em] text-accent">
-                  <Lock size={10} aria-hidden="true" />
-                  {item.tag}
-                </span>
-              </div>
-
-              {/* Redacted "name" line: the bar IS the point — reads as a
-                  censored classified file, backed by a screen-reader label. */}
-              <div className="mt-5 flex items-center gap-3">
-                <span className="sr-only">{t.classified.redactedLabel}</span>
-                <span className="redacted-bar h-6 w-36 rounded-sm sm:w-44" aria-hidden="true" />
-                <span className="redacted-bar h-6 w-14 rounded-sm sm:w-20" aria-hidden="true" />
-              </div>
-
-              <h3 className="font-display mt-4 text-lg font-semibold sm:text-xl">{item.type}</h3>
-              <p className="mt-2 text-sm leading-relaxed text-muted">{item.blurb}</p>
-
-              <div className="mt-5 flex flex-wrap gap-2">
-                {item.stack.map((tech) => (
-                  <span
-                    key={tech}
-                    data-prox
-                    className="prox-chip font-mono rounded-sm border border-foreground/12 px-2.5 py-1 text-[0.7rem] text-muted"
-                  >
-                    {tech}
-                  </span>
-                ))}
-              </div>
-
-              {item.code === t.classified.items[0].code && (
-                <AnimatePresence>
-                  {cleared && (
-                    <m.p
-                      initial={{ opacity: 0, height: 0 }}
-                      animate={{ opacity: 1, height: "auto" }}
-                      className="mt-4 border-l-2 border-accent/50 pl-3 font-mono text-[0.7rem] leading-relaxed text-accent/90"
-                    >
-                      {t.classified.bonus}
-                    </m.p>
-                  )}
-                </AnimatePresence>
-              )}
-
-              <div className="mt-6 flex items-center justify-between border-t border-foreground/10 pt-4">
-                <span className="font-mono text-[0.68rem] text-muted">{item.year}</span>
-                <span
-                  className={`flex items-center gap-1.5 font-mono text-[0.68rem] uppercase tracking-[0.14em] ${
-                    item.status === "delivered" ? "text-accent" : "text-foreground/70"
-                  }`}
-                >
-                  {statusIcon[item.status]}
-                  {t.classified.statuses[item.status]}
-                </span>
-              </div>
-            </m.article>
+              item={item}
+              index={index}
+              isFirst={index === 0}
+              cleared={cleared}
+              bonus={t.classified.bonus}
+              statusIcon={statusIcon}
+              labels={{
+                fileLabel: t.classified.fileLabel,
+                redactedLabel: t.classified.redactedLabel,
+                verifying: t.classified.checkVerifying,
+                denied: t.classified.deniedLines,
+                bonusLabel: t.classified.bonusLabel,
+                statuses: t.classified.statuses,
+              }}
+            />
           ))}
         </RevealGroup>
 

@@ -104,6 +104,7 @@ export type Content = {
     sleepingMessage: string;
     hackMessage: string;
     honeypotMessage: string;
+    sentryMessage: string;
   };
   achievements: {
     unlocked: string;
@@ -119,6 +120,11 @@ export type Content = {
     chips: string[];
     fallbacks: string[];
     intents: { id: string; keywords: string[]; responses: string[] }[];
+  };
+  hud: {
+    levels: string[];
+    escalation: string;
+    fullAccess: string;
   };
   honeypot: {
     button: string;
@@ -192,6 +198,8 @@ export type Content = {
     note: string;
     bonusLabel: string;
     bonus: string;
+    checkVerifying: string;
+    deniedLines: string[];
     statuses: { delivered: string; active: string; building: string };
     items: {
       code: string;
@@ -238,11 +246,13 @@ export type Content = {
   dividers: {
     day: string;
     sunset: string;
+    bypass: string;
   };
   goals: {
     kicker: string;
     title: string;
     description: string;
+    aheadTag: string;
     items: GoalContent[];
   };
   contact: {
@@ -254,6 +264,8 @@ export type Content = {
     copiedLabel: string;
     copyFailedLabel: string;
     signalLabel: string;
+    ghostPrompt: string;
+    ghostResponse: string;
   };
   footer: {
     rights: string;

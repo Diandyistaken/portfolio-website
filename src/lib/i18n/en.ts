@@ -95,6 +95,7 @@ export const en: Content = {
     sleepingMessage: "zzz… (move the mouse to wake me)",
     hackMessage: "!! intrusion detected… kidding. system secure ✓",
     honeypotMessage: "you weren't supposed to press that… lucky I'm cute 👀",
+    sentryMessage: "movement detected — sector 7 👁",
   },
   about: {
     kicker: "About",
@@ -379,6 +380,11 @@ export const en: Content = {
       { id: "coffee", keywords: ["coffee", "tea", "drink"], responses: ["my coffee level: 87% and dropping. Maksut's: CRITICAL. we're both refilling ☕"] },
     ],
   },
+  hud: {
+    levels: ["GUEST", "USER", "ANALYST", "ROOT"],
+    escalation: "privilege escalation granted",
+    fullAccess: "full access: hire me ✓",
+  },
   honeypot: {
     button: "[ DO NOT CLICK — ADMIN ONLY ]",
     intro: "> UNAUTHORIZED ACCESS ATTEMPT DETECTED",
@@ -400,6 +406,8 @@ export const en: Content = {
     note: "> note: names and contents in these records are masked under NDA/privacy. Details only in an interview.",
     bonusLabel: "CLEARANCE LEVEL",
     bonus: "> clearance 3+ verified — extra record: the delivered site shipped a scroll-driven 3D camera scene, a filterable gallery and a multilingual corporate content structure.",
+    checkVerifying: "> VERIFYING CLEARANCE…",
+    deniedLines: ["> ACCESS DENIED — insufficient clearance", "> again? still no.", "> persistence noted and added to your file."],
     statuses: {
       delivered: "Delivered",
       active: "In active use",
@@ -491,11 +499,13 @@ export const en: Content = {
   dividers: {
     day: "> coffee.refill() — resuming",
     sunset: "> console.log(\"day shipped\")",
+    bypass: "> FIREWALL BYPASSED — come on in_",
   },
   goals: {
     kicker: "What's Next?",
     title: "Ongoing goals",
     description: "I'm currently working on pentesting fundamentals, TryHackMe labs, and the eJPT.",
+    aheadTag: "AHEAD OF SCHEDULE",
     items: [
       {
         id: "udemy",
@@ -523,6 +533,8 @@ export const en: Content = {
     copiedLabel: "Copied",
     copyFailedLabel: "Couldn't copy — select and copy the email manually",
     signalLabel: "SIGNAL",
+    ghostPrompt: "say_hello",
+    ghostResponse: "message queued… kidding — the real channel is right below, copy the email →",
   },
   receipt: {
     title: "SESSION RECEIPT",

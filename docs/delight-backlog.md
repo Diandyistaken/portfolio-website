@@ -33,7 +33,7 @@
   The robot's eye shape morphs per section: crosshair pupils in classified/NDA, '>' prompt eyes at the About terminal, upward-arrow eyes at goals, one heart-blink at the showcase gallery. Each mood is a 300ms morph driven by the existing navbar section-HUD state, so the eyes visibly react to where you are.
   _tech: framer animate between SVG path/clip variants driven by existing section HUD state_
 
-- [ ] **7. Clearance Check Denied** (hook 9, M, classified/NDA cards)
+- [x] **7. Clearance Check Denied** (hook 9, M, classified/NDA cards)
   The consolidated NDA click interaction (merges interrogation + firewall gate): approaching a card raises a faint hairline firewall grid with an 'access attempts' counter; clicking runs a mock auth — scan bar sweep, 'VERIFYING CLEARANCE…' types, then a bracketed ACCESS DENIED stamp slams in with a 4px shake while one redaction bar flickers to reveal a single teasing word ('fintech', 'gov') for 400ms. Repeat clicks pull escalating deadpan denials, ending with the robot's bubble: 'I've said too much.'
   _tech: pointer-distance CSS var + framer animate() timeline, clip-path reveal, click counter state_
 
@@ -53,7 +53,7 @@
   A one-line monospace log stream pinned above the footer typing real visitor events in syslog format: '14:02:11 [nav] user hovered SERVICES', '[idle] 12s — robot yawns', '[scroll] velocity 2400px/s'. Old lines scroll up and fade like tail -f. Makes the site feel alive and watching — exactly the robot's spirit, and recruiters screenshot this.
   _tech: event bus + typed-line queue component, CSS translate stack_
 
-- [ ] **12. Typable Ghost Prompt** (hook 9, M, contact)
+- [x] **12. Typable Ghost Prompt** (hook 9, M, contact)
   The contact heading is a live prompt ('$ say_hello _') with a blinking block caret that actually accepts keystrokes when clicked; whatever the visitor types renders in real time, and Enter triggers a cheeky typed response ('message queued... just kidding, use the email button →') plus a pulse on the email card. A static heading becomes a toy people show friends.
   _tech: hidden input capture + typed-text render, framer caret blink_
 
@@ -85,7 +85,7 @@
   The robot raises a tiny articulated arm and waves on first arrival (after the intro loader) and again at the footer; near the contact section it points upward at the email card. The arm is two SVG segments on spring rotations, staying within the robot's existing silhouette language.
   _tech: framer spring rotations on SVG arm groups + IntersectionObserver triggers_
 
-- [ ] **20. Robot Sentry Mode** (hook 8, M, global (robot buddy))
+- [x] **20. Robot Sentry Mode** (hook 8, M, global (robot buddy))
   After 20s idle the robot deploys a rotating radar cone — a soft accent gradient wedge sweeping from its head (absorbs the separate idle-patrol pitch). When the mouse re-enters, the cone snaps to the cursor, eyes go wide, and a bubble logs 'movement detected, sector 7'. Ties the eye-tracking to a visible beam so the tracking finally reads as deliberate surveillance.
   _tech: idle timer + framer rotate, conic-gradient wedge_
 
@@ -97,7 +97,7 @@
   Scroll past a velocity threshold and a tiny corner HUD appears: 'SCROLL VELOCITY: 4,213 px/s ⚠ THROTTLING', with the cursor ring briefly stretching into a motion-blur ellipse; the session's fastest speed is kept as a mini high-score. Turns raw scrolling into a toy people deliberately flick to max out.
   _tech: framer useVelocity + spring, sessionStorage high score_
 
-- [ ] **23. Clearance-Level Scroll HUD** (hook 8, M, global (fixed HUD))
+- [x] **23. Clearance-Level Scroll HUD** (hook 8, M, global (fixed HUD))
   A fixed mono badge upgrades your access level as you scroll deeper — GUEST → USER → ANALYST → ROOT — each transition flashing 'privilege escalation granted' with a keycard-flip animation (absorbs the sectors-cleared counter: cleared sections tick alongside, persisted in localStorage). Reaching the footer at ROOT prints a one-time 'full access: hire me'.
   _tech: scroll progress thresholds + IntersectionObserver + framer, localStorage_
 
@@ -113,7 +113,7 @@
   When the email is copied, a dashed beam of ascending packet dots streams from the contact card up to the corner robot, whose antenna LED blinks in 'receiving' mode before it gives a thumbs-up eye animation and a bubble: 'transmission received.' Turns the site's single most important action into its best micro-moment.
   _tech: framer staggered dot ascent between two DOM rects + robot state hook_
 
-- [ ] **27. Elastic Email Stretch-Snap** (hook 8, M, contact)
+- [x] **27. Elastic Email Stretch-Snap** (hook 8, M, contact)
   Press-and-drag the email pill and it stretches like taffy (scaleX with a resistance curve) with the accent border tightening; pull past the threshold and it SNAPS — copies the email, recoils with a jelly wobble, and fires a short WebAudio plink. Plain click still copies normally, so this is a bonus, not friction (superseded the two-stage detonator idea for exactly that reason).
   _tech: framer drag with diminishing-returns transform, spring recoil, WebAudio blip_
 
@@ -125,11 +125,11 @@
   The canonical goals treatment (merges three scroll-fill pitches): bars render as terminal gauges [███████░░░] whose fill is scroll-linked, and the covered portion shows scrambled glyphs that resolve into readable label text exactly at the fill edge — watching the bar fill literally decrypts the goal. Completed goals stamp a 'CRACKED' tag; in-progress ones end with a blinking cursor; scrolling back re-encrypts.
   _tech: useScroll progress → char count + per-char resolve keyed to fill %_
 
-- [ ] **30. Goal Bar Overclock** (hook 8, M, goals)
+- [x] **30. Goal Bar Overclock** (hook 8, M, goals)
   Rapid-clicking a goal bar nudges it +2% per click with a satisfying tick, but it constantly leaks back toward its true value like a pressure gauge (absorbs the +1% co-op button). Pushing to 100% 'overclocks' it — flash, spark burst, temporary 'AHEAD OF SCHEDULE' tag, comedic drain-back hiss, and the robot side-eyes you for spamming.
   _tech: framer motion value + rAF decay loop, click accumulator_
 
-- [ ] **31. Goal Progress Loader Bot** (hook 8, M, goals)
+- [x] **31. Goal Progress Loader Bot** (hook 8, M, goals)
   A micro-bot walks along each goals bar pushing the fill forward as it animates into view, wiping sweat-drop dashes at 25/50/75% milestones; bars at 100% show it sitting on the end cap with slow-blinking 'done' eyes. Reduced motion: bars just fill normally.
   _tech: framer timeline synced to bar width, SVG micro-bot with 2 walk frames_
 
@@ -141,7 +141,7 @@
   Showcase thumbnails sit at 40% grayscale/dim; as the cursor approaches within ~200px (before hover) each image continuously interpolates toward full color, 1.04 scale, and an accent border glow proportional to distance (absorbs the dock-style magnify variant). The grid feels like a flashlight of clearance sweeping over classified material.
   _tech: single mousemove + per-tile distance calc setting CSS vars (filter/scale/border-alpha)_
 
-- [ ] **34. Thumbnail Peek-Zoom on Project Rows** (hook 8, M, projects rows)
+- [x] **34. Thumbnail Peek-Zoom on Project Rows** (hook 8, M, projects rows)
   Moving along a text-first project row summons a floating thumbnail preview that follows the cursor, scaling from 0 with a spring and rotating subtly toward movement direction; a right-aligned status line types 'GET /project → 200 OK · build 47s' (merged from the deploy-log variant). Leaving the row collapses it into the row's accent dot.
   _tech: framer follow-cursor motion value + velocity rotate, portal-positioned img, typer reuse_
 
@@ -157,7 +157,7 @@
   A second click-mode on the profile photo: a vertical accent line follows the cursor's x-position, revealing a duotone/wireframe rendition of the portrait on one side and the real photo on the other. Drag to scrub the split; release springs it back to 50/50.
   _tech: two stacked layers + clip-path inset from pointermove, framer spring on release_
 
-- [ ] **38. Hero Name Letter Drop** (hook 8, M, hero)
+- [x] **38. Hero Name Letter Drop** (hook 8, M, hero)
   Clicking the big hero name detonates it: each letter becomes a physics body that drops, bounces once on an invisible floor, scatters with slight rotation, then flies back and snaps into place with a magnetic spring and an accent flash on landing. One-per-5s cooldown keeps it special.
   _tech: framer per-letter springs on staggered spans, no canvas_
 
@@ -165,7 +165,7 @@
   A dormant grid of ~24 dim dots behind the contact heading: clicking any dot lights it and propagates to neighbors in an 80ms ripple with rising synth blips — one click cascades like a network worm, then the wave inverts and fades. Clicking mid-cascade spawns colliding waves.
   _tech: BFS timing over grid state, framer scale/glow, WebAudio blips_
 
-- [ ] **40. Firewall Brick-Break Divider** (hook 8, M, divider before projects/NDA)
+- [x] **40. Firewall Brick-Break Divider** (hook 8, M, divider before projects/NDA)
   One divider renders as a row of ascii 'FIREWALL' bricks: first click cracks a brick with fissure lines, second shatters it into falling particles. Break them all and the divider retypes as 'FIREWALL BYPASSED — welcome in', then rebuilds brick-by-brick after 10s so the toy is replayable.
   _tech: framer exit particles, state array, CSS clip-path cracks_
 
