@@ -3,6 +3,48 @@
 > Kullanıcı talebi: "bunları şunları ekledim diye log sun." Her parti buraya
 > işlenir; kaynak sıralama `delight-backlog.md`.
 
+## Parti 11 — 2026-07-17 (Fable 5 · 20 fikir + #94 yumuşatma)
+
+**Kullanıcı geri bildirimi:** #94 harf-aralığı "nefesi" mide bulandırıcıydı →
+maks. 0.14em → 0.04em'e düşürüldü, eşik 2600→3400px/s, yay daha sönümlü.
+
+Bölümler: **#70** hizmet kartı hover → SVG kenar izi çizilir + mini terminal
+"$ ./pentest --status" yazar, [ACTIVE] damgası; **#71** hizmet kartları
+scroll-scrub ile desteden dağıtılır (per-kart yay/rotasyon, geri sarılır);
+**#73** timeline noktaları mekanik buton — tıkla → basılır, rol metni yeniden
+decrypt olur + noktadan karta akım çizgisi; hepsine bas → omurga boyunca
+parlama süpürmesi; **#82** Projeler + Deneyim başlıkları önce bozuk yazar,
+sonra diff-stili düzeltir (yanlış harf üstü çizili kayar, doğrusu accent +
+"+" gutter); **#76** KPI karosunu kol gibi aşağı çek-bırak → tüm sayaçlar
+motion-blur ile döner, 8'de 1 "???" gösterip düzelir; **#77** Contact'ta
+"$ traceroute maksut.dev" → hop hop sahte gecikmelerle rota + paket noktası,
+sonunda e-posta kartı nabzı; **#90** hedef barına tutamaç — geri çek (kenar
+parlaması artar), bırak → gerçek değeri aşıp sıvı gibi salınarak oturur.
+Divider'lar: **#79** yan çizgiler ~14 minik tick — imleç 200px içinde demir
+tozu gibi bükülür; **#80** "day" divider'ında 5 yaylı boncuk scroll hızıyla
+ortadan dışa salınır; **#78** "sunset" divider'ında [SYN][ACK][DATA] paketleri
+hairline üzerinde scroll-hızına bağlı akar, imleç 120px içinde "inspect"
+(durur + hex payload tooltip).
+Global: **#72** bölüm sınırında sayfaya çakılı 1px scanline + "SECTOR 04 //
+PROJECTS" damgası (scroll durunca söner); **#88** navbar'da AUDIO OFF/ON —
+açıkken anchor tık alçak blip, easter egg çift blip, honeypot yükselen süpürme
+(tek AudioContext, localStorage); **#53** mobilde "$ enable --gyro-tilt"
+terminal çipi → cihaz eğimi hero foto + stat kartını farklı derinliklerde
+yatırır (iOS izni jest içinde, ret → sessiz statik); **#83** hero ismi %7
+opaklıkta gölge kopyası — imleç ışık kaynağı gibi yönünü belirler.
+Diğer: **#69** chat demo çerçevesi CRT gibi — görünüme girince yatay çizgiden
+açılır (scanline flaşı), uzaklaşınca söner; **#81** demo hover → "INTERCEPTED
+TRAFFIC" paneli, satıra tıkla → gerçek 1-cümle teknik detay; **#86** lightbox
+açılışında 1-kare RGB-split + 4 köşeden uçan braketler; **#89** skill çipleri
++ divider pili imleçten rüzgârda çim gibi eğilir (ProximityField'e --prox-dx
+yön kanalı eklendi); **#111** marquee scroll derinliğiyle tek tek hex alias'a
+döner (REACT → 0x52 45 41 43 54), dipte tamamen hex; **#112** hover'lanan çip
+kalıcı alt-çizgi tiki alır — bir kartın tüm çipleri → süpürme + "SKILL VECTOR
+VERIFIED" satırı (localStorage).
+Not: #75 exploit-chain atlandı (yayındaki #24 packet rider'ın alternatifi,
+"birini seç"); #76'nın robot yorumu i18n eklememek için absorbe edildi.
+Gate: tsc + eslint + vitest (34) + build yeşil.
+
 ## Parti 10 — 2026-07-17 (Fable 5 · 20 fikir + #10 doğrulama)
 
 Vitrin (ShowcaseLab + Lightbox): **#33** thumbnail'lar gri/sönük durur, imleç

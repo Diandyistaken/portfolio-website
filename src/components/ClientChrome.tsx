@@ -21,6 +21,8 @@ const SonarReveal = dynamic(() => import("./SonarReveal").then((mod) => mod.Sona
 const CursorFx = dynamic(() => import("./CursorFx").then((mod) => mod.CursorFx), { ssr: false });
 const PayloadInjector = dynamic(() => import("./PayloadInjector").then((mod) => mod.PayloadInjector), { ssr: false });
 const SpeedrunHud = dynamic(() => import("./SpeedrunHud").then((mod) => mod.SpeedrunHud), { ssr: false });
+const SectionScanline = dynamic(() => import("./SectionScanline").then((mod) => mod.SectionScanline), { ssr: false });
+const GyroTilt = dynamic(() => import("./GyroTilt").then((mod) => mod.GyroTilt), { ssr: false });
 
 export function ClientChrome() {
   useEffect(() => {
@@ -43,6 +45,8 @@ export function ClientChrome() {
       <CursorFx />
       <PayloadInjector />
       <SpeedrunHud />
+      <SectionScanline />
+      <GyroTilt />
     </>
   );
 }

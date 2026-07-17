@@ -217,7 +217,7 @@
   Showcase images scale 0.92→1.0 tied to scroll centering, and cursor proximity adds a circular scan lens — a radial mask following the mouse showing the image slightly zoomed and sharpened with a faint grid overlay, fading in from 150px away (absorbs the standalone magnifier-dock pitch). Forensic photo analysis, no hover required.
   _tech: useScroll scale + CSS mask-image radial at pointer var, background-position magnify_
 
-- [ ] **53. Gyro Tilt World (Mobile)** (hook 8, M, global (mobile))
+- [x] **53. Gyro Tilt World (Mobile)** (hook 8, M, global (mobile))
   On mobile, device tilt drives spring-smoothed parallax: hero card, robot eyes, and spotlight highlights all lean with the phone at different spring stiffnesses so the scene feels suspended in fluid. Permission prompt styled as a terminal command; silent fallback on denial. Gives touch users their own version of the proximity magic.
   _tech: DeviceOrientationEvent + framer useSpring per layer, iOS permission gate_
 
@@ -281,23 +281,23 @@
   A clip-on 'SECURITY CLEARANCE' mini-badge hangs from a drawn SVG lanyard on the hero card: grab and fling it and it swings on a damped spring pendulum with the cord bending via path interpolation, scroll velocity kicks it like wind, and yanking hard widens the robot's eyes (merges the pendulum and hologram-flip pitches). Double-click flips it to a back face with fake barcode, mouse-angle hologram sheen, and 'ACCESS: GRANTED'.
   _tech: framer drag + useSpring, SVG path pendulum, rotateY flip + gradient sheen_
 
-- [ ] **69. Chat Demo CRT Boot-Up** (hook 7, M, projects featured card)
+- [x] **69. Chat Demo CRT Boot-Up** (hook 7, M, projects featured card)
   The featured chat-bot demo frame starts as a collapsed horizontal accent line (CRT off); entering the viewport it powers on — the line expands vertically with a flash, one scanline sweeps down, then the demo fades in. Scrolling far away powers it back down to the line.
   _tech: framer whileInView + scaleY/clip-path keyframes, CSS scanline gradient_
 
-- [ ] **70. Service Self-Test Boot** (hook 7, M, services)
+- [x] **70. Service Self-Test Boot** (hook 7, M, services)
   Hovering a service card draws its border clockwise like a trace, then a one-line mini terminal at the card's foot types '$ ./pentest --status … [ACTIVE]' with an ice-blue OK stamp; each card has its own command so hovering all four feels like booting a system. On leave the trace retracts.
   _tech: framer pathLength on SVG rect border + existing typer reuse_
 
-- [ ] **71. Services Card Deal-In** (hook 7, M, services)
+- [x] **71. Services Card Deal-In** (hook 7, M, services)
   Service cards enter with a scroll-scrubbed deal from a single deck point below the fold — each translating along its own arc into grid position like cards dealt onto a table, with reverse scroll sweeping them back into the deck. Continuous scrub, so users play it back and forth.
   _tech: useScroll section progress → per-card arc transforms_
 
-- [ ] **72. Section Boundary Scanline** (hook 7, M, global (between sections))
+- [x] **72. Section Boundary Scanline** (hook 7, M, global (between sections))
   Crossing between major sections, a 1px full-width accent scanline sweeps the viewport exactly at the boundary's screen position (moving with scroll, not a timer), leaving a 300ms afterglow and stamping 'SECTOR 04 // PROJECTS'. Every boundary becomes a checkpoint.
   _tech: boundary elements' viewport position via useScroll, CSS glow_
 
-- [ ] **73. Timeline Plunger Nodes** (hook 7, M, experience timeline)
+- [x] **73. Timeline Plunger Nodes** (hook 7, M, experience timeline)
   Timeline dots become mechanical push-buttons: clicking depresses one with plunger travel and shadow, powering on that entry — text decrypt-scrambles in and a thin current line animates from dot to card. Clicking a lit node powers it down with a CRT-off collapse; lighting all triggers a full-timeline current sweep.
   _tech: framer variants, decrypt reuse, stroke-dashoffset current_
 
@@ -309,35 +309,35 @@
   The timeline restyled as a kill-chain: numbered stages (RECON → FOOTHOLD → ESCALATION → PERSISTENCE for the current role) connected by a scroll-drawn line, each node popping with a lock-opening tick as the line reaches it. Hovering decrypts the stage label; scrolling up re-locks. Complements (or alternative-skins) the packet rider.
   _tech: SVG pathLength scroll-linked + framer node variants_
 
-- [ ] **76. KPI Counter Slot-Machine Pull** (hook 7, M, about KPIs)
+- [x] **76. KPI Counter Slot-Machine Pull** (hook 7, M, about KPIs)
   Pull any About KPI downward like a slot lever and release — all counters spin with motion blur, decelerate with spring overshoot, and land back on true values with a ka-chunk synth thud. A 1-in-8 chance they briefly land on '???' before correcting, with the robot commenting 'no, that one's real.'
   _tech: framer drag constraint + spring, tabular-nums roll_
 
-- [ ] **77. Traceroute Contact Path** (hook 7, M, contact)
+- [x] **77. Traceroute Contact Path** (hook 7, M, contact)
   Clicking 'trace me' in contact animates a traceroute: hop lines type one by one (visitor.local → isp.gateway → edge.cdn → maksut.dev) with randomized fake latencies and a packet dot traveling a dotted SVG path between hops, ending on the email card with a pulse. Replays differently each run.
   _tech: framer path animation + typed lines, SVG dotted path_
 
-- [ ] **78. Packet Stream Divider** (hook 7, M, dividers)
+- [x] **78. Packet Stream Divider** (hook 7, M, dividers)
   The canonical divider-traffic idea (absorbs the signal-runner duplicate): mono glyph clusters ([SYN], [ACK], [DATA]) travel along a hairline at scroll-velocity-bound speed; packets within ~120px of the cursor get 'inspected' — pausing and expanding to show a fake hex payload tooltip before resuming. Proximity-driven, not hover.
   _tech: framer x-loop + pointer distance check, CSS tooltip_
 
-- [ ] **79. Cursor Gravity Well Divider** (hook 7, M, section dividers)
+- [x] **79. Cursor Gravity Well Divider** (hook 7, M, section dividers)
   Divider lines rendered as ~60 tiny ticks that bend vertically toward the cursor like iron filings within 200px, forming a smooth attraction curve traveling with the pointer. A two-second toy people drag back and forth repeatedly.
   _tech: SVG tick array, per-tick gaussian falloff of distance, rAF_
 
-- [ ] **80. Coupled-Oscillator Divider Beads** (hook 7, M, dividers)
+- [x] **80. Coupled-Oscillator Divider Beads** (hook 7, M, dividers)
   Divider chips ride a horizontal wire like beads connected by invisible springs: scroll velocity yanks the wire and beads swing and settle as coupled oscillators — middle first, neighbors following with propagating lag. Fast scroll-stops ripple visibly down the chain.
   _tech: useScroll velocity → staggered useSpring array with per-index stiffness_
 
-- [ ] **81. Man-in-the-Middle Tooltip** (hook 7, M, projects (featured))
+- [x] **81. Man-in-the-Middle Tooltip** (hook 7, M, projects (featured))
   Hovering the chat-bot demo shows an 'intercepted traffic' panel: fake request/response pairs scroll by in mono ('POST /api/chat → 200, 214ms') with one line comically redacted via the existing shimmer. Clicking a line decrypts it into a real one-sentence fact about how the project works — a tooltip that doubles as a mini case study.
   _tech: framer list stagger + click-to-decrypt text swap_
 
-- [ ] **82. Git-Diff Title Correction** (hook 7, M, projects + experience titles)
+- [x] **82. Git-Diff Title Correction** (hook 7, M, projects + experience titles)
   A section title entering the viewport first types a corrupted version ('PROJEKTZ'), then self-corrects diff-style: wrong chars strike through and slide out in dim gray, correct chars insert in accent with a '+' gutter flicker. Runs once per section per visit.
   _tech: IntersectionObserver + staged per-char framer sequence_
 
-- [ ] **83. ASCII Light-Source Shadow** (hook 7, M, hero)
+- [x] **83. ASCII Light-Source Shadow** (hook 7, M, hero)
   The hero name casts a shadow copy of itself at ~8% opacity whose offset direction and length respond to cursor position as if the cursor were a light source — move left, shadow stretches right; move close, it tightens. Subtle until noticed, then unforgettable.
   _tech: duplicated text layer + framer transform from normalized cursor vector_
 
@@ -349,7 +349,7 @@
   Typing any tech name with no input focused — 'nmap', 'react', 'python' — is sniffed by a global key listener; matching chips pulse in accent and a terminal toast types 'grep: 1 match found in /skills'. Extends the 'hack' egg into a whole vocabulary without duplicating it.
   _tech: keydown buffer matcher + chip highlight event, typed toast_
 
-- [ ] **86. Lightbox Chromatic Open** (hook 7, M, showcase lightbox)
+- [x] **86. Lightbox Chromatic Open** (hook 7, M, showcase lightbox)
   Gallery images open via shared-layout expansion from their thumbnail while a one-frame RGB-split glitch (offset accent/white copies at low opacity) resolves into the sharp image, plus corner brackets flying in from the four screen corners to frame it.
   _tech: framer layoutId shared element + brief offset-clone glitch, no canvas_
 
@@ -357,15 +357,15 @@
   Hovering a skill chip projects a large faint watermark glyph of that technology behind the whole grid — masked by a radial gradient centered on the cursor so it only shows within ~250px, growing and shrinking with approach. Scanning the grid with an x-ray gun.
   _tech: mask-image radial-gradient at cursor CSS vars, CSS-only glyph layer_
 
-- [ ] **88. WebAudio Sonar Ping Toggle** (hook 7, M, global (navbar toggle))
+- [x] **88. WebAudio Sonar Ping Toggle** (hook 7, M, global (navbar toggle))
   An 'AUDIO: OFF' toggle in the navbar HUD; enabled, key interactions emit whisper-quiet synthesized sonar blips — anchors ping low, easter eggs ping twice, the honeypot alarm gets a rising sweep. One AudioContext, localStorage persistence. Opt-in sound completes the terminal fantasy and amplifies every other toy on this list.
   _tech: WebAudio oscillator synth, no assets, localStorage_
 
-- [ ] **89. Proximity Lean Field** (hook 7, M, skills + dividers)
+- [x] **89. Proximity Lean Field** (hook 7, M, skills + dividers)
   Skill and divider chips tilt and brighten toward accent as the cursor approaches (inverse-square falloff within ~140px), leaning away like grass in wind with per-chip springs so the field ripples with lag on a sweep. Physical lean variant of the proximity ask — pair with Torchlight or use standalone.
   _tech: single pointermove + per-chip distance, framer useSpring on rotate/color-mix_
 
-- [ ] **90. Pull-Back Goal Slingshots** (hook 7, M, goals)
+- [x] **90. Pull-Back Goal Slingshots** (hook 7, M, goals)
   Goal bars get a grabbable leading-edge handle: drag backward and the fill compresses with tension (edge glow brightening with stretch), release and it slingshots past its true value, wobbling like liquid before settling exactly right, the counter riding the overshoot.
   _tech: framer drag on fill width + spring release, counter via useTransform_
 
@@ -449,11 +449,11 @@
   The chat-bot demo frame stays dim until the cursor nears ~300px; approach drives a rising accent glow, the bot's avatar dot pulses faster, and at close range a typed 'user detected — say hi?' hint appears in the demo. Retreating cools it to idle. (Coordinate with the global threat-glow system so it reads as an escalation, not a duplicate.)
   _tech: mousemove distance → CSS vars (shadow alpha, pulse rate), framer hint_
 
-- [ ] **111. Marquee Payload Swap** (hook 6, M, tech marquee)
+- [x] **111. Marquee Payload Swap** (hook 6, M, tech marquee)
   The marquee reacts to scroll depth: top of page shows tech names, but items glitch-swap one at a time into binary aliases (REACT → 0x52 45 41 43 54) as you descend, fully hex by the footer. The marquee visibly compiles down as you go deeper — subtle, but rewards the observant.
   _tech: useScroll global progress → per-item glitch swap, scramble reuse_
 
-- [ ] **112. Skills Bingo Grid** (hook 6, M, skills)
+- [x] **112. Skills Bingo Grid** (hook 6, M, skills)
   Hovered/tapped chips get a faint persistent underline tick; completing a full row or column fires a line-sweep across it and logs 'SKILL VECTOR VERIFIED' via the achievement toast. Silently turns idle chip-hovering into a compulsive completion loop.
   _tech: hover/tap state + grid row/col math + CSS sweep_
 

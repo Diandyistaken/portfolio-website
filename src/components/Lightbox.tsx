@@ -284,6 +284,45 @@ function LightboxDialog({ images, initialIndex, onClose }: LightboxDialogProps) 
                     className="pointer-events-none object-contain"
                   />
                 </m.div>
+                {/* #86 chromatic open: one-beat RGB-split resolving sharp,
+                    plus corner brackets flying in to frame the evidence */}
+                {!reducedMotion && (
+                  <>
+                    <m.div
+                      aria-hidden="true"
+                      initial={{ opacity: 0.35, x: 7 }}
+                      animate={{ opacity: 0, x: 0 }}
+                      transition={{ duration: 0.32, ease: "easeOut" }}
+                      className="pointer-events-none absolute inset-0 mix-blend-screen [filter:sepia(1)_hue-rotate(165deg)_saturate(4)_brightness(1.15)]"
+                    >
+                      <Image src={activeImage.src} alt="" fill sizes="92vw" className="object-contain" />
+                    </m.div>
+                    <m.div
+                      aria-hidden="true"
+                      initial={{ opacity: 0.3, x: -7 }}
+                      animate={{ opacity: 0, x: 0 }}
+                      transition={{ duration: 0.32, ease: "easeOut" }}
+                      className="pointer-events-none absolute inset-0 mix-blend-screen brightness-150 grayscale"
+                    >
+                      <Image src={activeImage.src} alt="" fill sizes="92vw" className="object-contain" />
+                    </m.div>
+                    {[
+                      { key: "tl", pos: "left-1 top-1", border: "border-l-2 border-t-2", ix: -70, iy: -70 },
+                      { key: "tr", pos: "right-1 top-1", border: "border-r-2 border-t-2", ix: 70, iy: -70 },
+                      { key: "bl", pos: "left-1 bottom-1", border: "border-l-2 border-b-2", ix: -70, iy: 70 },
+                      { key: "br", pos: "right-1 bottom-1", border: "border-r-2 border-b-2", ix: 70, iy: 70 },
+                    ].map((corner) => (
+                      <m.span
+                        key={corner.key}
+                        aria-hidden="true"
+                        initial={{ x: corner.ix, y: corner.iy, opacity: 0 }}
+                        animate={{ x: 0, y: 0, opacity: 0.85 }}
+                        transition={{ duration: 0.4, ease: EASE, delay: 0.08 }}
+                        className={`pointer-events-none absolute z-10 h-6 w-6 ${corner.pos} ${corner.border} border-accent/80`}
+                      />
+                    ))}
+                  </>
+                )}
                 {/* #35 HUD: fake sector coordinates while analyzing */}
                 {canPlay && zoomed && (
                   <span

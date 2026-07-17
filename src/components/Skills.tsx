@@ -113,7 +113,21 @@ function BruteChip({ label }: { label: string }) {
 
 type SkillCategory = ReturnType<typeof useLanguage>["t"]["skills"]["categories"][number];
 
-function SkillCard({ category, matched, canToss }: { category: SkillCategory; matched: string | null; canToss: boolean }) {
+function SkillCard({
+  category,
+  matched,
+  canToss,
+  ticked,
+  onChipHover,
+  justVerified,
+}: {
+  category: SkillCategory;
+  matched: string | null;
+  canToss: boolean;
+  ticked: string[];
+  onChipHover: (tool: string, categoryId: string) => void;
+  justVerified: boolean;
+}) {
   const Icon = icons[category.id as keyof typeof icons];
   const meta = skillsMeta[category.id];
   const tilt = useTilt3D<HTMLDivElement>();
@@ -155,6 +169,20 @@ function SkillCard({ category, matched, canToss }: { category: SkillCategory; ma
         ))}
       </ul>
 
+      {/* #112 bingo payoff: full-card sweep when every chip has been hovered */}
+      <AnimatePresence>
+        {justVerified && (
+          <m.span
+            aria-hidden="true"
+            initial={{ x: "-110%", opacity: 0.9 }}
+            animate={{ x: "110%" }}
+            exit={{ opacity: 0 }}
+            transition={{ duration: 0.7, ease: "easeInOut" }}
+            className="pointer-events-none absolute inset-y-0 z-20 w-1/2 bg-gradient-to-r from-transparent via-accent/25 to-transparent"
+          />
+        )}
+      </AnimatePresence>
+
       {meta.tools && (
         <div className="mt-5 flex flex-wrap gap-2 [transform:translateZ(12px)]">
           {meta.tools.map((tool, index) => (
@@ -178,13 +206,17 @@ function SkillCard({ category, matched, canToss }: { category: SkillCategory; ma
               dragTransition={{ bounceStiffness: 420, bounceDamping: 13 }}
               whileDrag={{ scale: 1.15, zIndex: 40 }}
               data-prox
+              onMouseEnter={() => onChipHover(tool, category.id)}
               className={`prox-chip font-mono relative rounded-sm border px-2.5 py-1 text-[0.7rem] text-muted transition-colors ${
                 canToss ? "cursor-grab active:cursor-grabbing" : ""
-              } ${
+              } ${ticked.includes(tool) ? "chip-ticked" : ""} ${
                 matched && tool.toLowerCase().includes(matched) ? "border-accent bg-accent/10 text-accent" : "border-foreground/12"
               }`}
             >
-              <BruteChip label={tool} />
+              {/* #89 lean field: the inner span tilts away from the cursor */}
+              <span data-prox data-prox-lean data-prox-radius="150" className="prox-lean inline-block">
+                <BruteChip label={tool} />
+              </span>
             </m.span>
           ))}
         </div>
@@ -212,6 +244,66 @@ export function Skills() {
     return () => cancelAnimationFrame(raf);
   }, []);
   const canToss = finePointer && !reducedMotion && !perfLite;
+
+  // #112 skills bingo: hovered chips earn a persistent tick; hovering every
+  // chip of a card fires a sweep + a "SKILL VECTOR VERIFIED" log line.
+  const [ticked, setTicked] = useState<string[]>([]);
+  const [verifiedCards, setVerifiedCards] = useState<string[]>([]);
+  const [justVerified, setJustVerified] = useState<string | null>(null);
+  const [bingoToast, setBingoToast] = useState<string | null>(null);
+  const bingoTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
+  useEffect(() => {
+    const raf = requestAnimationFrame(() => {
+      try {
+        const raw = localStorage.getItem("mm-bingo-v1");
+        if (raw) {
+          const saved = JSON.parse(raw) as { ticked: string[]; verified: string[] };
+          setTicked(saved.ticked ?? []);
+          setVerifiedCards(saved.verified ?? []);
+        }
+      } catch {
+        // storage unavailable — bingo resets per visit
+      }
+    });
+    return () => {
+      cancelAnimationFrame(raf);
+      if (bingoTimer.current) clearTimeout(bingoTimer.current);
+    };
+  }, []);
+
+  const onChipHover = (tool: string, categoryId: string) => {
+    setTicked((previous) => {
+      if (previous.includes(tool)) return previous;
+      const next = [...previous, tool];
+      const tools = skillsMeta[categoryId].tools ?? [];
+      const complete = tools.every((item) => next.includes(item));
+      if (complete && !verifiedCards.includes(categoryId)) {
+        setVerifiedCards((cards) => {
+          const nextCards = [...cards, categoryId];
+          try {
+            localStorage.setItem("mm-bingo-v1", JSON.stringify({ ticked: next, verified: nextCards }));
+          } catch {
+            // ignore
+          }
+          return nextCards;
+        });
+        setJustVerified(categoryId);
+        setBingoToast(`SKILL VECTOR VERIFIED — ${categoryId}`);
+        if (bingoTimer.current) clearTimeout(bingoTimer.current);
+        bingoTimer.current = setTimeout(() => {
+          setJustVerified(null);
+          setBingoToast(null);
+        }, 2400);
+      } else {
+        try {
+          localStorage.setItem("mm-bingo-v1", JSON.stringify({ ticked: next, verified: verifiedCards }));
+        } catch {
+          // ignore
+        }
+      }
+      return next;
+    });
+  };
 
   useEffect(() => {
     const tools = t.skills.categories
@@ -263,20 +355,28 @@ export function Skills() {
             className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3 3xl:grid-cols-4 3xl:gap-6"
           >
             {t.skills.categories.map((category) => (
-              <SkillCard key={category.id} category={category} matched={matched} canToss={canToss} />
+              <SkillCard
+                key={category.id}
+                category={category}
+                matched={matched}
+                canToss={canToss}
+                ticked={ticked}
+                onChipHover={onChipHover}
+                justVerified={justVerified === category.id}
+              />
             ))}
           </RevealGroup>
         </div>
 
         <AnimatePresence>
-          {toast && (
+          {(toast || bingoToast) && (
             <m.p
               initial={{ opacity: 0, y: 8 }}
               animate={{ opacity: 1, y: 0 }}
               exit={{ opacity: 0 }}
               className="mt-4 font-mono text-xs text-accent"
             >
-              {toast}
+              {toast ?? bingoToast}
             </m.p>
           )}
         </AnimatePresence>

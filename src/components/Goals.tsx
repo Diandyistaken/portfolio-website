@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
-import { m, useInView, useReducedMotion, type Variants } from "framer-motion";
+import { m, useInView, useReducedMotion, useSpring, useTransform, type Variants } from "framer-motion";
 import { Target } from "lucide-react";
 import { RevealGroup } from "./Reveal";
 import { SectionHeading } from "./SectionHeading";
@@ -51,6 +51,108 @@ function DecryptPercent({
   }, [doAnimate, inView, value, runKey]);
 
   return <span ref={ref}>{format(display / 100)}</span>;
+}
+
+/**
+ * #90 Pull-back slingshot bar: a grabbable handle rides the fill's leading
+ * edge — drag it backward and the fill compresses under tension (edge glow
+ * brightens with stretch), release and it slingshots past the true value on
+ * an underdamped spring, wobbling like liquid before settling exactly right.
+ * Also hosts the #30 boost overlay and the #31 loader bot.
+ */
+function GoalBar({
+  runKey,
+  progress,
+  fillPct,
+  overclocked,
+  motionSafe,
+}: {
+  runKey: number;
+  progress: number;
+  fillPct: number;
+  overclocked: boolean;
+  motionSafe: boolean;
+}) {
+  const trackRef = useRef<HTMLDivElement>(null);
+  // sling offset in percent points: negative while pulling, overshoots
+  // positive on release (low damping), settles at 0 = true value
+  const sling = useSpring(0, { stiffness: 210, damping: 9 });
+  const slingWidth = useTransform(sling, (offset) => `${Math.max(0, Math.min(100, fillPct + offset))}%`);
+  const tension = useTransform(sling, [-60, 0], [1, 0], { clamp: true });
+  const edgeGlow = useTransform(tension, (value) => `0 0 ${12 + value * 18}px rgb(var(--accent-rgb) / ${0.6 + value * 0.4})`);
+  const dragState = useRef({ active: false, startX: 0 });
+
+  const onDown = (event: React.PointerEvent<HTMLSpanElement>) => {
+    event.stopPropagation();
+    if (!motionSafe || window.matchMedia("(hover: none)").matches) return;
+    dragState.current = { active: true, startX: event.clientX };
+    event.currentTarget.setPointerCapture(event.pointerId);
+  };
+  const onMove = (event: React.PointerEvent<HTMLSpanElement>) => {
+    if (!dragState.current.active) return;
+    event.preventDefault();
+    const width = trackRef.current?.getBoundingClientRect().width ?? 300;
+    const deltaPct = ((event.clientX - dragState.current.startX) / width) * 100;
+    // only pulling backward builds tension; forward drags do nothing
+    sling.jump(Math.max(-progress * 0.85, Math.min(0, deltaPct)));
+  };
+  const onUp = (event: React.PointerEvent<HTMLSpanElement>) => {
+    event.stopPropagation();
+    if (!dragState.current.active) return;
+    dragState.current.active = false;
+    try {
+      event.currentTarget.releasePointerCapture(event.pointerId);
+    } catch {
+      // already released
+    }
+    sling.set(0); // spring back — overshoots past true value, then settles
+  };
+
+  return (
+    <>
+      <div ref={trackRef} className="relative mt-4 h-1 w-full rounded-full bg-foreground/8">
+        {motionSafe ? (
+          <m.div className="absolute inset-y-0 left-0 overflow-hidden rounded-full" style={{ width: slingWidth, boxShadow: edgeGlow }}>
+            <m.div
+              key={`bar-${runKey}`}
+              initial={{ scaleX: 0 }}
+              animate={{ scaleX: 1 }}
+              transition={{ duration: 0.8, delay: 0.15, ease: [0.22, 1, 0.36, 1] }}
+              className={`h-full w-full origin-left rounded-full ${overclocked ? "bg-white/90" : "bg-accent"}`}
+            />
+          </m.div>
+        ) : (
+          <div
+            className="absolute inset-y-0 left-0 rounded-full bg-accent"
+            style={{ width: `${fillPct}%`, boxShadow: "0 0 12px rgb(var(--accent-rgb) / 0.6)" }}
+          />
+        )}
+        {/* #90 grabbable leading-edge handle */}
+        {motionSafe && (
+          <m.span
+            aria-hidden="true"
+            onPointerDown={onDown}
+            onPointerMove={onMove}
+            onPointerUp={onUp}
+            onPointerCancel={onUp}
+            onClick={(event) => event.stopPropagation()}
+            style={{ left: slingWidth }}
+            className="absolute -top-[5px] z-10 h-[14px] w-[7px] -translate-x-1/2 cursor-grab touch-none rounded-sm border border-accent/70 bg-background shadow-[0_0_8px_rgb(var(--accent-rgb)/0.6)] active:cursor-grabbing"
+          />
+        )}
+      </div>
+      {motionSafe && (
+        <div className="pointer-events-none relative h-0" aria-hidden="true">
+          <m.span
+            className="absolute -top-[7px] flex h-2.5 w-3 -translate-x-1/2 items-center justify-center rounded-sm bg-accent"
+            style={{ left: slingWidth }}
+          >
+            <span className="robot-eye h-1 w-1 rounded-full bg-background" />
+          </m.span>
+        </div>
+      )}
+    </>
+  );
 }
 
 const goalVariants: Variants = {
@@ -183,33 +285,13 @@ export function Goals() {
                   </span>
                 </div>
 
-                <div className="relative mt-4 h-1 w-full overflow-hidden rounded-full bg-foreground/8">
-                  <m.div
-                    key={`bar-${runKey}`}
-                    initial={motionSafe ? { scaleX: 0 } : { scaleX: progress / 100 }}
-                    animate={{ scaleX: progress / 100 }}
-                    transition={{ duration: 0.8, delay: 0.15, ease: [0.22, 1, 0.36, 1] }}
-                    className="absolute inset-0 h-full origin-left rounded-full bg-accent"
-                    style={{ boxShadow: "0 0 12px rgb(var(--accent-rgb) / 0.6)" }}
-                  />
-                  {boost > 0.5 && (
-                    <div
-                      aria-hidden="true"
-                      className={`absolute inset-y-0 left-0 rounded-full ${overclocked ? "bg-white/90" : "bg-accent"}`}
-                      style={{ width: `${fillPct}%`, boxShadow: "0 0 14px rgb(var(--accent-rgb) / 0.9)" }}
-                    />
-                  )}
-                </div>
-                {motionSafe && (
-                  <div className="pointer-events-none relative h-0" aria-hidden="true">
-                    <span
-                      className="absolute -top-[7px] flex h-2.5 w-3 -translate-x-1/2 items-center justify-center rounded-sm bg-accent transition-[left] duration-150"
-                      style={{ left: `${fillPct}%` }}
-                    >
-                      <span className="robot-eye h-1 w-1 rounded-full bg-background" />
-                    </span>
-                  </div>
-                )}
+                <GoalBar
+                  runKey={runKey}
+                  progress={progress}
+                  fillPct={fillPct}
+                  overclocked={overclocked}
+                  motionSafe={motionSafe}
+                />
               </m.div>
             );
           })}

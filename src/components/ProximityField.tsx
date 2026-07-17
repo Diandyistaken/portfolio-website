@@ -53,6 +53,13 @@ export function ProximityField() {
           const radius = Number(element.dataset.proxRadius ?? 300);
           const proximity = Math.max(0, 1 - distance / radius);
           element.style.setProperty("--prox", proximity < 0.01 ? "0" : proximity.toFixed(3));
+          // #89 lean field: elements opting in via data-prox-lean also get a
+          // horizontal direction channel (-1..1) so CSS can tilt them AWAY
+          // from the cursor like grass in wind.
+          if (element.dataset.proxLean !== undefined) {
+            const direction = Math.max(-1, Math.min(1, (centerX - event.clientX) / Math.max(40, radius / 2)));
+            element.style.setProperty("--prox-dx", direction.toFixed(3));
+          }
         }
       });
     };

@@ -714,6 +714,12 @@ html.custom-cursor [role="button"] {
   .pixel-mosaic {
     display: none !important;
   }
+
+  .prox-lean,
+  .gyro-lean,
+  .gyro-lean--deep {
+    transform: none !important;
+  }
 }
 
 @keyframes name-marquee { to { transform: translateX(-50%); } }
@@ -982,6 +988,79 @@ html.custom-cursor [role="button"] {
   box-shadow: 0 0 calc(var(--prox, 0) * 40px) rgb(var(--accent-rgb) / calc(var(--prox, 0) * 0.28));
   border-color: rgb(var(--accent-rgb) / calc(0.1 + var(--prox, 0) * 0.5));
   transition: box-shadow 0.2s linear, border-color 0.2s linear;
+}
+
+/* #89 Proximity lean field: chips tilt away from the approaching cursor like
+   grass in wind (--prox strength, --prox-dx direction, fed by ProximityField
+   on data-prox-lean elements). Transition supplies the per-chip spring lag. */
+.prox-lean {
+  transform: rotate(calc(var(--prox, 0) * var(--prox-dx, 0) * 8deg))
+    translateY(calc(var(--prox, 0) * -2px));
+  transition: transform 0.22s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+.perf-lite .prox-lean {
+  transform: none;
+}
+
+/* #112 Skills bingo: hovered chips keep a faint persistent underline tick. */
+.chip-ticked {
+  background-image: linear-gradient(to top, rgb(var(--accent-rgb) / 0.55) 2px, transparent 2px);
+}
+
+/* #53 Gyro tilt (mobile): device orientation writes --gyro-x/--gyro-y (px)
+   on the root; opted-in layers lean with the phone at different depths. */
+.gyro-lean {
+  transform: translate3d(calc(var(--gyro-x, 0) * 1px), calc(var(--gyro-y, 0) * 1px), 0);
+  will-change: transform;
+}
+
+.gyro-lean--deep {
+  transform: translate3d(calc(var(--gyro-x, 0) * 1.8px), calc(var(--gyro-y, 0) * 1.8px), 0);
+  will-change: transform;
+}
+
+.perf-lite .gyro-lean,
+.perf-lite .gyro-lean--deep {
+  transform: none;
+}
+
+/* #78 Packet stream divider: [SYN]/[ACK]/[DATA] clusters ride a hairline;
+   a packet near the cursor gets "inspected" — pausing, swelling and opening
+   a hex payload tooltip (class toggled from the divider's rAF loop). */
+.packet-chip {
+  position: absolute;
+  top: 50%;
+  translate: -50% -50%;
+  font-size: 0.5rem;
+  letter-spacing: 0.12em;
+  color: rgb(var(--accent-rgb) / 0.65);
+  transition: color 0.15s linear;
+  will-change: left;
+}
+
+.packet-chip .packet-tip {
+  display: none;
+  position: absolute;
+  bottom: 130%;
+  left: 50%;
+  translate: -50%;
+  white-space: nowrap;
+  padding: 2px 6px;
+  border: 1px solid rgb(var(--accent-rgb) / 0.5);
+  border-radius: 3px;
+  background: rgb(var(--background-rgb) / 0.95);
+  color: var(--accent);
+  font-size: 0.5rem;
+}
+
+.packet-chip--inspect {
+  color: var(--accent);
+  text-shadow: 0 0 8px rgb(var(--accent-rgb) / 0.8);
+}
+
+.packet-chip--inspect .packet-tip {
+  display: block;
 }
 
 /* #33 Proximity declassify: showcase thumbnails idle desaturated/dim and

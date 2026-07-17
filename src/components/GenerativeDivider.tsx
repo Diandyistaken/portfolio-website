@@ -1,9 +1,203 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
-import { AnimatePresence, m, useInView, useReducedMotion } from "framer-motion";
+import {
+  AnimatePresence,
+  m,
+  useInView,
+  useReducedMotion,
+  useScroll,
+  useSpring,
+  useTransform,
+  useVelocity,
+} from "framer-motion";
 import { useLanguage } from "@/lib/i18n/LanguageProvider";
 import { usePerfLite } from "./SectionBackdrop";
+
+/**
+ * #79 Cursor gravity well: the divider's flanking hairlines are rendered as
+ * tiny ticks that bend vertically toward the cursor like iron filings within
+ * 200px — a smooth attraction curve traveling with the pointer. Direct style
+ * writes from one rAF loop; static hairline under reduced-motion/perf-lite.
+ */
+function GravityTicks({ align }: { align: "left" | "right" }) {
+  const reducedMotion = useReducedMotion();
+  const perfLite = usePerfLite();
+  const alive = !reducedMotion && !perfLite;
+  const wrapRef = useRef<HTMLSpanElement>(null);
+
+  useEffect(() => {
+    if (!alive) return;
+    if (window.matchMedia("(hover: none)").matches) return;
+    const wrap = wrapRef.current;
+    if (!wrap) return;
+    const ticks = Array.from(wrap.children) as HTMLElement[];
+    let raf = 0;
+    const onMove = (event: MouseEvent) => {
+      if (raf) return;
+      raf = requestAnimationFrame(() => {
+        raf = 0;
+        const bounds = wrap.getBoundingClientRect();
+        if (bounds.bottom < -40 || bounds.top > window.innerHeight + 40) return;
+        for (const tick of ticks) {
+          const rect = tick.getBoundingClientRect();
+          const dx = event.clientX - (rect.left + rect.width / 2);
+          const dy = event.clientY - (rect.top + rect.height / 2);
+          const pull = Math.max(0, 1 - Math.hypot(dx, dy) / 200);
+          const offset = Math.sign(dy || 1) * pull * 7;
+          tick.style.transform = `translateY(${offset.toFixed(1)}px) scaleY(${(1 + pull * 1.6).toFixed(2)})`;
+          tick.style.opacity = (0.35 + pull * 0.65).toFixed(2);
+        }
+      });
+    };
+    window.addEventListener("mousemove", onMove, { passive: true });
+    return () => {
+      window.removeEventListener("mousemove", onMove);
+      if (raf) cancelAnimationFrame(raf);
+    };
+  }, [alive]);
+
+  if (!alive) {
+    return (
+      <span
+        className={`hidden h-px w-12 sm:block lg:w-20 ${
+          align === "left"
+            ? "bg-gradient-to-r from-transparent to-accent/40"
+            : "bg-gradient-to-l from-transparent to-accent/40"
+        }`}
+        aria-hidden="true"
+      />
+    );
+  }
+
+  return (
+    <span ref={wrapRef} aria-hidden="true" className="hidden w-12 items-center justify-between sm:flex lg:w-20">
+      {Array.from({ length: 14 }).map((_, index) => (
+        <span key={index} className="h-2 w-px bg-accent/40" style={{ opacity: 0.35 }} />
+      ))}
+    </span>
+  );
+}
+
+/**
+ * #80 Coupled-oscillator beads: five beads under the chip ride invisible
+ * springs — scroll velocity yanks the wire, the middle bead reacts first and
+ * the neighbours follow with propagating lag, so hard scroll-stops ripple
+ * visibly down the chain.
+ */
+function OscillatorBeads() {
+  const reducedMotion = useReducedMotion();
+  const perfLite = usePerfLite();
+  const alive = !reducedMotion && !perfLite;
+  const { scrollY } = useScroll();
+  const velocity = useVelocity(scrollY);
+  const impulse = useTransform(velocity, [-2600, 2600], [9, -9], { clamp: true });
+  const middle = useSpring(impulse, { stiffness: 190, damping: 7 });
+  const inner = useSpring(middle, { stiffness: 160, damping: 8 });
+  const outer = useSpring(inner, { stiffness: 130, damping: 9 });
+
+  if (!alive) return null;
+  const chain = [outer, inner, middle, inner, outer];
+  return (
+    <div className="mt-4 flex items-center justify-center gap-3" aria-hidden="true">
+      {chain.map((spring, index) => (
+        <m.span
+          key={index}
+          style={{ y: spring }}
+          className="h-1.5 w-1.5 rounded-full bg-accent/50 shadow-[0_0_6px_rgb(var(--accent-rgb)/0.4)]"
+        />
+      ))}
+    </div>
+  );
+}
+
+// #78 payloads — terminal artifacts, English on purpose
+const PACKETS = [
+  { tag: "[SYN]", hex: "0x53 0x59 0x4E → handshake" },
+  { tag: "[ACK]", hex: "0x41 0x43 0x4B → confirmed" },
+  { tag: "[DATA]", hex: "0x44 0x41 0x54 0x41 → 64 bytes" },
+];
+const PACKET_STARTS = [0.08, 0.42, 0.75];
+
+/**
+ * #78 Packet stream: [SYN]/[ACK]/[DATA] clusters travel along a hairline at
+ * scroll-velocity-bound speed. A packet within ~120px of the cursor gets
+ * "inspected" — it pauses, swells and opens a hex payload tooltip, then
+ * resumes when the cursor leaves. One rAF loop, direct style writes.
+ */
+function PacketStream() {
+  const reducedMotion = useReducedMotion();
+  const perfLite = usePerfLite();
+  const alive = !reducedMotion && !perfLite;
+  const lineRef = useRef<HTMLDivElement>(null);
+  const chipRefs = useRef<(HTMLSpanElement | null)[]>([]);
+
+  useEffect(() => {
+    if (!alive) return;
+    const line = lineRef.current;
+    if (!line) return;
+    const mouse = { x: -9999, y: -9999 };
+    const onMove = (event: MouseEvent) => {
+      mouse.x = event.clientX;
+      mouse.y = event.clientY;
+    };
+    const positions = [...PACKET_STARTS];
+    let last = performance.now();
+    let lastScroll = window.scrollY;
+    let raf = 0;
+    const loop = () => {
+      raf = requestAnimationFrame(loop);
+      const now = performance.now();
+      const dt = Math.min(0.06, (now - last) / 1000);
+      last = now;
+      const scrollDelta = Math.abs(window.scrollY - lastScroll);
+      lastScroll = window.scrollY;
+      const bounds = line.getBoundingClientRect();
+      if (bounds.bottom < -100 || bounds.top > window.innerHeight + 100) return;
+      const speed = 0.06 + Math.min(0.55, scrollDelta / 300);
+      for (let i = 0; i < positions.length; i++) {
+        const chip = chipRefs.current[i];
+        if (!chip) continue;
+        const chipX = bounds.left + positions[i] * bounds.width;
+        const near =
+          Math.hypot(mouse.x - chipX, mouse.y - (bounds.top + bounds.height / 2)) < 120;
+        if (near) {
+          chip.classList.add("packet-chip--inspect");
+        } else {
+          chip.classList.remove("packet-chip--inspect");
+          positions[i] = (positions[i] + speed * dt) % 1;
+        }
+        chip.style.left = `${(positions[i] * 100).toFixed(2)}%`;
+      }
+    };
+    window.addEventListener("mousemove", onMove, { passive: true });
+    raf = requestAnimationFrame(loop);
+    return () => {
+      window.removeEventListener("mousemove", onMove);
+      cancelAnimationFrame(raf);
+    };
+  }, [alive]);
+
+  if (!alive) return null;
+  return (
+    <div ref={lineRef} aria-hidden="true" className="relative mt-5 hidden h-4 w-full max-w-md sm:block">
+      <span className="absolute inset-x-0 top-1/2 h-px bg-gradient-to-r from-transparent via-accent/25 to-transparent" />
+      {PACKETS.map((packet, index) => (
+        <span
+          key={packet.tag}
+          ref={(el) => {
+            chipRefs.current[index] = el;
+          }}
+          className="packet-chip font-mono"
+          style={{ left: `${PACKET_STARTS[index] * 100}%` }}
+        >
+          {packet.tag}
+          <span className="packet-tip font-mono">{packet.hex}</span>
+        </span>
+      ))}
+    </div>
+  );
+}
 
 type BrickState = "intact" | "cracked" | "gone";
 
@@ -161,14 +355,11 @@ export function GenerativeDivider({ quoteId }: { quoteId: "day" | "sunset" }) {
           <FirewallBricks key={wallKey} onAllDown={onAllDown} />
         )}
         <div className="flex items-center gap-4 sm:gap-5">
-        <span
-          className="hidden h-px w-12 bg-gradient-to-r from-transparent to-accent/40 sm:block lg:w-20"
-          aria-hidden="true"
-        />
+        <GravityTicks align="left" />
 
         <div
           onMouseEnter={retype}
-          data-prox data-prox-radius="220" className="terminal-panel prox-heat flex items-center gap-3 rounded-full border border-foreground/10 px-4 py-2 shadow-[0_10px_36px_rgb(0_0_0/0.4)] sm:px-5 sm:py-2.5"
+          data-prox data-prox-lean data-prox-radius="220" className="terminal-panel prox-heat prox-lean flex items-center gap-3 rounded-full border border-foreground/10 px-4 py-2 shadow-[0_10px_36px_rgb(0_0_0/0.4)] sm:px-5 sm:py-2.5"
         >
           <span className="flex shrink-0 items-center gap-1.5" aria-hidden="true">
             <span className="h-2 w-2 rounded-full bg-foreground/20" />
@@ -184,11 +375,10 @@ export function GenerativeDivider({ quoteId }: { quoteId: "day" | "sunset" }) {
           </p>
         </div>
 
-        <span
-          className="hidden h-px w-12 bg-gradient-to-l from-transparent to-accent/40 sm:block lg:w-20"
-          aria-hidden="true"
-        />
+        <GravityTicks align="right" />
         </div>
+        {/* #80 beads on the day divider, #78 packet stream on sunset */}
+        {quoteId === "day" ? <OscillatorBeads /> : <PacketStream />}
       </div>
     </section>
   );

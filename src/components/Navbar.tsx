@@ -9,12 +9,93 @@ import { LanguageSwitcher } from "./LanguageSwitcher";
 import { useLanguage } from "@/lib/i18n/LanguageProvider";
 import { CONTAINER } from "@/lib/layout";
 import { isPerfLite } from "@/lib/perfLite";
+import { ping, setSonarEnabled } from "@/lib/sonar";
 
 // Overlay only opens on demand (⌘K or the trigger button): no reason to ship
 // it in the initial bundle.
 const CommandPalette = dynamic(() => import("./CommandPalette").then((mod) => mod.CommandPalette), { ssr: false });
 
 const SCRAMBLE_CHARS = "#$@%&<>/\\|=+*01";
+
+/**
+ * #88 WebAudio sonar toggle: an opt-in "AUDIO OFF/ON" chip in the navbar HUD.
+ * While on, key interactions emit whisper-quiet synthesized blips — anchors
+ * ping low, easter eggs ping twice, the honeypot gets a rising sweep. One
+ * lazy AudioContext, localStorage persistence, no assets.
+ */
+function AudioToggle() {
+  const [on, setOn] = useState(false);
+
+  useEffect(() => {
+    const raf = requestAnimationFrame(() => {
+      try {
+        const saved = localStorage.getItem("mm-audio-v1") === "on";
+        setOn(saved);
+        setSonarEnabled(saved);
+      } catch {
+        // storage unavailable — stays off
+      }
+    });
+    return () => cancelAnimationFrame(raf);
+  }, []);
+
+  useEffect(() => {
+    const timers: ReturnType<typeof setTimeout>[] = [];
+    const onAnchor = (event: MouseEvent) => {
+      const target = event.target as HTMLElement | null;
+      if (target?.closest("a[href^='#']")) ping(320, 0.06, 0.016);
+    };
+    const onHack = () => {
+      ping(600, 0.07, 0.02);
+      timers.push(setTimeout(() => ping(780, 0.07, 0.02), 110));
+    };
+    const onHoneypot = () => ping(240, 0.5, 0.022, 980);
+    const onCopied = () => ping(700, 0.09, 0.02);
+    const onAchievement = () => {
+      ping(520, 0.06, 0.016);
+      timers.push(setTimeout(() => ping(880, 0.08, 0.016), 90));
+    };
+    document.addEventListener("click", onAnchor);
+    window.addEventListener("app:hack-egg", onHack);
+    window.addEventListener("app:honeypot", onHoneypot);
+    window.addEventListener("app:email-copied", onCopied);
+    window.addEventListener("app:achievement-unlocked", onAchievement);
+    return () => {
+      document.removeEventListener("click", onAnchor);
+      window.removeEventListener("app:hack-egg", onHack);
+      window.removeEventListener("app:honeypot", onHoneypot);
+      window.removeEventListener("app:email-copied", onCopied);
+      window.removeEventListener("app:achievement-unlocked", onAchievement);
+      timers.forEach((timer) => clearTimeout(timer));
+    };
+  }, []);
+
+  const toggle = () => {
+    setOn((value) => {
+      const next = !value;
+      setSonarEnabled(next);
+      try {
+        localStorage.setItem("mm-audio-v1", next ? "on" : "off");
+      } catch {
+        // ignore
+      }
+      if (next) ping(520, 0.09, 0.03);
+      return next;
+    });
+  };
+
+  return (
+    <button
+      type="button"
+      onClick={toggle}
+      aria-pressed={on}
+      aria-label="AUDIO"
+      className="hidden h-8 items-center rounded-md border border-foreground/10 px-2 font-mono text-[0.6rem] tracking-wide transition-colors hover:border-accent/40 md:flex"
+    >
+      {on ? <span className="text-accent">AUDIO ON</span> : <span className="text-muted">AUDIO OFF</span>}
+    </button>
+  );
+}
 
 /** Nav link that scrambles into glyphs and resolves back on hover. */
 function ScrambleLink({ label, href, onNavigate }: { label: string; href: string; onNavigate: (href: string) => void }) {
@@ -215,6 +296,7 @@ export function Navbar() {
           >
             ⌘K
           </button>
+          <AudioToggle />
           <LanguageSwitcher />
           <button
             type="button"

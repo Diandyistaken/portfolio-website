@@ -15,6 +15,102 @@ import { usePerfLite } from "./SectionBackdrop";
 
 type ProjectItem = ReturnType<typeof useLanguage>["t"]["projects"]["items"][number];
 
+// #81 fake intercepted traffic — log lines and their "decrypted" facts are
+// terminal artifacts, deliberately English
+const MITM_LINES = [
+  { log: "POST /api/chat → 200 · 214ms", fact: "handler: LLM + retrieval over a daily AI-news corpus" },
+  { log: "GET /digest/today → 200 · 41ms", fact: "cron compiles a fresh digest every morning @ 07:00" },
+  { log: "POST /api/chat → 200 · ██████ REDACTED", fact: "prompt-injection filter strips hostile inputs" },
+  { log: "WS /stream → 101 · upgraded", fact: "responses stream token-by-token over a socket" },
+];
+
+/**
+ * Featured demo frame with two toys:
+ * #69 CRT boot-up — the frame powers on from a collapsed horizontal line as
+ * it enters the viewport (scanline flash), and powers back down when far;
+ * #81 man-in-the-middle tooltip — hovering reveals an "intercepted traffic"
+ * panel whose log lines decrypt into real one-line facts when clicked.
+ */
+function CrtDemo({ alive }: { alive: boolean }) {
+  const ref = useRef<HTMLDivElement>(null);
+  const inView = useInView(ref, { margin: "-12% 0px -12% 0px" });
+  const [powerKey, setPowerKey] = useState(0);
+  const [hovered, setHovered] = useState(false);
+  const [decrypted, setDecrypted] = useState<number[]>([]);
+
+  useEffect(() => {
+    if (!alive || !inView) return;
+    const raf = requestAnimationFrame(() => setPowerKey((key) => key + 1));
+    return () => cancelAnimationFrame(raf);
+  }, [alive, inView]);
+
+  const powered = !alive || inView;
+
+  return (
+    <m.div
+      ref={ref}
+      data-prox
+      data-prox-radius="340"
+      initial={false}
+      animate={
+        alive
+          ? powered
+            ? { opacity: 1, scaleY: 1 }
+            : { opacity: 0.25, scaleY: 0.015 }
+          : { opacity: 1, scaleY: 1 }
+      }
+      transition={{ duration: 0.45, ease: [0.22, 1, 0.36, 1] }}
+      onMouseEnter={() => alive && setHovered(true)}
+      onMouseLeave={() => setHovered(false)}
+      className="prox-heat relative rounded-2xl border border-foreground/10 [transform:translateZ(24px)]"
+    >
+      <BotShowcase />
+      {/* #69 power-on scanline sweep */}
+      {alive && powered && powerKey > 0 && (
+        <m.span
+          key={powerKey}
+          aria-hidden="true"
+          initial={{ top: "0%", opacity: 0.9 }}
+          animate={{ top: "100%", opacity: 0 }}
+          transition={{ duration: 0.55, ease: "easeOut" }}
+          className="pointer-events-none absolute inset-x-0 h-10 rounded-2xl bg-gradient-to-b from-transparent via-accent/25 to-transparent"
+        />
+      )}
+      {/* #81 intercepted traffic panel */}
+      <AnimatePresence>
+        {alive && hovered && (
+          <m.div
+            aria-hidden="true"
+            initial={{ opacity: 0, y: 8 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0 }}
+            transition={{ duration: 0.22 }}
+            className="terminal-panel absolute bottom-3 right-3 z-20 hidden w-72 rounded-lg border border-accent/40 p-3 shadow-[0_16px_50px_rgb(0_0_0/0.6)] lg:block"
+          >
+            <p className="font-mono text-[0.55rem] tracking-[0.2em] text-accent">INTERCEPTED TRAFFIC // MITM</p>
+            <div className="mt-2 space-y-1">
+              {MITM_LINES.map((line, index) => (
+                <button
+                  key={line.log}
+                  type="button"
+                  tabIndex={-1}
+                  onClick={() =>
+                    setDecrypted((previous) => (previous.includes(index) ? previous : [...previous, index]))
+                  }
+                  className="block w-full cursor-pointer text-left font-mono text-[0.58rem] leading-relaxed text-muted transition-colors hover:text-foreground"
+                >
+                  {decrypted.includes(index) ? <span className="text-accent">▸ {line.fact}</span> : line.log}
+                </button>
+              ))}
+            </div>
+            <p className="mt-2 font-mono text-[0.5rem] text-muted/60">click a line to decrypt</p>
+          </m.div>
+        )}
+      </AnimatePresence>
+    </m.div>
+  );
+}
+
 function ProjectRow({
   project,
   index,
@@ -122,6 +218,7 @@ export function Projects() {
           kicker={t.projects.kicker}
           title={t.projects.title}
           description={t.projects.description}
+          diffCorrect
         />
 
         <m.div {...featuredTilt.handlers} style={featuredTilt.motionStyle} className="surface target-frame mt-14 grid grid-cols-1 items-center gap-8 overflow-hidden rounded-xl p-6 transition-[border-color,box-shadow] hover:border-accent/40 hover:shadow-[0_18px_54px_rgb(var(--accent-rgb)/0.12)] sm:p-8 lg:grid-cols-[0.9fr_1.1fr] lg:gap-10 3xl:gap-16 3xl:p-12">
@@ -136,7 +233,7 @@ export function Projects() {
             </a>
             <div className="mt-6 flex flex-wrap gap-2">{featuredMeta.tags.map((tag) => <span key={tag} data-prox className="prox-chip font-mono rounded-sm border border-foreground/12 px-2.5 py-1 text-[0.7rem] text-muted">{tag}</span>)}</div>
           </m.div>
-          <m.div data-prox data-prox-radius="340" initial={{ opacity: 0, scale: 0.92 }} whileInView={{ opacity: 1, scale: 1 }} viewport={{ once: true, amount: 0.3 }} transition={{ duration: 0.6, ease: [0.22, 1, 0.36, 1] }} className="prox-heat rounded-2xl border border-foreground/10 [transform:translateZ(24px)]"><BotShowcase /></m.div>
+          <CrtDemo alive={canPeek} />
         </m.div>
 
         <RevealGroup stagger={0.06} className="surface mt-5 flex flex-col rounded-lg px-6 sm:px-8">

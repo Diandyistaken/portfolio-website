@@ -163,6 +163,90 @@ function GhostPrompt({ prompt, response, onSubmit }: { prompt: string; response:
   );
 }
 
+// #77 hop table — terminal artifacts, English on purpose
+const TRACE_HOPS = [
+  "visitor.local",
+  "isp.gateway [10.44.0.1]",
+  "edge.cdn [172.16.9.31]",
+  "maksut.dev [READY]",
+];
+
+/**
+ * #77 Traceroute contact path: clicking the traceroute command animates the
+ * route hop by hop with fake latencies and a packet dot riding down the list,
+ * ending with a pulse on the email card. Latencies rotate per run.
+ */
+function Traceroute({ onArrive }: { onArrive: () => void }) {
+  const [shown, setShown] = useState(0); // hops printed so far
+  const [running, setRunning] = useState(false);
+  const [runNo, setRunNo] = useState(0); // varies the fake latencies per run
+  const timers = useRef<ReturnType<typeof setTimeout>[]>([]);
+
+  useEffect(() => {
+    const pending = timers.current;
+    return () => pending.forEach((timer) => clearTimeout(timer));
+  }, []);
+
+  const trace = () => {
+    if (running) return;
+    setRunNo((run) => run + 1);
+    setRunning(true);
+    setShown(0);
+    timers.current.forEach((timer) => clearTimeout(timer));
+    timers.current = [];
+    TRACE_HOPS.forEach((_, index) => {
+      timers.current.push(setTimeout(() => setShown(index + 1), 380 * (index + 1)));
+    });
+    timers.current.push(
+      setTimeout(() => {
+        setRunning(false);
+        onArrive();
+      }, 380 * TRACE_HOPS.length + 300),
+    );
+  };
+
+  const latency = (index: number) => 6 + ((runNo * 13 + index * 29) % 38);
+
+  return (
+    <div className="mt-3 font-mono text-xs text-muted" aria-hidden="true">
+      <button
+        type="button"
+        tabIndex={-1}
+        onClick={trace}
+        className="flex items-center gap-2 text-left transition-colors hover:text-foreground"
+      >
+        <span className="text-accent">$</span>
+        <span>traceroute maksut.dev</span>
+        {!running && shown === 0 && <span className="text-[0.6rem] text-muted/60">[ run ]</span>}
+      </button>
+      {shown > 0 && (
+        <div className="relative mt-1.5 pl-4">
+          {/* packet dot riding the hop list */}
+          {running && (
+            <m.span
+              aria-hidden="true"
+              initial={{ top: 0, opacity: 0 }}
+              animate={{ top: `${(shown - 0.5) * 1.25}rem`, opacity: 1 }}
+              transition={{ type: "spring", stiffness: 300, damping: 24 }}
+              className="absolute left-0 h-1.5 w-1.5 rounded-full bg-accent shadow-[0_0_8px_rgb(var(--accent-rgb)/0.9)]"
+            />
+          )}
+          {TRACE_HOPS.slice(0, shown).map((hop, index) => (
+            <p key={hop} className="h-5 leading-5">
+              <span className="text-muted/60">{index + 1}</span>{" "}
+              <span className={index === TRACE_HOPS.length - 1 ? "text-accent" : "text-foreground/75"}>{hop}</span>{" "}
+              <span className="text-muted/60">{latency(index)}ms</span>
+            </p>
+          ))}
+          {!running && shown >= TRACE_HOPS.length && (
+            <p className="h-5 leading-5 text-accent/80">route established ✓</p>
+          )}
+        </div>
+      )}
+    </div>
+  );
+}
+
 export function Contact() {
   const { t } = useLanguage();
   const [copyState, setCopyState] = useState<CopyState>("idle");
@@ -312,11 +396,14 @@ export function Contact() {
         </div>
 
         {!reducedMotion && !perfLite && (
-          <GhostPrompt
-            prompt={t.contact.ghostPrompt}
-            response={t.contact.ghostResponse}
-            onSubmit={() => setPulseKey((key) => key + 1)}
-          />
+          <>
+            <GhostPrompt
+              prompt={t.contact.ghostPrompt}
+              response={t.contact.ghostResponse}
+              onSubmit={() => setPulseKey((key) => key + 1)}
+            />
+            <Traceroute onArrive={() => setPulseKey((key) => key + 1)} />
+          </>
         )}
 
         <Reveal delay={0.1} className="mt-12">

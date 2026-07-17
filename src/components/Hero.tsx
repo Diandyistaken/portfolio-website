@@ -84,6 +84,36 @@ export function Hero() {
   const wipeClip = useMotionTemplate`inset(0 ${wipeRightInset}% 0 0)`;
   const wipeLinePos = useMotionTemplate`${splitX}%`;
 
+  // #83 ASCII light-source shadow: the name casts a faint copy whose offset
+  // treats the cursor as a light source — move left, shadow stretches right.
+  const shadowDX = useSpring(0, { stiffness: 120, damping: 20 });
+  const shadowDY = useSpring(0, { stiffness: 120, damping: 20 });
+  const nameWrapRef = useRef<HTMLDivElement>(null);
+  useEffect(() => {
+    if (reduceMotion || perfLite) return;
+    if (window.matchMedia("(hover: none)").matches) return;
+    let raf = 0;
+    const onMove = (event: MouseEvent) => {
+      if (raf) return;
+      raf = requestAnimationFrame(() => {
+        raf = 0;
+        const el = nameWrapRef.current;
+        if (!el) return;
+        const bounds = el.getBoundingClientRect();
+        if (bounds.bottom < 0 || bounds.top > window.innerHeight) return;
+        const centerX = bounds.left + bounds.width / 2;
+        const centerY = bounds.top + bounds.height / 2;
+        shadowDX.set(Math.max(-16, Math.min(16, (centerX - event.clientX) * 0.03)));
+        shadowDY.set(Math.max(-10, Math.min(10, (centerY - event.clientY) * 0.03)));
+      });
+    };
+    window.addEventListener("mousemove", onMove, { passive: true });
+    return () => {
+      window.removeEventListener("mousemove", onMove);
+      if (raf) cancelAnimationFrame(raf);
+    };
+  }, [reduceMotion, perfLite, shadowDX, shadowDY]);
+
   useEffect(() => {
     if (reduceMotion || perfLite || t.hero.ticker.length < 2) {
       return;
@@ -217,6 +247,21 @@ export function Hero() {
             />
           </Reveal>
 
+          <div ref={nameWrapRef} className="relative">
+          {/* #83 shadow copy — offset rides the cursor like a light source */}
+          {!staticHero && (
+            <m.span
+              aria-hidden="true"
+              style={{ x: shadowDX, y: shadowDY }}
+              className="font-display pointer-events-none absolute inset-x-0 top-0 mt-6 flex select-none flex-wrap gap-x-[0.22em] text-hero font-medium leading-[1.02] tracking-tight text-foreground/[0.07]"
+            >
+              {t.personalInfo.name.split(" ").map((word, index) => (
+                <span key={`${word}-${index}`} className="inline-block pb-[0.08em]">
+                  {word}
+                </span>
+              ))}
+            </m.span>
+          )}
           {dropRun === 0 ? (
             <m.h1
               aria-label={t.personalInfo.name}
@@ -275,6 +320,7 @@ export function Hero() {
               )}
             </h1>
           )}
+          </div>
 
           <Reveal delay={0.22}>
             <p className="mt-5 max-w-xl text-sm text-muted sm:text-base 3xl:max-w-3xl 3xl:text-xl 4xl:text-2xl">
@@ -403,6 +449,8 @@ export function Hero() {
                 }}
                 className="surface scanline relative aspect-[4/5] cursor-pointer overflow-hidden rounded-2xl p-2 outline-none"
               >
+                {/* #53: mobile gyro parallax rides this wrapper (CSS vars) */}
+                <div className="gyro-lean relative h-full w-full overflow-hidden rounded-xl">
                 <div className="ken-burns relative h-full w-full overflow-hidden rounded-xl">
                   <Image
                     src="/profil-fotografi.jpg"
@@ -459,6 +507,7 @@ export function Hero() {
                     )}
                   </AnimatePresence>
                 </div>
+                </div>
               </m.div>
               <span className="surface font-mono absolute -bottom-3 -right-3 z-10 rounded-full px-2.5 py-1 text-[0.65rem] tracking-wide text-accent">
                 {t.hero.onlineLabel}
@@ -469,7 +518,7 @@ export function Hero() {
           <Reveal delay={0.5} className="w-full">
             {/* #44 layer 3: the stats card trails at its own parallax rate */}
             <m.div style={staticHero ? undefined : { y: statsExtraY }}>
-            <div data-prox data-prox-radius="360" className="surface relative overflow-hidden rounded-2xl p-5">
+            <div data-prox data-prox-radius="360" className="gyro-lean--deep surface relative overflow-hidden rounded-2xl p-5">
               <div
                 className="pointer-events-none absolute -right-10 -top-10 h-32 w-32 rounded-full bg-accent/10 blur-3xl"
                 aria-hidden="true"
