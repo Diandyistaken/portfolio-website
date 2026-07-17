@@ -36,6 +36,33 @@ export function AboutTerminal() {
   const sentryPxRef = useRef<number | null>(null);
   const lostTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
 
+  // #60 visit streak: the whoami output remembers returning visitors.
+  const [streak, setStreak] = useState<string | null>(null);
+  useEffect(() => {
+    const raf = requestAnimationFrame(() => {
+      try {
+        const KEY = "mm-visit";
+        const now = Date.now();
+        const raw = localStorage.getItem(KEY);
+        const prev = raw ? (JSON.parse(raw) as { last: number; streak: number }) : null;
+        const dayMs = 86400000;
+        let count = 1;
+        let line = "last_seen: first visit — welcome";
+        if (prev) {
+          const gapDays = Math.floor((now - prev.last) / dayMs);
+          count = gapDays === 0 ? prev.streak : gapDays <= 2 ? prev.streak + 1 : 1;
+          const ago = gapDays === 0 ? "today" : `${gapDays}d ago`;
+          line = `last_seen: ${ago} | streak: ${count}`;
+        }
+        localStorage.setItem(KEY, JSON.stringify({ last: now, streak: count }));
+        setStreak(line);
+      } catch {
+        // storage unavailable — skip the streak line
+      }
+    });
+    return () => cancelAnimationFrame(raf);
+  }, []);
+
   useEffect(() => {
     if (instant || !inView) return;
     if (window.matchMedia("(hover: none)").matches) return;
@@ -274,6 +301,13 @@ export function AboutTerminal() {
         {lostVisible && sentryPx === null && (
           <p className="mt-2 font-mono text-muted/75" aria-hidden="true">
             {sentryLost}
+          </p>
+        )}
+
+        {done && streak && (
+          <p className="mt-2 pl-4 text-muted/70" aria-hidden="true">
+            <span className="text-accent/50"># </span>
+            {streak}
           </p>
         )}
 

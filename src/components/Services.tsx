@@ -43,7 +43,9 @@ export function Services() {
                   maxTilt={5}
                   className="surface surface-hover h-full rounded-lg p-6"
                 >
-                  <Icon size={18} className="text-accent" />
+                  <span data-prox data-prox-radius="300" className="prox-icon inline-flex h-10 w-10 items-center justify-center rounded-md border border-foreground/12 text-accent">
+                    <Icon size={18} />
+                  </span>
                   <h3 className="font-display mt-4 text-lg font-semibold">
                     {service.title}
                   </h3>

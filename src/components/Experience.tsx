@@ -32,7 +32,7 @@ function TimelineRow({
       transition={{ duration: 0.55, ease: [0.22, 1, 0.36, 1] }}
       className="relative grid min-w-0 grid-cols-1 gap-2 border-b border-foreground/10 py-6 last:border-b-0 sm:grid-cols-[8rem_1fr] sm:gap-8 3xl:grid-cols-[11rem_1fr] 3xl:gap-12 3xl:py-8"
     >
-      <span className={`timeline-node ${lit ? "timeline-node--lit" : ""}`} aria-hidden="true" />
+      <span data-prox data-prox-radius="120" className={`timeline-node ${lit ? "timeline-node--lit" : ""}`} aria-hidden="true" />
       <p className="font-mono text-xs text-muted">{exp.period}</p>
       <div className="min-w-0">
         <h3 className="font-display text-lg font-semibold">{exp.role}</h3>

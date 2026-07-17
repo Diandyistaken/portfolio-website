@@ -37,7 +37,7 @@
   The consolidated NDA click interaction (merges interrogation + firewall gate): approaching a card raises a faint hairline firewall grid with an 'access attempts' counter; clicking runs a mock auth — scan bar sweep, 'VERIFYING CLEARANCE…' types, then a bracketed ACCESS DENIED stamp slams in with a 4px shake while one redaction bar flickers to reveal a single teasing word ('fintech', 'gov') for 400ms. Repeat clicks pull escalating deadpan denials, ending with the robot's bubble: 'I've said too much.'
   _tech: pointer-distance CSS var + framer animate() timeline, clip-path reveal, click counter state_
 
-- [ ] **8. NDA Card Redaction Peel** (hook 9, M, classified/NDA cards)
+- [x] **8. NDA Card Redaction Peel** (hook 9, M, classified/NDA cards)
   Press-and-HOLD on a redaction bar slowly peels a circular clip-path hole around the cursor, revealing blueprint-style wireframe underneath — but at ~70% radius a 'CLEARANCE DENIED' stamp slams in and the hole snaps shut with an elastic slap (merged with the drag-peel sticker variant). Teases without ever showing anything, which IS the joke.
   _tech: pointerdown timer driving clip-path circle radius, high-stiffness spring release, framer stamp_
 
@@ -225,7 +225,7 @@
   About KPI numbers count with scroll position: entering the section, each figure rolls up odometer-style proportional to section progress, settling at the true value at full visibility; scrolling up rolls them back down. Pairs with the existing hover re-roll — scroll drives them, hover randomizes them.
   _tech: useScroll element progress → useTransform counter_
 
-- [ ] **55. Photo Escape Reflex** (hook 7, S, hero profile photo)
+- [x] **55. Photo Escape Reflex** (hook 7, S, hero profile photo)
   Within 200px of the profile photo, the ID-scan brackets slide outward and rotate to track the cursor's angle like a camera gimbal, while the photo does a 1-2px parallax lean AWAY from the cursor — alive and slightly wary, matching the robot's personality.
   _tech: cursor angle→bracket transform + inverse translate, framer springs_
 
@@ -241,11 +241,11 @@
   Four tiny labelled LEDs (UPTIME, FOCUS, COFFEE, DEPLOY) on the hero stats card, each blinking with its own organic rhythm; hovering shows a one-line tooltip ('COFFEE: 87% — refill imminent'), and clicking COFFEE makes it blink faster while the robot's eyes widen.
   _tech: CSS keyframe blinks with random delays + one click handler_
 
-- [ ] **59. Contact Combo Counter** (hook 7, S, global (cursor ring))
+- [x] **59. Contact Combo Counter** (hook 7, S, global (cursor ring))
   Clicking interactive toys in rapid succession builds a combo counter beside the cursor ring — x2, x3... in mono with a scale-punch per increment; x10 bursts into an amplified click-spark and logs a 'CHAIN REACTION' achievement. Costs almost nothing and retroactively makes every other toy more fun.
   _tech: click timestamp buffer + framer scale spring_
 
-- [ ] **60. Visit Streak Terminal Stamp** (hook 7, S, about terminal + robot)
+- [x] **60. Visit Streak Terminal Stamp** (hook 7, S, about terminal + robot)
   The whoami output appends 'last_seen: 2d ago | streak: 3 visits' from localStorage timestamps; at streak 3+ the robot greets returning visitors ('you again. I like persistence.'). Only surprises repeat visitors — exactly the recruiter-returning-for-round-two moment.
   _tech: localStorage + existing typed-terminal pipeline_
 
@@ -301,7 +301,7 @@
   Timeline dots become mechanical push-buttons: clicking depresses one with plunger travel and shadow, powering on that entry — text decrypt-scrambles in and a thin current line animates from dot to card. Clicking a lit node powers it down with a CRT-off collapse; lighting all triggers a full-timeline current sweep.
   _tech: framer variants, decrypt reuse, stroke-dashoffset current_
 
-- [ ] **74. Perimeter Breach Timeline** (hook 7, M, experience timeline)
+- [x] **74. Perimeter Breach Timeline** (hook 7, M, experience timeline)
   Timeline nodes are hollow rings that fill with accent and emit one sonar ripple when the cursor crosses within 120px, while the line segment between the two nearest nodes energizes with animated dash flow. Reading the CV becomes patrolling a network diagram.
   _tech: distance check per node, framer ripple, SVG stroke-dashoffset_
 
@@ -341,11 +341,11 @@
   The hero name casts a shadow copy of itself at ~8% opacity whose offset direction and length respond to cursor position as if the cursor were a light source — move left, shadow stretches right; move close, it tightens. Subtle until noticed, then unforgettable.
   _tech: duplicated text layer + framer transform from normalized cursor vector_
 
-- [ ] **84. Cursor-Shake Overheat Glitch** (hook 7, M, global headings)
+- [x] **84. Cursor-Shake Overheat Glitch** (hook 7, M, global headings)
   Rapidly shaking the cursor over a heading progressively overheats it: jitter grows, random glyphs corrupt into katakana/box-drawing chars, a 'SIGNAL DEGRADED' tag flickers — then it cools and reassembles over 1s when shaking stops (absorbs the page-wide shake-quake variant; localized is cheaper and safer). Cooldown prevents spam; skipped in perf-lite.
   _tech: mousemove velocity-reversal accumulator + per-char corruption state, framer jitter_
 
-- [ ] **85. Skill-Name Keystroke Sniffer** (hook 7, M, global → skills)
+- [x] **85. Skill-Name Keystroke Sniffer** (hook 7, M, global → skills)
   Typing any tech name with no input focused — 'nmap', 'react', 'python' — is sniffed by a global key listener; matching chips pulse in accent and a terminal toast types 'grep: 1 match found in /skills'. Extends the 'hack' egg into a whole vocabulary without duplicating it.
   _tech: keydown buffer matcher + chip highlight event, typed toast_
 
@@ -353,7 +353,7 @@
   Gallery images open via shared-layout expansion from their thumbnail while a one-frame RGB-split glitch (offset accent/white copies at low opacity) resolves into the sharp image, plus corner brackets flying in from the four screen corners to frame it.
   _tech: framer layoutId shared element + brief offset-clone glitch, no canvas_
 
-- [ ] **87. Skills Chip X-Ray Reveal** (hook 7, M, skills section)
+- [x] **87. Skills Chip X-Ray Reveal** (hook 7, M, skills section)
   Hovering a skill chip projects a large faint watermark glyph of that technology behind the whole grid — masked by a radial gradient centered on the cursor so it only shows within ~250px, growing and shrinking with approach. Scanning the grid with an x-ray gun.
   _tech: mask-image radial-gradient at cursor CSS vars, CSS-only glyph layer_
 
@@ -369,19 +369,19 @@
   Goal bars get a grabbable leading-edge handle: drag backward and the fill compresses with tension (edge glow brightening with stretch), release and it slingshots past its true value, wobbling like liquid before settling exactly right, the counter riding the overshoot.
   _tech: framer drag on fill width + spring release, counter via useTransform_
 
-- [ ] **91. Marquee Stowaway** (hook 7, M, tech marquee)
+- [x] **91. Marquee Stowaway** (hook 7, M, tech marquee)
   A tiny 8-bit robot silhouette occasionally rides the tech marquee like a conveyor belt (~once per 45s), bobbing atop a passing logo before hopping off at the edge; pausing the marquee on hover makes it look around nervously. Rare enough that spotting it feels like a secret.
   _tech: absolutely-positioned sprite synced to marquee translateX + framer bob_
 
-- [ ] **92. Direction-Aware Section Kickers** (hook 6, S, all section headers)
+- [x] **92. Direction-Aware Section Kickers** (hook 6, S, all section headers)
   Kickers gain scroll-direction awareness: scrolling down they slide up with a '▼ SCANNING' micro-label; scrolling up they slide down with '▲ REWIND' and a brief strikethrough-then-restore, like re-reading logs. One shared hook, all kickers consume it.
   _tech: useScrollDirection hook + framer variants_
 
-- [ ] **93. Selection Hex Readout** (hook 6, S, global)
+- [x] **93. Selection Hex Readout** (hook 6, S, global)
   Selecting any text pops a tiny mono tooltip — '0x2A bytes selected' — with a one-frame accent underline sweep across the range, paired with an accent-blue ::selection style. Copy-pasting the bio feels like exfiltrating data.
   _tech: selectionchange listener + positioned tooltip, ::selection CSS_
 
-- [ ] **94. Velocity Tracking Breathe** (hook 6, S, global section headings)
+- [x] **94. Velocity Tracking Breathe** (hook 6, S, global section headings)
   Section headings' letter-spacing expands with live scroll velocity (up to +0.15em) with a slight opacity dip like motion blur, snapping back on a spring when scrolling stops. Fast scrolling feels like text resisting wind.
   _tech: framer useVelocity → letterSpacing motion value_
 
@@ -441,11 +441,11 @@
   A tiny one-eyed drone floats near the robot on a thin elastic tether with real spring physics: it lags scroll with momentum, bobs on an idle sine, and grabbing and tossing it makes it boomerang around the robot before the tether reels it in — with the robot's eyes tracking it the whole time. (Overlaps Recon Drone; ship one drone, this is the physics-toy flavor.)
   _tech: rAF spring integrator + SVG tether line, framer drag for toss_
 
-- [ ] **109. Tractor-Beam CTA Aura** (hook 6, M, hero + contact CTAs)
+- [x] **109. Tractor-Beam CTA Aura** (hook 6, M, hero + contact CTAs)
   Primary CTAs project a visible field beyond the existing magnetic pull: a soft radial accent gradient on the section background stretching toward the cursor within 300px, plus faint concentric arcs contracting as distance closes — the button visually reels the pointer in before hover fires.
   _tech: radial gradient positioned by cursor vector, framer scale on arcs_
 
-- [ ] **110. Proximity Heat on Chat Demo** (hook 6, M, projects featured chat demo)
+- [x] **110. Proximity Heat on Chat Demo** (hook 6, M, projects featured chat demo)
   The chat-bot demo frame stays dim until the cursor nears ~300px; approach drives a rising accent glow, the bot's avatar dot pulses faster, and at close range a typed 'user detected — say hi?' hint appears in the demo. Retreating cools it to idle. (Coordinate with the global threat-glow system so it reads as an escalation, not a duplicate.)
   _tech: mousemove distance → CSS vars (shadow alpha, pulse rate), framer hint_
 
@@ -469,11 +469,11 @@
   Double-clicking a heading enters a 2-second inspector state: baseline grid and cap-height lines draw across the text and each letter gets a floating 9px accent-mono Unicode codepoint label ('U+004D') before fading out. A typographic x-ray for technical recruiters.
   _tech: dblclick toggle + positioned per-char labels, CSS grid lines_
 
-- [ ] **116. Skill Chip Firefly** (hook 6, M, skills)
+- [x] **116. Skill Chip Firefly** (hook 6, M, skills)
   A single 3px glow-dot drifts lazily among the skill chips and flees to the far side of the grid when the cursor approaches; idle for 10s it perches on a random chip, which gently pulses. Pure ambience in the robot's spirit — pair with Torchlight, whose proximity warming it visually complements.
   _tech: framer firefly motion + rAF proximity check_
 
-- [ ] **117. Cursor Trail Packet Train** (hook 6, M, global (cursor layer))
+- [x] **117. Cursor Trail Packet Train** (hook 6, M, global (cursor layer))
   Holding the mouse still for 2s spawns three follower packets trailing the cursor ring in a queued line like ducklings; fast movement scatters them, clicking makes them orbit once. Capped at 3, disabled in perf-lite.
   _tech: rAF lerp chain rendered as fixed divs, no canvas_
 

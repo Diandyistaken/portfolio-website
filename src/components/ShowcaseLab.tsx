@@ -36,7 +36,7 @@ function ShowcaseCard({ item, pipeline, onOpenScreenshot }: { item: ReturnType<t
   const spotlight = useSpotlight<HTMLDivElement>();
   const tilt = useTilt3D<HTMLElement>();
   return (
-    <m.article {...tilt.handlers} style={tilt.motionStyle} variants={revealItem} onMouseMove={spotlight.onMouseMove} className="spotlight-card group relative min-w-0 overflow-hidden rounded-lg border border-foreground/10 bg-[rgb(var(--surface)/0.92)] p-6 transition-[border-color,box-shadow] hover:border-accent/35 hover:shadow-[0_18px_48px_rgb(var(--accent-rgb)/0.1)] sm:p-8 3xl:p-10">
+    <m.article {...tilt.handlers} style={tilt.motionStyle} variants={revealItem} onMouseMove={spotlight.onMouseMove} data-prox data-prox-radius="360" className="spotlight-card prox-heat group relative min-w-0 overflow-hidden rounded-lg border border-foreground/10 bg-[rgb(var(--surface)/0.92)] p-6 transition-[border-color,box-shadow] hover:border-accent/35 hover:shadow-[0_18px_48px_rgb(var(--accent-rgb)/0.1)] sm:p-8 3xl:p-10">
       <div className="spotlight-overlay" aria-hidden="true" />
       <div className="relative z-10 [transform:translateZ(18px)]">
         <span className="inline-flex items-center gap-2 rounded-sm border border-accent/30 px-2.5 py-1 font-mono text-[0.65rem] uppercase tracking-wider text-accent"><span className="h-1.5 w-1.5 bg-accent" />{item.badge}</span>

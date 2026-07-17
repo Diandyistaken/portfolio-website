@@ -5,11 +5,64 @@ import { RevealGroup, revealItem } from "./Reveal";
 import { SectionHeading } from "./SectionHeading";
 import { useLanguage } from "@/lib/i18n/LanguageProvider";
 import { skillsMeta } from "@/lib/data";
-import { m, useReducedMotion } from "framer-motion";
-import { useRef, useState } from "react";
+import { AnimatePresence, m, useReducedMotion } from "framer-motion";
+import { useEffect, useRef, useState } from "react";
 import { CONTAINER } from "@/lib/layout";
 import { useTilt3D } from "@/lib/useTilt3D";
 import { usePerfLite } from "./SectionBackdrop";
+
+/** #116 Firefly: a lone glow-dot drifts among the chips and flees the cursor;
+ *  idle, it perches on a random spot and pulses. */
+function Firefly() {
+  const reducedMotion = useReducedMotion();
+  const perfLite = usePerfLite();
+  const ref = useRef<HTMLDivElement>(null);
+  const [pos, setPos] = useState({ x: 20, y: 30 });
+
+  useEffect(() => {
+    if (reducedMotion || perfLite) return;
+    if (window.matchMedia("(hover: none)").matches) return;
+    const self = { x: 20, y: 30, vx: 0.15, vy: 0.1 };
+    let mouse = { x: -999, y: -999 };
+    let raf = 0;
+    const onMove = (event: MouseEvent) => {
+      const box = ref.current?.parentElement?.getBoundingClientRect();
+      if (!box) return;
+      mouse = { x: ((event.clientX - box.left) / box.width) * 100, y: ((event.clientY - box.top) / box.height) * 100 };
+    };
+    const loop = () => {
+      const dx = self.x - mouse.x;
+      const dy = self.y - mouse.y;
+      const dist = Math.hypot(dx, dy);
+      if (dist < 22) {
+        self.vx += (dx / dist) * 0.6;
+        self.vy += (dy / dist) * 0.6;
+      }
+      self.vx = self.vx * 0.94 + (Math.sin(self.y * 0.3) * 0.02);
+      self.vy = self.vy * 0.94 + (Math.cos(self.x * 0.3) * 0.02);
+      self.x = Math.max(2, Math.min(98, self.x + self.vx));
+      self.y = Math.max(2, Math.min(98, self.y + self.vy));
+      setPos({ x: self.x, y: self.y });
+      raf = requestAnimationFrame(loop);
+    };
+    window.addEventListener("mousemove", onMove, { passive: true });
+    raf = requestAnimationFrame(loop);
+    return () => {
+      window.removeEventListener("mousemove", onMove);
+      cancelAnimationFrame(raf);
+    };
+  }, [reducedMotion, perfLite]);
+
+  if (reducedMotion || perfLite) return null;
+  return (
+    <div
+      ref={ref}
+      aria-hidden="true"
+      className="pointer-events-none absolute h-1.5 w-1.5 rounded-full bg-accent shadow-[0_0_10px_3px_rgb(var(--accent-rgb)/0.7)]"
+      style={{ left: `${pos.x}%`, top: `${pos.y}%` }}
+    />
+  );
+}
 
 const icons = {
   cyber: Shield,
@@ -60,7 +113,7 @@ function BruteChip({ label }: { label: string }) {
 
 type SkillCategory = ReturnType<typeof useLanguage>["t"]["skills"]["categories"][number];
 
-function SkillCard({ category }: { category: SkillCategory }) {
+function SkillCard({ category, matched }: { category: SkillCategory; matched: string | null }) {
   const Icon = icons[category.id as keyof typeof icons];
   const meta = skillsMeta[category.id];
   const tilt = useTilt3D<HTMLDivElement>();
@@ -73,11 +126,18 @@ function SkillCard({ category }: { category: SkillCategory }) {
       style={tilt.motionStyle}
       variants={revealItem}
       whileHover={reducedMotion || perfLite ? undefined : "hover"}
-      className={`surface surface-hover rounded-lg p-6 ${
+      className={`surface surface-hover group relative overflow-hidden rounded-lg p-6 ${
         meta.size === "lg" ? "sm:col-span-2" : ""
       }`}
     >
-      <m.div data-prox data-prox-radius="320" variants={{ hover: { z: 26, scale: 1.06 } }} className="prox-icon mb-5 flex h-10 w-10 items-center justify-center rounded-md border border-foreground/12 text-accent [transform:translateZ(10px)]">
+      {/* #87 x-ray watermark: a huge faint category icon behind the card,
+          brightening on hover like a scanned circuit. */}
+      <Icon
+        size={140}
+        aria-hidden="true"
+        className="pointer-events-none absolute -bottom-6 -right-6 text-accent opacity-[0.03] transition-opacity duration-300 group-hover:opacity-[0.08]"
+      />
+      <m.div data-prox data-prox-radius="320" variants={{ hover: { z: 26, scale: 1.06 } }} className="prox-icon relative mb-5 flex h-10 w-10 items-center justify-center rounded-md border border-foreground/12 text-accent [transform:translateZ(10px)]">
         <Icon size={18} />
       </m.div>
       <m.h3 variants={{ hover: { z: 20 } }} className="font-display text-lg font-semibold [transform:translateZ(8px)]">
@@ -109,7 +169,9 @@ function SkillCard({ category }: { category: SkillCategory }) {
                 },
               }}
               data-prox
-              className="prox-chip font-mono rounded-sm border border-foreground/12 px-2.5 py-1 text-[0.7rem] text-muted"
+              className={`prox-chip font-mono relative rounded-sm border px-2.5 py-1 text-[0.7rem] text-muted transition-colors ${
+                matched && tool.toLowerCase().includes(matched) ? "border-accent bg-accent/10 text-accent" : "border-foreground/12"
+              }`}
             >
               <BruteChip label={tool} />
             </m.span>
@@ -122,6 +184,43 @@ function SkillCard({ category }: { category: SkillCategory }) {
 
 export function Skills() {
   const { t } = useLanguage();
+  // #85 keystroke sniffer: typing a tech name anywhere (no input focused)
+  // pulses the matching chip and prints a grep toast.
+  const [matched, setMatched] = useState<string | null>(null);
+  const [toast, setToast] = useState<string | null>(null);
+
+  useEffect(() => {
+    const tools = t.skills.categories
+      .flatMap((category) => skillsMeta[category.id].tools ?? [])
+      .map((tool) => tool.toLowerCase());
+    let buffer = "";
+    let clearMatch: ReturnType<typeof setTimeout> | null = null;
+    const onKey = (event: KeyboardEvent) => {
+      const target = event.target as HTMLElement | null;
+      if (target && /^(INPUT|TEXTAREA|SELECT)$/.test(target.tagName)) return;
+      if (target?.isContentEditable) return;
+      if (event.key.length !== 1) return;
+      buffer = (buffer + event.key.toLowerCase()).slice(-16);
+      for (const tool of tools) {
+        const clean = tool.replace(/[^a-z0-9.#]/g, "");
+        if (clean.length >= 3 && buffer.endsWith(clean)) {
+          setMatched(clean);
+          setToast(`grep: match found in /skills → ${tool}`);
+          if (clearMatch) clearTimeout(clearMatch);
+          clearMatch = setTimeout(() => {
+            setMatched(null);
+            setToast(null);
+          }, 2200);
+          break;
+        }
+      }
+    };
+    window.addEventListener("keydown", onKey);
+    return () => {
+      window.removeEventListener("keydown", onKey);
+      if (clearMatch) clearTimeout(clearMatch);
+    };
+  }, [t]);
 
   return (
     <section id="skills" className="relative overflow-hidden px-6 py-24 sm:px-10 sm:py-28 3xl:px-16">
@@ -133,14 +232,30 @@ export function Skills() {
           description={t.skills.description}
         />
 
-        <RevealGroup
-          stagger={0.08}
-          className="mt-14 grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3 3xl:grid-cols-4 3xl:gap-6"
-        >
-          {t.skills.categories.map((category) => (
-            <SkillCard key={category.id} category={category} />
-          ))}
-        </RevealGroup>
+        <div className="relative mt-14">
+          <Firefly />
+          <RevealGroup
+            stagger={0.08}
+            className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3 3xl:grid-cols-4 3xl:gap-6"
+          >
+            {t.skills.categories.map((category) => (
+              <SkillCard key={category.id} category={category} matched={matched} />
+            ))}
+          </RevealGroup>
+        </div>
+
+        <AnimatePresence>
+          {toast && (
+            <m.p
+              initial={{ opacity: 0, y: 8 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0 }}
+              className="mt-4 font-mono text-xs text-accent"
+            >
+              {toast}
+            </m.p>
+          )}
+        </AnimatePresence>
       </div>
     </section>
   );

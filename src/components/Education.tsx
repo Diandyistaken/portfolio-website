@@ -26,7 +26,7 @@ function EducationSummary({ school, department, graduationLabel, graduation }: {
       whileHover={reducedMotion || perfLite ? undefined : { y: -4 }}
       className="surface flex flex-col items-center gap-4 rounded-lg p-7 text-center sm:flex-row sm:text-left 3xl:gap-6 3xl:p-10"
     >
-      <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-md border border-foreground/12 text-accent [transform:translateZ(18px)]">
+      <div data-prox data-prox-radius="320" className="prox-icon flex h-12 w-12 shrink-0 items-center justify-center rounded-md border border-foreground/12 text-accent [transform:translateZ(18px)]">
         <GraduationCap size={22} />
       </div>
       <div className="[transform:translateZ(12px)]">

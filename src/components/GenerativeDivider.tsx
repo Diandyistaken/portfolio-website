@@ -168,7 +168,7 @@ export function GenerativeDivider({ quoteId }: { quoteId: "day" | "sunset" }) {
 
         <div
           onMouseEnter={retype}
-          className="terminal-panel flex items-center gap-3 rounded-full border border-foreground/10 px-4 py-2 shadow-[0_10px_36px_rgb(0_0_0/0.4)] sm:px-5 sm:py-2.5"
+          data-prox data-prox-radius="220" className="terminal-panel prox-heat flex items-center gap-3 rounded-full border border-foreground/10 px-4 py-2 shadow-[0_10px_36px_rgb(0_0_0/0.4)] sm:px-5 sm:py-2.5"
         >
           <span className="flex shrink-0 items-center gap-1.5" aria-hidden="true">
             <span className="h-2 w-2 rounded-full bg-foreground/20" />

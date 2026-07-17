@@ -3,6 +3,25 @@
 > Kullanıcı talebi: "bunları şunları ekledim diye log sun." Her parti buraya
 > işlenir; kaynak sıralama `delight-backlog.md`.
 
+## Parti 9 — 2026-07-17 (Fable 5 · 20 fikir)
+
+Global imleç oyuncakları (CursorFx.tsx): **#59** combo sayacı (oyuncaklara hızlı
+tık → x2/x3…, x10'da rozet), **#93** seçim hex okuması ("0x2A bytes"), **#117**
+imleç durunca 3 takipçi paket treni.
+Bölüm başlıkları (SectionHeading): **#92** scroll yönüne göre "▼ SCANNING/▲ REWIND",
+**#84** başlık üzerinde imleç sallayınca aşırı-ısınma glitch, **#94** scroll hızıyla
+harf aralığı nefesi.
+Skills: **#85** herhangi bir yere tech adı yaz → eşleşen çip parlar + "grep: match"
+toast, **#87** kart arkasında büyük x-ray ikon filigranı, **#116** çipler arasında
+imleçten kaçan ateşböceği.
+Diğer: **#91** tech marquee'de ara ara geçen minik robot; **#110** chat demo çerçevesi
+imleç yaklaşınca ısınır; **#55** hero portresi imleçten hafif kaçar; **#60** About
+terminali dönen ziyaretçiyi hatırlar ("streak: N"); **#74** deneyim timeline node'ları
+imleç 120px içine girince dolup parlar; **#8** NDA redaksiyon barına bas-çek →
+clip-path deliği açılır, "denied" ile kapanır; **#109** hero ikincil CTA'sında imleç
+yaklaşınca çekim-ışını hâlesi; **#89/#110 yayılımı**: divider chip + showcase kartı +
+services/education ikonları proximity parlaması aldı.
+
 ## Parti 8 — 2026-07-17 (Fable 5 · 10 fikir)
 
 - **#10 Breach Meter:** hero birincil CTA'sını basılı tut → accent halka dolar,

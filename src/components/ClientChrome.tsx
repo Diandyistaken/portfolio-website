@@ -18,6 +18,7 @@ const Achievements = dynamic(() => import("./Achievements").then((mod) => mod.Ac
 const OverdriveHud = dynamic(() => import("./OverdriveHud").then((mod) => mod.OverdriveHud), { ssr: false });
 const ClearanceHud = dynamic(() => import("./ClearanceHud").then((mod) => mod.ClearanceHud), { ssr: false });
 const SonarReveal = dynamic(() => import("./SonarReveal").then((mod) => mod.SonarReveal), { ssr: false });
+const CursorFx = dynamic(() => import("./CursorFx").then((mod) => mod.CursorFx), { ssr: false });
 
 export function ClientChrome() {
   useEffect(() => {
@@ -37,6 +38,7 @@ export function ClientChrome() {
       <OverdriveHud />
       <ClearanceHud />
       <SonarReveal />
+      <CursorFx />
     </>
   );
 }

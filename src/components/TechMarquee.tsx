@@ -50,6 +50,14 @@ export function TechMarquee() {
           <Row hidden />
         </div>
       </VelocityTrack>
+      {/* #91 stowaway: a tiny robot silhouette rides the ticker */}
+      <span className="marquee-stowaway pointer-events-none absolute -top-1 left-0 flex flex-col items-center" aria-hidden="true">
+        <span className="flex h-2 w-3 items-center justify-center gap-[2px] rounded-sm border border-accent/50 bg-background">
+          <span className="h-[3px] w-[3px] rounded-full bg-accent" />
+          <span className="h-[3px] w-[3px] rounded-full bg-accent" />
+        </span>
+        <span className="h-1 w-2 rounded-b-sm bg-accent/40" />
+      </span>
     </div>
   );
 }

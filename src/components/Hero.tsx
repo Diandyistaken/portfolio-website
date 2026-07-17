@@ -2,7 +2,7 @@
 
 import { useEffect, useRef, useState, useSyncExternalStore } from "react";
 import Image from "next/image";
-import { AnimatePresence, m, useReducedMotion, useScroll, useTransform } from "framer-motion";
+import { AnimatePresence, m, useReducedMotion, useScroll, useSpring, useTransform } from "framer-motion";
 import { ChevronDown, MapPin, ShieldCheck, Sparkles } from "lucide-react";
 import { Reveal } from "./Reveal";
 import { HeroBackdrop } from "./HeroBackdrop";
@@ -93,6 +93,22 @@ export function Hero() {
   };
 
   const nameChars = Array.from(t.personalInfo.name);
+
+  // #55 photo escape reflex: the portrait leans slightly AWAY from the cursor
+  const leanX = useSpring(0, { stiffness: 150, damping: 15 });
+  const leanY = useSpring(0, { stiffness: 150, damping: 15 });
+  const onPhotoMove = (event: React.MouseEvent<HTMLDivElement>) => {
+    if (staticHero) return;
+    const rect = event.currentTarget.getBoundingClientRect();
+    const dx = event.clientX - (rect.left + rect.width / 2);
+    const dy = event.clientY - (rect.top + rect.height / 2);
+    leanX.set(Math.max(-3, Math.min(3, -dx / 40)));
+    leanY.set(Math.max(-3, Math.min(3, -dy / 40)));
+  };
+  const onPhotoLeave = () => {
+    leanX.set(0);
+    leanY.set(0);
+  };
 
   const projectsStat = t.about.stats[1];
   const techStat = t.about.stats[2];
@@ -262,7 +278,9 @@ export function Hero() {
               <MagneticButton>
                 <a
                   href="#projects"
-                  className="tap-pop surface-hover block rounded-full border border-foreground/12 px-6 py-3 text-sm font-medium text-foreground transition-colors hover:border-accent/50 hover:text-accent"
+                  data-prox
+                  data-prox-radius="300"
+                  className="prox-aura tap-pop surface-hover relative block rounded-full border border-foreground/12 px-6 py-3 text-sm font-medium text-foreground transition-colors hover:border-accent/50 hover:text-accent"
                 >
                   {t.hero.ctaSecondary}
                 </a>
@@ -296,11 +314,14 @@ export function Hero() {
               transition={{ duration: 0.7, ease: [0.22, 1, 0.36, 1], delay: 0.28 }}
               className="relative"
             >
-              <div
+              <m.div
                 role="button"
                 tabIndex={0}
                 aria-label={t.hero.scanLabel}
                 onClick={startScan}
+                style={staticHero ? undefined : { x: leanX, y: leanY }}
+                onMouseMove={onPhotoMove}
+                onMouseLeave={onPhotoLeave}
                 onKeyDown={(e) => {
                   if (e.key === "Enter" || e.key === " ") {
                     e.preventDefault();
@@ -345,7 +366,7 @@ export function Hero() {
                     )}
                   </AnimatePresence>
                 </div>
-              </div>
+              </m.div>
               <span className="surface font-mono absolute -bottom-3 -right-3 z-10 rounded-full px-2.5 py-1 text-[0.65rem] tracking-wide text-accent">
                 {t.hero.onlineLabel}
               </span>

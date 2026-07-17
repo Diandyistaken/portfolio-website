@@ -2,11 +2,107 @@
 
 import { useEffect, useRef, useState, type ReactNode } from "react";
 import { Lock, ShieldAlert, ShieldCheck, Unlock, Wrench, Zap } from "lucide-react";
-import { AnimatePresence, m } from "framer-motion";
+import { AnimatePresence, m, useReducedMotion } from "framer-motion";
 import { RevealGroup, revealItem } from "./Reveal";
 import { SectionHeading } from "./SectionHeading";
 import { useLanguage } from "@/lib/i18n/LanguageProvider";
 import { CONTAINER } from "@/lib/layout";
+import { usePerfLite } from "./SectionBackdrop";
+
+/** #8 Redaction peel: press-and-HOLD a bar to peel a clip-path hole revealing
+ *  a wireframe underneath — but at ~70% a CLEARANCE DENIED stamp snaps it
+ *  shut. Teases without ever revealing anything, which is the joke. */
+function PeelBar({ className }: { className: string }) {
+  const reducedMotion = useReducedMotion();
+  const perfLite = usePerfLite();
+  const ref = useRef<HTMLSpanElement>(null);
+  const [radius, setRadius] = useState(0);
+  const [posX, setPosX] = useState(50);
+  const [denied, setDenied] = useState(false);
+  const holding = useRef(false);
+  const raf = useRef(0);
+
+  useEffect(() => {
+    return () => {
+      if (raf.current) cancelAnimationFrame(raf.current);
+    };
+  }, []);
+
+  const onDown = (event: React.PointerEvent<HTMLSpanElement>) => {
+    event.stopPropagation();
+    if (reducedMotion || perfLite || window.matchMedia("(hover: none)").matches) return;
+    const el = ref.current;
+    if (!el) return;
+    holding.current = true;
+    setDenied(false);
+    el.setPointerCapture(event.pointerId);
+    const maxR = el.getBoundingClientRect().width * 0.7;
+    const startedAt = performance.now();
+    const loop = () => {
+      if (!holding.current) return;
+      const r = Math.min(maxR, ((performance.now() - startedAt) / 900) * maxR);
+      setRadius(r);
+      if (r >= maxR) {
+        holding.current = false;
+        setRadius(0);
+        setDenied(true);
+        setTimeout(() => setDenied(false), 800);
+        return;
+      }
+      raf.current = requestAnimationFrame(loop);
+    };
+    raf.current = requestAnimationFrame(loop);
+  };
+  const onMove = (event: React.PointerEvent<HTMLSpanElement>) => {
+    if (!holding.current) return;
+    const rect = ref.current?.getBoundingClientRect();
+    if (rect) setPosX(((event.clientX - rect.left) / rect.width) * 100);
+  };
+  const onUp = (event: React.PointerEvent<HTMLSpanElement>) => {
+    event.stopPropagation();
+    if (!holding.current) return;
+    holding.current = false;
+    try {
+      ref.current?.releasePointerCapture(event.pointerId);
+    } catch {
+      // already released
+    }
+    const shrink = () => {
+      setRadius((current) => {
+        const next = Math.max(0, current - 6);
+        if (next > 0) raf.current = requestAnimationFrame(shrink);
+        return next;
+      });
+    };
+    raf.current = requestAnimationFrame(shrink);
+  };
+
+  return (
+    <span
+      ref={ref}
+      onPointerDown={onDown}
+      onPointerMove={onMove}
+      onPointerUp={onUp}
+      onPointerCancel={onUp}
+      className={`redacted-bar relative cursor-grab touch-none overflow-hidden ${className}`}
+      aria-hidden="true"
+    >
+      <span
+        className="absolute inset-0"
+        style={{
+          clipPath: `circle(${radius}px at ${posX}% 50%)`,
+          background:
+            "repeating-linear-gradient(90deg, rgb(var(--accent-rgb)/0.5) 0 1px, transparent 1px 6px), repeating-linear-gradient(0deg, rgb(var(--accent-rgb)/0.35) 0 1px, transparent 1px 6px)",
+        }}
+      />
+      {denied && (
+        <span className="absolute inset-0 flex items-center justify-center bg-background/70 font-mono text-[0.5rem] uppercase tracking-widest text-accent">
+          denied
+        </span>
+      )}
+    </span>
+  );
+}
 
 const CLEARANCE_TARGET = 3;
 // teasing words that flicker into view for a beat during the DENIED skit
@@ -120,14 +216,16 @@ function ClassifiedCard({
           the first bar flickers a teasing word into view. */}
       <div className="mt-5 flex items-center gap-3">
         <span className="sr-only">{labels.redactedLabel}</span>
-        <span className="redacted-bar relative h-6 w-36 rounded-sm sm:w-44" aria-hidden="true">
+        <span className="relative">
+          <PeelBar className="block h-6 w-36 rounded-sm sm:w-44" />
           <AnimatePresence>
             {active && phase === "denied" && (
               <m.span
+                aria-hidden="true"
                 initial={{ opacity: 0 }}
                 animate={{ opacity: [0, 1, 1, 0] }}
                 transition={{ duration: 0.5, times: [0, 0.2, 0.6, 1] }}
-                className="absolute inset-0 flex items-center justify-center font-mono text-[0.6rem] uppercase tracking-widest text-background"
+                className="pointer-events-none absolute inset-0 flex items-center justify-center font-mono text-[0.6rem] uppercase tracking-widest text-background"
               >
                 {TEASE_WORDS[index % TEASE_WORDS.length]}
               </m.span>
