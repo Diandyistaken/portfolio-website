@@ -73,7 +73,7 @@
   Clicking any skill chip runs a 300ms cracking animation — the label cycles random chars with a small [▓▓▓░░] bar inside the chip, then resolves to 'ACCESS GRANTED: <skill> — 4 yrs' revealing a hidden proficiency detail (absorbs the squish/overload variant). Cracked chips keep a subtle unlocked-padlock glyph, rewarding visitors who click everything.
   _tech: char scramble interval + framer, local state_
 
-- [ ] **17. Robot Copies Your Scroll Speed** (hook 8, S, global (corner robot))
+- [x] **17. Robot Copies Your Scroll Speed** (hook 8, S, global (corner robot))
   The robot's body language maps to scroll velocity: fast scrolling makes it lean hard into the direction with wind-line dashes and squinted eyes, slow scrolling gets a relaxed sway, and a sudden stop makes it wobble forward once like braking. Reuses the velocity value already computed for the marquee skew — one new consumer, big personality gain.
   _tech: framer useVelocity mapped to rotate/skew springs on robot root_
 
@@ -81,7 +81,7 @@
   Every stat number becomes clickable: each click cycles dec → hex (0x1C) → binary → back with a vertical odometer flip per digit and a tiny 'BIN' base label fading in beside it. A zero-cost engineer flex that makes people click every number on the page.
   _tech: shared StatValue component, framer digit flip, toString(radix)_
 
-- [ ] **19. Robot Waves Hello/Goodbye** (hook 8, M, global (corner robot))
+- [x] **19. Robot Waves Hello/Goodbye** (hook 8, M, global (corner robot))
   The robot raises a tiny articulated arm and waves on first arrival (after the intro loader) and again at the footer; near the contact section it points upward at the email card. The arm is two SVG segments on spring rotations, staying within the robot's existing silhouette language.
   _tech: framer spring rotations on SVG arm groups + IntersectionObserver triggers_
 
@@ -193,7 +193,7 @@
   Sensitive-looking words in the bio and NDA cards render as redaction bars; press-and-hold decrypts one character by character with a thin progress line, releasing early re-redacts with a scramble collapse. A full 700ms hold reveals the word permanently with a '[DECLASSIFIED]' micro-tag.
   _tech: pointerdown/up timers + per-char scramble reveal, framer progress line_
 
-- [ ] **47. Scroll-Scrub Typewriter Line** (hook 8, M, about)
+- [x] **47. Scroll-Scrub Typewriter Line** (hook 8, M, about)
   One manifesto sentence in About ('I break things to understand them.') is typed and UN-typed strictly by scroll position — scroll down and it types, scroll up and the caret eats characters. Being scrubbed rather than autoplayed makes visitors bounce the scroll just to play with it.
   _tech: useScroll progress mapped to substring length, sticky container_
 
@@ -201,11 +201,11 @@
   Typing 'speedrun' in the About terminal starts a visible mm:ss.ms HUD timer; copying the email stops it and prints a rank card ('S-TIER: 00:41.2 — you skim like a senior recruiter'). Best time persists as a ghost target on retry. People screenshot rank cards.
   _tech: rAF timer + scroll detection + localStorage_
 
-- [ ] **49. Sonar Reveal Double-Click** (hook 8, M, global)
+- [x] **49. Sonar Reveal Double-Click** (hook 8, M, global)
   Double-clicking empty background emits an expanding sonar ring plus a brief blueprint-grid flash; every clickable toy on screen blinks with a corner-bracket highlight for 1.5s. A discoverability meta-toy that makes visitors find all the other toys — increasingly valuable as this list ships.
   _tech: document dblclick + framer ring, data-toy attribute registry_
 
-- [ ] **50. Proximity Wake on Marquee** (hook 8, M, tech marquee)
+- [x] **50. Proximity Wake on Marquee** (hook 8, M, tech marquee)
   Marquee items nearest the cursor slow down, enlarge slightly and brighten to accent, creating a readable wake in the stream that re-accelerates as the cursor leaves (absorbs the per-char iron-filings variant — item-level is cheaper and more readable). Lets visitors actually read the fast stack by pointing at it.
   _tech: per-item distance→scale/opacity, marquee speed lerp near cursor_
 
@@ -229,15 +229,15 @@
   Within 200px of the profile photo, the ID-scan brackets slide outward and rotate to track the cursor's angle like a camera gimbal, while the photo does a 1-2px parallax lean AWAY from the cursor — alive and slightly wary, matching the robot's personality.
   _tech: cursor angle→bracket transform + inverse translate, framer springs_
 
-- [ ] **56. Checksum Footer Stamp** (hook 7, S, footer)
+- [x] **56. Checksum Footer Stamp** (hook 7, S, footer)
   A footer line reads 'page integrity: verifying…' and visibly computes on scroll-into-view: hex pairs stream, then settle into a stable fake SHA-256 with a 'VERIFIED ✓ no tampering detected' stamp slamming in on a spring. Clicking re-runs it and appends 'verified 2x — trust issues?'.
   _tech: char cycle interval + framer spring stamp_
 
-- [ ] **57. Uptime Odometer** (hook 7, S, hero stats card)
+- [x] **57. Uptime Odometer** (hook 7, S, hero stats card)
   A stats-card line reading 'UPTIME 23y 11m 04d 07:32:18' where seconds tick live with a rolling odometer digit animation computed from birthdate/career-start. Makes the whole card feel like a running machine.
   _tech: 1s interval + CSS transform digit column, tabular-nums_
 
-- [ ] **58. Status LED Rack** (hook 7, S, hero)
+- [x] **58. Status LED Rack** (hook 7, S, hero)
   Four tiny labelled LEDs (UPTIME, FOCUS, COFFEE, DEPLOY) on the hero stats card, each blinking with its own organic rhythm; hovering shows a one-line tooltip ('COFFEE: 87% — refill imminent'), and clicking COFFEE makes it blink faster while the robot's eyes widen.
   _tech: CSS keyframe blinks with random delays + one click handler_
 
@@ -249,7 +249,7 @@
   The whoami output appends 'last_seen: 2d ago | streak: 3 visits' from localStorage timestamps; at streak 3+ the robot greets returning visitors ('you again. I like persistence.'). Only surprises repeat visitors — exactly the recruiter-returning-for-round-two moment.
   _tech: localStorage + existing typed-terminal pipeline_
 
-- [ ] **61. Threat-Level Nav Underline** (hook 7, S, navbar)
+- [x] **61. Threat-Level Nav Underline** (hook 7, S, navbar)
   Each navbar link's underline grows and shifts from dim gray to ice-blue based on horizontal cursor distance along the bar — the nearest link is nearly fully underlined before the cursor arrives, neighbors partially. Reads like a targeting system acquiring lock.
   _tech: one mousemove on nav, per-link scaleX + color via CSS vars_
 

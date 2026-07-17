@@ -73,6 +73,7 @@ export const de: Content = {
       "modus: tiefe konzentration",
       "vpn: an · keine spur",
     ],
+    ledTips: ["UPTIME: 99,98% — nie abgestürzt, wird es nie", "FOCUS: tief — bitte nicht stören", "COFFEE: 87% — Nachschub naht", "DEPLOY: grün — sogar freitags"],
     scanLabel: "ID-Scan starten",
     verifiedLabel: "ID BESTÄTIGT",
     onlineLabel: "IST // ONLINE",
@@ -101,6 +102,7 @@ export const de: Content = {
     kicker: "Über mich",
     title: "Wer ist Muhammed Maksut?",
     terminalLead: "Eine kurze Vorstellung — über die Kommandozeile.",
+    manifesto: "Ich zerlege Dinge, um sie zu verstehen; ich verstehe sie, um sie zu schützen.",
     terminal: {
       title: "maksut@istanbul: ~",
       commands: [
@@ -550,5 +552,8 @@ export const de: Content = {
     rights: "Alle Rechte vorbehalten.",
     tagline: "Aus Istanbul, mit Kaffee und Terminal-Fenstern.",
     backToTop: "Nach oben",
+    checksumVerifying: "Seitenintegrität: wird geprüft…",
+    checksumVerified: "VERIFIZIERT ✓ keine Manipulation erkannt",
+    checksumAgain: "2x verifiziert — Vertrauensprobleme?",
   },
 };

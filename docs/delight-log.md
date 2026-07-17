@@ -3,6 +3,26 @@
 > Kullanıcı talebi: "bunları şunları ekledim diye log sun." Her parti buraya
 > işlenir; kaynak sıralama `delight-backlog.md`.
 
+## Parti 8 — 2026-07-17 (Fable 5 · 10 fikir)
+
+- **#10 Breach Meter:** hero birincil CTA'sını basılı tut → accent halka dolar,
+  %100'de "breach" (şok dalgası + glitch) + iletişime yumuşak kaydırır; normal
+  tık hâlâ çalışır.
+- **#17 Robot scroll squint:** hızlı scroll'da robot gözlerini kısar.
+- **#19 Robot footer selamı:** footer görünüme girince robot bir kez el sallar.
+- **#47 About manifesto:** Hakkımda'da scroll'a göre yazılıp geri silinen bir
+  cümle ("Anlamak için kırarım…").
+- **#49 Sonar Reveal:** boş zemine çift tıkla → yayılan sonar halkası + 1.5sn
+  tüm oyuncakların çerçevesi belirir (keşif meta-oyuncağı).
+- **#50 Marquee wake:** tech marquee'de imlece yakın öğeler büyüyüp accent'e döner.
+- **#56 Footer checksum:** footer'da görünüme girince sahte SHA "hesaplanır",
+  "DOĞRULANDI ✓" damgası; tıkla → yeniden ("güven sorunları mı?").
+- **#57 Uptime odometre:** hero stat kartında canlı sayan "UPTIME Xd HH:MM:SS".
+- **#58 Status LED rack:** UPTIME/FOCUS/COFFEE/DEPLOY LED'leri kendi ritminde
+  yanıp söner; hover'da ipucu, COFFEE'ye tık daha hızlı yanar.
+- **#61 Threat-level nav underline:** navbar linklerinin alt çizgisi imleç
+  yaklaştıkça (prox) dolar — hedef kilitleme hissi.
+
 ## Parti 7 — 2026-07-17 (Fable 5 · 10 fikir)
 
 - **#7 Clearance Check Denied:** NDA kartına tıkla → tarama çizgisi süpürür,

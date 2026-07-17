@@ -31,7 +31,7 @@ function Row({ hidden }: { hidden?: boolean }) {
           key={item}
           className="flex items-center font-mono text-[0.65rem] tracking-[0.25em] text-muted 3xl:text-sm 4xl:text-base"
         >
-          <span className="px-5 3xl:px-8 4xl:px-10">{item}</span>
+          <span data-prox data-prox-radius="140" className="prox-wake inline-block px-5 3xl:px-8 4xl:px-10">{item}</span>
           <span className="text-accent" style={{ fontSize: "0.5rem" }}>
             ◆
           </span>

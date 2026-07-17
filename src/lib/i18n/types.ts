@@ -91,6 +91,7 @@ export type Content = {
     cvOptionEn: string;
     ticker: string[];
     statusCycle: string[];
+    ledTips: string[];
     scanLabel: string;
     verifiedLabel: string;
     onlineLabel: string;
@@ -141,6 +142,7 @@ export type Content = {
     kicker: string;
     title: string;
     terminalLead: string;
+    manifesto: string;
     terminal: {
       title: string;
       commands: { cmd: string; out: string }[];
@@ -271,6 +273,9 @@ export type Content = {
     rights: string;
     tagline: string;
     backToTop: string;
+    checksumVerifying: string;
+    checksumVerified: string;
+    checksumAgain: string;
   };
   receipt: {
     title: string;

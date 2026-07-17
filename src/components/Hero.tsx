@@ -3,13 +3,14 @@
 import { useEffect, useRef, useState, useSyncExternalStore } from "react";
 import Image from "next/image";
 import { AnimatePresence, m, useReducedMotion, useScroll, useTransform } from "framer-motion";
-import { ArrowRight, ChevronDown, MapPin, ShieldCheck, Sparkles } from "lucide-react";
+import { ChevronDown, MapPin, ShieldCheck, Sparkles } from "lucide-react";
 import { Reveal } from "./Reveal";
 import { HeroBackdrop } from "./HeroBackdrop";
 import { CvDownload } from "./CvDownload";
 import { FollowMenu } from "./FollowMenu";
 import { DecryptText } from "./DecryptText";
 import { MagneticButton } from "./MagneticButton";
+import { BreachCTA, LedRack, UptimeCounter } from "./HeroExtras";
 import { useLanguage } from "@/lib/i18n/LanguageProvider";
 import { CONTAINER } from "@/lib/layout";
 import { goalsMeta } from "@/lib/data";
@@ -256,16 +257,7 @@ export function Hero() {
           <Reveal delay={0.34}>
             <div className="mt-9 flex flex-wrap items-center gap-4">
               <MagneticButton>
-                <a
-                  href="#contact"
-                  className="tap-pop group flex items-center gap-2 rounded-full bg-foreground px-6 py-3 text-sm font-medium text-background transition-[transform,box-shadow] hover:scale-[1.02] hover:shadow-[0_0_32px_rgb(var(--accent-rgb)/0.3)]"
-                >
-                  {t.hero.ctaPrimary}
-                  <ArrowRight
-                    size={16}
-                    className="transition-transform duration-200 group-hover:translate-x-1"
-                  />
-                </a>
+                <BreachCTA label={t.hero.ctaPrimary} targetId="contact" />
               </MagneticButton>
               <MagneticButton>
                 <a
@@ -402,6 +394,9 @@ export function Hero() {
                   <p className="text-[0.68rem] text-muted">{t.nav.experience}</p>
                 </div>
               </div>
+
+              <LedRack tips={t.hero.ledTips} />
+              <UptimeCounter />
             </div>
           </Reveal>
         </m.div>

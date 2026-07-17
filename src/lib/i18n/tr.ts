@@ -73,6 +73,7 @@ export const tr: Content = {
       "mod: derin odak",
       "vpn: aktif · iz yok",
     ],
+    ledTips: ["UPTIME: %99,98 — düşmedi, düşmez", "FOCUS: derin — rahatsız etmeyin", "COFFEE: %87 — dolum yakın", "DEPLOY: yeşil — cuma bile"],
     scanLabel: "Kimlik taramasını başlat",
     verifiedLabel: "KİMLİK DOĞRULANDI",
     onlineLabel: "İST // ÇEVRİMİÇİ",
@@ -101,6 +102,7 @@ export const tr: Content = {
     kicker: "Hakkımda",
     title: "Kim bu Muhammed Maksut?",
     terminalLead: "Kısa bir tanışma — komut satırından.",
+    manifesto: "Anlamak için kırarım; korumak için anlarım.",
     terminal: {
       title: "maksut@istanbul: ~",
       commands: [
@@ -552,5 +554,8 @@ export const tr: Content = {
     rights: "Tüm hakları saklıdır.",
     tagline: "İstanbul'dan, kahve ve terminal eşliğinde.",
     backToTop: "Başa dön",
+    checksumVerifying: "sayfa bütünlüğü: doğrulanıyor…",
+    checksumVerified: "DOĞRULANDI ✓ oynama tespit edilmedi",
+    checksumAgain: "2 kez doğrulandı — güven sorunları mı?",
   },
 };

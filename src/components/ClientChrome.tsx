@@ -17,6 +17,7 @@ const SectionRail = dynamic(() => import("./SectionRail").then((mod) => mod.Sect
 const Achievements = dynamic(() => import("./Achievements").then((mod) => mod.Achievements), { ssr: false });
 const OverdriveHud = dynamic(() => import("./OverdriveHud").then((mod) => mod.OverdriveHud), { ssr: false });
 const ClearanceHud = dynamic(() => import("./ClearanceHud").then((mod) => mod.ClearanceHud), { ssr: false });
+const SonarReveal = dynamic(() => import("./SonarReveal").then((mod) => mod.SonarReveal), { ssr: false });
 
 export function ClientChrome() {
   useEffect(() => {
@@ -35,6 +36,7 @@ export function ClientChrome() {
       <Achievements />
       <OverdriveHud />
       <ClearanceHud />
+      <SonarReveal />
     </>
   );
 }

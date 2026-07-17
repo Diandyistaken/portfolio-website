@@ -73,6 +73,7 @@ export const en: Content = {
       "mode: deep focus",
       "vpn: on · no trace",
     ],
+    ledTips: ["UPTIME: 99.98% — never dropped, never will", "FOCUS: deep — do not disturb", "COFFEE: 87% — refill imminent", "DEPLOY: green — even on Fridays"],
     scanLabel: "Start ID scan",
     verifiedLabel: "ID VERIFIED",
     onlineLabel: "IST // ONLINE",
@@ -101,6 +102,7 @@ export const en: Content = {
     kicker: "About",
     title: "Who is Muhammed Maksut?",
     terminalLead: "A quick introduction — from the command line.",
+    manifesto: "I break things to understand them; I understand them to protect them.",
     terminal: {
       title: "maksut@istanbul: ~",
       commands: [
@@ -550,5 +552,8 @@ export const en: Content = {
     rights: "All rights reserved.",
     tagline: "From Istanbul, fueled by coffee and terminal windows.",
     backToTop: "Back to top",
+    checksumVerifying: "page integrity: verifying…",
+    checksumVerified: "VERIFIED ✓ no tampering detected",
+    checksumAgain: "verified 2x — trust issues?",
   },
 };

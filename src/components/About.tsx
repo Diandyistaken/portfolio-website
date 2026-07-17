@@ -1,11 +1,38 @@
 "use client";
 
+import { useRef } from "react";
+import { m, useReducedMotion, useScroll, useTransform } from "framer-motion";
 import { Reveal } from "./Reveal";
 import { SectionHeading } from "./SectionHeading";
 import { useLanguage } from "@/lib/i18n/LanguageProvider";
 import { KpiStats } from "./KpiStats";
 import { CONTAINER } from "@/lib/layout";
 import { AboutTerminal } from "./AboutTerminal";
+import { usePerfLite } from "./SectionBackdrop";
+
+/** #47 Scroll-scrub manifesto: one line that types itself as you scroll down
+ *  and un-types as you scroll up — a sentence you play with the scrollbar. */
+function ScrubManifesto({ text }: { text: string }) {
+  const ref = useRef<HTMLParagraphElement>(null);
+  const reducedMotion = useReducedMotion();
+  const perfLite = usePerfLite();
+  const { scrollYProgress } = useScroll({ target: ref, offset: ["start 0.85", "center 0.4"] });
+  const chars = useTransform(scrollYProgress, (value) =>
+    text.slice(0, Math.round(Math.max(0, Math.min(1, value)) * text.length)),
+  );
+  const staticText = reducedMotion || perfLite;
+
+  return (
+    <p
+      ref={ref}
+      className="font-mono mt-10 text-center text-sm text-accent/90 sm:text-base"
+    >
+      <span className="text-accent/50">&gt; </span>
+      {staticText ? text : <m.span>{chars}</m.span>}
+      {!staticText && <span className="ops-cursor ml-0.5 inline-block" aria-hidden="true">▊</span>}
+    </p>
+  );
+}
 
 export function About() {
   const { t } = useLanguage();
@@ -25,6 +52,7 @@ export function About() {
             {t.personalInfo.bio}
           </p>
         </Reveal>
+        <ScrubManifesto text={t.about.manifesto} />
         <KpiStats />
         <Reveal delay={0.15} className="mt-14 sm:mt-16">
           <p className="mb-5 font-display text-lg font-medium text-foreground/90 sm:text-xl">

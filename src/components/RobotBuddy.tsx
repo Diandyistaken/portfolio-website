@@ -33,6 +33,8 @@ export function RobotBuddy() {
   const [sentry, setSentry] = useState(false);
   const sentryOnRef = useRef(false);
   const [waving, setWaving] = useState(false);
+  const [squint, setSquint] = useState(false);
+  const squintTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
   const [bubble, setBubble] = useState<string | null>(null);
   const [alerted, setAlerted] = useState(false);
   const [chatOpen, setChatOpen] = useState(false);
@@ -167,7 +169,8 @@ export function RobotBuddy() {
       });
     };
 
-    // Lean against fast scrolling, then spring back upright.
+    // Lean against fast scrolling, then spring back upright. #17: on a hard
+    // scroll the robot also squints its eyes into wind-lines for a beat.
     const onScroll = () => {
       const delta = window.scrollY - lastScrollY;
       lastScrollY = window.scrollY;
@@ -175,6 +178,11 @@ export function RobotBuddy() {
       rotateX.set(Math.max(-12, Math.min(12, delta * 0.12)));
       if (scrollResetTimer) clearTimeout(scrollResetTimer);
       scrollResetTimer = setTimeout(() => rotateX.set(0), 180);
+      if (Math.abs(delta) > 60) {
+        setSquint(true);
+        if (squintTimer.current) clearTimeout(squintTimer.current);
+        squintTimer.current = setTimeout(() => setSquint(false), 260);
+      }
     };
 
     armIdleTimers();
@@ -235,8 +243,30 @@ export function RobotBuddy() {
     return () => {
       if (bubbleTimer.current) clearTimeout(bubbleTimer.current);
       if (waveTimer.current) clearTimeout(waveTimer.current);
+      if (squintTimer.current) clearTimeout(squintTimer.current);
     };
   }, []);
+
+  // #19 wave goodbye: when the footer scrolls into view, the robot waves once.
+  useEffect(() => {
+    if (!enabled || dismissed || reducedMotion || perfLite) return;
+    const footer = document.querySelector("footer");
+    if (!footer) return;
+    let done = false;
+    const observer = new IntersectionObserver(
+      (entries) => {
+        if (done || !entries[0]?.isIntersecting) return;
+        done = true;
+        setWaving(true);
+        if (waveTimer.current) clearTimeout(waveTimer.current);
+        waveTimer.current = setTimeout(() => setWaving(false), 2300);
+        observer.disconnect();
+      },
+      { threshold: 0.2 },
+    );
+    observer.observe(footer);
+    return () => observer.disconnect();
+  }, [enabled, dismissed, reducedMotion, perfLite]);
 
   const handleClick = () => {
     window.dispatchEvent(new Event("app:robot-click"));
@@ -345,9 +375,11 @@ export function RobotBuddy() {
                     className={`robot-eye relative overflow-hidden rounded-full border border-accent/25 bg-accent/10 transition-all duration-200 ${
                       sleeping
                         ? "h-0.5 w-3.5 border-0 bg-accent/70"
-                        : near
-                          ? "h-[1.4rem] w-4 border-accent/50"
-                          : "h-[1.15rem] w-3.5"
+                        : squint
+                          ? "h-1 w-4 border-accent/40"
+                          : near
+                            ? "h-[1.4rem] w-4 border-accent/50"
+                            : "h-[1.15rem] w-3.5"
                     }`}
                   >
                     {!sleeping && sectionMood === "default" && (

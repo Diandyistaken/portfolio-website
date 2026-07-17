@@ -63,6 +63,8 @@ function ScrambleLink({ label, href, onNavigate }: { label: string; href: string
       href={href}
       onMouseEnter={scramble}
       onClick={() => onNavigate(href)}
+      data-prox
+      data-prox-radius="130"
       className="nav-link transition-colors hover:text-foreground"
     >
       {display}
