@@ -13,6 +13,75 @@ import { usePerfLite } from "./SectionBackdrop";
 
 type CopyState = "idle" | "copied" | "failed";
 
+const GRID_COLS = 8;
+const GRID_ROWS = 3;
+
+/**
+ * #39 Chain-reaction node grid: ~24 dormant dots behind the contact heading.
+ * Clicking one lights it and the pulse propagates to neighbours in 80ms
+ * Manhattan-distance waves like a network worm; clicking mid-cascade spawns
+ * colliding waves (each dot just counts overlapping pulses).
+ */
+function NodeGrid() {
+  const reducedMotion = useReducedMotion();
+  const perfLite = usePerfLite();
+  const [lit, setLit] = useState<number[]>(() => Array(GRID_COLS * GRID_ROWS).fill(0));
+  const timers = useRef<ReturnType<typeof setTimeout>[]>([]);
+
+  useEffect(() => {
+    const pending = timers.current;
+    return () => pending.forEach((timer) => clearTimeout(timer));
+  }, []);
+
+  if (reducedMotion || perfLite) return null;
+
+  const ignite = (index: number) => {
+    const col = index % GRID_COLS;
+    const row = Math.floor(index / GRID_COLS);
+    for (let i = 0; i < GRID_COLS * GRID_ROWS; i++) {
+      const distance =
+        Math.abs((i % GRID_COLS) - col) + Math.abs(Math.floor(i / GRID_COLS) - row);
+      timers.current.push(
+        setTimeout(
+          () => setLit((previous) => previous.map((value, j) => (j === i ? value + 1 : value))),
+          distance * 80,
+        ),
+        setTimeout(
+          () =>
+            setLit((previous) =>
+              previous.map((value, j) => (j === i ? Math.max(0, value - 1) : value)),
+            ),
+          distance * 80 + 520,
+        ),
+      );
+    }
+  };
+
+  return (
+    <div aria-hidden="true" className="absolute inset-x-0 -top-6 hidden h-36 lg:block">
+      <div className="grid h-full grid-cols-8 grid-rows-3 place-items-center">
+        {lit.map((value, index) => (
+          <button
+            key={index}
+            type="button"
+            tabIndex={-1}
+            onClick={() => ignite(index)}
+            className="grid h-5 w-5 cursor-pointer place-items-center rounded-full"
+          >
+            <span
+              className={`block h-1.5 w-1.5 rounded-full transition-all duration-200 ${
+                value > 0
+                  ? "scale-[1.8] bg-accent shadow-[0_0_10px_rgb(var(--accent-rgb)/0.9)]"
+                  : "bg-foreground/15"
+              }`}
+            />
+          </button>
+        ))}
+      </div>
+    </div>
+  );
+}
+
 /**
  * #12 Typable ghost prompt: a live "$ say_hello _" line above the contact
  * card that actually accepts keystrokes; pressing Enter types a cheeky
@@ -232,12 +301,15 @@ export function Contact() {
     <section id="contact" className="relative overflow-hidden px-6 py-24 sm:px-10 sm:py-28 3xl:px-16">
       <div className={`relative z-10 ${CONTAINER}`}>
         <div className="mx-auto max-w-2xl 3xl:max-w-4xl">
-        <SectionHeading
-        index="11"
-          kicker={t.contact.kicker}
-          title={t.contact.title}
-          description={t.contact.description}
-        />
+        <div className="relative">
+          <NodeGrid />
+          <SectionHeading
+          index="11"
+            kicker={t.contact.kicker}
+            title={t.contact.title}
+            description={t.contact.description}
+          />
+        </div>
 
         {!reducedMotion && !perfLite && (
           <GhostPrompt

@@ -2,7 +2,7 @@
 
 import { useEffect, useRef, useState, useSyncExternalStore } from "react";
 import Image from "next/image";
-import { AnimatePresence, m, useReducedMotion, useScroll, useSpring, useTransform } from "framer-motion";
+import { AnimatePresence, m, useMotionTemplate, useReducedMotion, useScroll, useSpring, useTransform } from "framer-motion";
 import { ChevronDown, MapPin, ShieldCheck, Sparkles } from "lucide-react";
 import { Reveal } from "./Reveal";
 import { HeroBackdrop } from "./HeroBackdrop";
@@ -61,7 +61,28 @@ export function Hero() {
   const contentY = useTransform(scrollYProgress, [0, 1], [0, -80]);
   const photoY = useTransform(scrollYProgress, [0, 1], [0, 60]);
   const exitOpacity = useTransform(scrollYProgress, [0, 0.75], [1, 0.15]);
+  // #44 depth stack: backdrop recedes + blurs, photo grows toward the viewer,
+  // the stats card trails on its own rate, hex debris flies fastest.
+  const backdropY = useTransform(scrollYProgress, [0, 1], [0, 90]);
+  const backdropBlur = useTransform(scrollYProgress, [0, 0.9], [0, 7]);
+  const backdropFilter = useMotionTemplate`blur(${backdropBlur}px)`;
+  const photoScale = useTransform(scrollYProgress, [0, 0.6], [1, 1.045]);
+  const statsExtraY = useTransform(scrollYProgress, [0, 1], [0, 70]);
+  const hexY = useTransform(scrollYProgress, [0, 1], [0, -190]);
+  // #45 de-rez exit: scanline mask gaps widen + slices shear as the hero
+  // leaves; scrolling back reassembles (pure scrub, no timers).
+  const derezBand = useTransform(scrollYProgress, [0.3, 0.9], [16, 3]);
+  const derezMask = useMotionTemplate`repeating-linear-gradient(180deg, #000 0px, #000 ${derezBand}px, transparent ${derezBand}px, transparent 16px)`;
+  const derezShift = useTransform(scrollYProgress, [0.35, 0.9], [0, 26]);
   const staticHero = reduceMotion || perfLite;
+
+  // #37 wipe-reveal portrait: double-click toggles a before/after mode where
+  // a vertical accent line follows the cursor, wireframe left / photo right.
+  const [wipeMode, setWipeMode] = useState(false);
+  const splitX = useSpring(50, { stiffness: 260, damping: 24 });
+  const wipeRightInset = useTransform(splitX, (value) => 100 - value);
+  const wipeClip = useMotionTemplate`inset(0 ${wipeRightInset}% 0 0)`;
+  const wipeLinePos = useMotionTemplate`${splitX}%`;
 
   useEffect(() => {
     if (reduceMotion || perfLite || t.hero.ticker.length < 2) {
@@ -104,10 +125,15 @@ export function Hero() {
     const dy = event.clientY - (rect.top + rect.height / 2);
     leanX.set(Math.max(-3, Math.min(3, -dx / 40)));
     leanY.set(Math.max(-3, Math.min(3, -dy / 40)));
+    // #37: in wipe mode the cursor's x scrubs the before/after split
+    if (wipeMode) {
+      splitX.set(Math.max(4, Math.min(96, ((event.clientX - rect.left) / rect.width) * 100)));
+    }
   };
   const onPhotoLeave = () => {
     leanX.set(0);
     leanY.set(0);
+    splitX.set(50);
   };
 
   const projectsStat = t.about.stats[1];
@@ -121,7 +147,35 @@ export function Hero() {
       id="top"
       className="relative isolate flex min-h-screen min-h-[100svh] items-center overflow-hidden px-6 pt-28 pb-24 sm:px-10 3xl:px-16 3xl:pt-32 3xl:pb-28"
     >
-      <HeroBackdrop />
+      {/* #44 layer 1: the backdrop grid recedes and blurs on exit */}
+      <m.div
+        aria-hidden="true"
+        style={staticHero ? undefined : { y: backdropY, filter: backdropFilter }}
+        className="absolute inset-0"
+      >
+        <HeroBackdrop />
+      </m.div>
+
+      {/* #44 layer 4: floating hex debris, fastest parallax rate */}
+      {!staticHero && (
+        <m.div aria-hidden="true" style={{ y: hexY }} className="pointer-events-none absolute inset-0 z-[1] hidden lg:block">
+          {[
+            { top: "18%", left: "44%", glyph: "0x5E" },
+            { top: "64%", left: "6%", glyph: "{ }" },
+            { top: "30%", left: "88%", glyph: "0xC8" },
+            { top: "76%", left: "58%", glyph: "</>" },
+            { top: "48%", left: "31%", glyph: "▚" },
+          ].map((fragment) => (
+            <span
+              key={fragment.glyph}
+              className="absolute font-mono text-xs text-accent/15"
+              style={{ top: fragment.top, left: fragment.left }}
+            >
+              {fragment.glyph}
+            </span>
+          ))}
+        </m.div>
+      )}
 
       <div className={`${CONTAINER} relative z-10 grid grid-cols-1 items-center gap-16 lg:grid-cols-[1.1fr_0.9fr] 3xl:gap-24`}>
         <m.div style={staticHero ? undefined : { y: contentY, opacity: exitOpacity }}>
@@ -297,7 +351,18 @@ export function Hero() {
         </m.div>
 
         <m.div
-          style={staticHero ? undefined : { y: photoY, opacity: exitOpacity }}
+          style={
+            staticHero
+              ? undefined
+              : {
+                  y: photoY,
+                  opacity: exitOpacity,
+                  scale: photoScale,
+                  x: derezShift,
+                  WebkitMaskImage: derezMask,
+                  maskImage: derezMask,
+                }
+          }
           className="relative mx-auto flex w-full max-w-sm flex-col items-center gap-6"
         >
           <div className="relative w-64 sm:w-72 lg:w-full lg:max-w-xs 3xl:max-w-sm">
@@ -318,7 +383,15 @@ export function Hero() {
                 role="button"
                 tabIndex={0}
                 aria-label={t.hero.scanLabel}
-                onClick={startScan}
+                onClick={(event) => {
+                  // second click of a double-click toggles wipe mode instead
+                  if (event.detail > 1) return;
+                  startScan();
+                }}
+                onDoubleClick={() => {
+                  if (staticHero) return;
+                  setWipeMode((value) => !value);
+                }}
                 style={staticHero ? undefined : { x: leanX, y: leanY }}
                 onMouseMove={onPhotoMove}
                 onMouseLeave={onPhotoLeave}
@@ -348,6 +421,26 @@ export function Hero() {
                         "linear-gradient(to top, rgb(var(--accent-rgb) / 0.14), transparent 45%)",
                     }}
                   />
+                  {/* #37 wipe overlay: duotone/wireframe left of the split line */}
+                  {wipeMode && !staticHero && (
+                    <>
+                      <m.div aria-hidden="true" className="absolute inset-0 z-[2] overflow-hidden" style={{ clipPath: wipeClip }}>
+                        <Image
+                          src="/profil-fotografi.jpg"
+                          alt=""
+                          fill
+                          sizes="(min-width: 1024px) 24rem, 16rem"
+                          className="wipe-duotone object-cover object-[center_25%]"
+                        />
+                        <div className="wipe-grid absolute inset-0" aria-hidden="true" />
+                      </m.div>
+                      <m.span
+                        aria-hidden="true"
+                        className="absolute inset-y-0 z-[3] w-px bg-accent shadow-[0_0_14px_rgb(var(--accent-rgb)/0.9)]"
+                        style={{ left: wipeLinePos }}
+                      />
+                    </>
+                  )}
                   {scanRun > 0 && (
                     <div key={scanRun} className="id-scan absolute inset-0" />
                   )}
@@ -374,6 +467,8 @@ export function Hero() {
           </div>
 
           <Reveal delay={0.5} className="w-full">
+            {/* #44 layer 3: the stats card trails at its own parallax rate */}
+            <m.div style={staticHero ? undefined : { y: statsExtraY }}>
             <div data-prox data-prox-radius="360" className="surface relative overflow-hidden rounded-2xl p-5">
               <div
                 className="pointer-events-none absolute -right-10 -top-10 h-32 w-32 rounded-full bg-accent/10 blur-3xl"
@@ -419,6 +514,7 @@ export function Hero() {
               <LedRack tips={t.hero.ledTips} />
               <UptimeCounter />
             </div>
+            </m.div>
           </Reveal>
         </m.div>
       </div>

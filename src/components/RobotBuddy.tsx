@@ -54,6 +54,21 @@ export function RobotBuddy() {
   const pupilY = useSpring(0, { stiffness: 170, damping: 15 });
   const shadowX = useTransform(rotateY, [-MAX_TILT, MAX_TILT], [7, -7]);
 
+  // #9 pokeable head: drag the head around on a stiff spring; on release it
+  // snaps back with overshoot while the eyes lag a beat behind on a softer
+  // spring (jelly). A hard flick triggers a dizzy wobble + squint-blink.
+  const headDX = useSpring(0, { stiffness: 380, damping: 15 });
+  const headDY = useSpring(0, { stiffness: 380, damping: 15 });
+  const eyeLagX = useSpring(headDX, { stiffness: 130, damping: 10 });
+  const eyeLagY = useSpring(headDY, { stiffness: 130, damping: 10 });
+  const jellyX = useTransform([headDX, eyeLagX], (values: number[]) => (values[1] - values[0]) * 0.6);
+  const jellyY = useTransform([headDY, eyeLagY], (values: number[]) => (values[1] - values[0]) * 0.6);
+  const pupilRenderX = useTransform([pupilX, jellyX], (values: number[]) => values[0] + values[1]);
+  const pupilRenderY = useTransform([pupilY, jellyY], (values: number[]) => values[0] + values[1]);
+  const pokeState = useRef({ active: false, moved: false, startX: 0, startY: 0 });
+  const [dizzy, setDizzy] = useState(false);
+  const dizzyTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
+
   const bubbleTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
   const waveTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
 
@@ -244,8 +259,50 @@ export function RobotBuddy() {
       if (bubbleTimer.current) clearTimeout(bubbleTimer.current);
       if (waveTimer.current) clearTimeout(waveTimer.current);
       if (squintTimer.current) clearTimeout(squintTimer.current);
+      if (dizzyTimer.current) clearTimeout(dizzyTimer.current);
     };
   }, []);
+
+  // #9 poke handlers: pointer-drag the head, physics handles the rest.
+  const onPokeDown = (event: React.PointerEvent<HTMLButtonElement>) => {
+    if (reducedMotion || perfLite) return;
+    if (window.matchMedia("(hover: none)").matches) return;
+    pokeState.current = { active: true, moved: false, startX: event.clientX, startY: event.clientY };
+    event.currentTarget.setPointerCapture(event.pointerId);
+  };
+  const onPokeMove = (event: React.PointerEvent<HTMLButtonElement>) => {
+    const state = pokeState.current;
+    if (!state.active) return;
+    const dx = event.clientX - state.startX;
+    const dy = event.clientY - state.startY;
+    if (Math.hypot(dx, dy) > 7) state.moved = true;
+    if (!state.moved) return;
+    event.preventDefault();
+    headDX.set(Math.max(-30, Math.min(30, dx * 0.8)));
+    headDY.set(Math.max(-24, Math.min(24, dy * 0.8)));
+  };
+  const onPokeUp = (event: React.PointerEvent<HTMLButtonElement>) => {
+    const state = pokeState.current;
+    if (!state.active) return;
+    state.active = false;
+    try {
+      event.currentTarget.releasePointerCapture(event.pointerId);
+    } catch {
+      // already released
+    }
+    const speed = Math.hypot(headDX.getVelocity(), headDY.getVelocity());
+    headDX.set(0);
+    headDY.set(0);
+    if (state.moved && speed > 900) {
+      setDizzy(true);
+      setSquint(true);
+      if (dizzyTimer.current) clearTimeout(dizzyTimer.current);
+      dizzyTimer.current = setTimeout(() => {
+        setDizzy(false);
+        setSquint(false);
+      }, 950);
+    }
+  };
 
   // #19 wave goodbye: when the footer scrolls into view, the robot waves once.
   useEffect(() => {
@@ -269,6 +326,11 @@ export function RobotBuddy() {
   }, [enabled, dismissed, reducedMotion, perfLite]);
 
   const handleClick = () => {
+    // a drag that moved the head is a poke, not a click — don't open chat
+    if (pokeState.current.moved) {
+      pokeState.current.moved = false;
+      return;
+    }
     window.dispatchEvent(new Event("app:robot-click"));
     if (sleeping) {
       setSleeping(false);
@@ -330,16 +392,21 @@ export function RobotBuddy() {
       <m.button
         type="button"
         onClick={handleClick}
+        onPointerDown={onPokeDown}
+        onPointerMove={onPokeMove}
+        onPointerUp={onPokeUp}
+        onPointerCancel={onPokeUp}
         aria-label={t.robot.label}
         initial={{ opacity: 0, y: 46, scale: 0.6 }}
         animate={{ opacity: 1, y: 0, scale: 1 }}
         transition={{ type: "spring", stiffness: 240, damping: 17, delay: 1.4 }}
-        className="relative block cursor-pointer outline-none focus-visible:rounded-2xl"
+        style={{ touchAction: "none" }}
+        className="relative block cursor-grab outline-none focus-visible:rounded-2xl active:cursor-grabbing"
       >
         <m.div
-          style={{ rotateX, rotateY, transformStyle: "preserve-3d" }}
-          animate={alerted ? { x: [0, -3, 3, -3, 3, 0] } : undefined}
-          transition={alerted ? { duration: 0.45 } : undefined}
+          style={{ rotateX, rotateY, x: headDX, y: headDY, transformStyle: "preserve-3d" }}
+          animate={alerted ? { x: [0, -3, 3, -3, 3, 0] } : dizzy ? { rotate: [0, -10, 8, -6, 4, 0] } : undefined}
+          transition={alerted ? { duration: 0.45 } : dizzy ? { duration: 0.9 } : undefined}
           className={`robot-body relative ${patrol && !sleeping ? "robot-patrol" : ""}`}
         >
           {/* antenna */}
@@ -384,7 +451,7 @@ export function RobotBuddy() {
                   >
                     {!sleeping && sectionMood === "default" && (
                       <m.span
-                        style={{ x: pupilX, y: pupilY }}
+                        style={{ x: pupilRenderX, y: pupilRenderY }}
                         className={`robot-pupil absolute inset-x-0 top-1/2 mx-auto h-2.5 w-2.5 -translate-y-1/2 rounded-full ${
                           alerted ? "bg-amber-400" : "bg-accent"
                         } shadow-[0_0_8px_rgb(var(--accent-rgb)/1)]`}
@@ -392,7 +459,7 @@ export function RobotBuddy() {
                     )}
                     {!sleeping && sectionMood !== "default" && (
                       <m.span
-                        style={{ x: pupilX, y: pupilY }}
+                        style={{ x: pupilRenderX, y: pupilRenderY }}
                         className="robot-pupil absolute inset-0 flex items-center justify-center font-mono text-[0.6rem] font-bold text-accent [text-shadow:0_0_8px_rgb(var(--accent-rgb)/1)]"
                       >
                         {sectionMood === "classified" ? "+" : sectionMood === "about" ? ">" : "▲"}

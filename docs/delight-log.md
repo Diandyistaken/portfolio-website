@@ -3,6 +3,42 @@
 > Kullanıcı talebi: "bunları şunları ekledim diye log sun." Her parti buraya
 > işlenir; kaynak sıralama `delight-backlog.md`.
 
+## Parti 10 — 2026-07-17 (Fable 5 · 20 fikir + #10 doğrulama)
+
+Vitrin (ShowcaseLab + Lightbox): **#33** thumbnail'lar gri/sönük durur, imleç
+yaklaştıkça (--prox) renklenip parlar; **#52** imleci izleyen dairesel büyüteç
+lens (radial mask + grid + %118 zoom); **#62** görseller scroll hızına göre
+yay ile girer (hızlı scroll = "boing"); **#95** görünümden çıkarken kaba mozaik
++ karartma (scrub, geri dönüşlü); **#96** satır scroll'una bağlı diyagonal
+maske süpürmesi; **#97** lightbox'ta açılan her görsele kalıcı "ANALYZED"
+damgası, hepsi → "ALL EVIDENCE PROCESSED ✓"; **#35** lightbox'ta tıkla →
+imleç noktasından 2.5x zoom + "ANALYZING SECTOR [x,y]" HUD, fare ile pan,
+ESC/tık geri; **#36** lightbox görselini fırlat → yana atış ileri/geri geçer,
+dikey atış kapatır, yavaş sürükleme lastikle geri yaslanır.
+Hero: **#44** 4 katmanlı derinlik paralaksı (backdrop geri çekilip bulanır,
+foto %4.5 büyür, stat kartı kendi hızında, hex parçaları en hızlı); **#45**
+çıkışta foto+stat kartı scanline dilimlerine ayrılıp kayar (mask scrub, geri
+scroll'da toplanır); **#37** portreye çift tık → wipe modu: dikey accent çizgi
+imlecin x'ini izler, solda wireframe/duotone, sağda gerçek foto.
+Robot: **#9** kafayı tut-sürükle (sert yay), bırakınca overshoot ile döner,
+gözler jöle gibi bir tık gecikir; sert fiskede sersem sallanma + göz kısma.
+Global: **#42** scroll bar'ına sürüklenebilir tutamaç — yay gibi çek-bırak →
+sayfa momentum scroll ile fırlar, yay overshoot'uyla oturur (girdi iptal
+eder); **#43** sağ kenar veri hattı — scroll hex-paket glyph'leri doğurur,
+hız scroll hızına bağlı, dipte patlama; **#48** herhangi yere "speedrun" yaz →
+mm:ss.ms HUD sayaç, e-posta kopyala → rank kartı (S/A/B/C-TIER) + localStorage
+PB ghost.
+Diğer: **#39** Contact başlığı arkasında 24 nokta — tıkla → 80ms Manhattan
+dalgası komşulara yayılır, çakışan dalgalar toplanır; **#41** skill çipleri
+fırlatılabilir (momentum + görünmez duvar + yaylı dönüş); **#46** NDA kartında
+ikinci redaksiyon barı bas-tut → 700ms'de harf harf çözülür + "[DECLASSIFIED]",
+erken bırak → geri şifrelenir; **#51** NDA kart başlıkları şifreli durur,
+imleç mesafesiyle harf harf çözülür; **#54** About KPI'ları scroll konumuyla
+odometre gibi iner-çıkar (hover re-roll üstte çalışır).
+**#10 Breach Meter** Parti 8'de zaten eklenmişti — doğrulandı, backlog'da
+işaretlendi. Tüm yeni metinler İngilizce terminal-artifact (i18n değişikliği yok).
+Gate: tsc + eslint + vitest (34) + build yeşil.
+
 ## Parti 9 — 2026-07-17 (Fable 5 · 20 fikir)
 
 Global imleç oyuncakları (CursorFx.tsx): **#59** combo sayacı (oyuncaklara hızlı

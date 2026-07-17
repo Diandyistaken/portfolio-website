@@ -41,11 +41,11 @@
   Press-and-HOLD on a redaction bar slowly peels a circular clip-path hole around the cursor, revealing blueprint-style wireframe underneath — but at ~70% radius a 'CLEARANCE DENIED' stamp slams in and the hole snaps shut with an elastic slap (merged with the drag-peel sticker variant). Teases without ever showing anything, which IS the joke.
   _tech: pointerdown timer driving clip-path circle radius, high-stiffness spring release, framer stamp_
 
-- [ ] **9. Pokeable Robot Head Physics** (hook 9, M, global (robot buddy))
+- [x] **9. Pokeable Robot Head Physics** (hook 9, M, global (robot buddy))
   Click-and-drag the robot's head: it follows the pointer on a stiff spring, and on release snaps back with overshoot while the eyes lag one beat behind on a softer secondary spring (jelly effect). A hard flick triggers one full dizzy wobble and a blink. Amplifies the existing buddy with pure physics charm.
   _tech: framer useSpring chain (head spring → eye spring), pointer velocity on release_
 
-- [ ] **10. Breach Meter (hold-to-charge CTA)** (hook 9, M, hero CTA)
+- [x] **10. Breach Meter (hold-to-charge CTA)** (hook 9, M, hero CTA)
   Press-and-hold the hero Contact CTA to fill a thin ice-blue progress ring with a rising WebAudio synth pitch; release early and it decays with a spring wobble, hold to 100% and it 'breaches' — shockwave ring, 300ms text glitch nearby, then smooth-scroll to Contact. Normal tap still works, so the hold is a discoverable bonus with zero conversion friction.
   _tech: framer useMotionValue ring, pointerdown/up timers, WebAudio oscillator_
 
@@ -137,7 +137,7 @@
   The showcase image nearest viewport center scales to 1.06 at full brightness while neighbors shrink to 0.94 and dim to 60%, continuously interpolated from scroll position like a camera racking focus through the gallery (merged duplicate from two lenses). Clicking the focused image opens the existing lightbox via shared-layout zoom. Directly answers 'images that grow/shrink'.
   _tech: useScroll element offsets → useTransform scale/filter, framer layoutId zoom_
 
-- [ ] **33. Proximity Declassify Gallery** (hook 8, M, showcase lab grid)
+- [x] **33. Proximity Declassify Gallery** (hook 8, M, showcase lab grid)
   Showcase thumbnails sit at 40% grayscale/dim; as the cursor approaches within ~200px (before hover) each image continuously interpolates toward full color, 1.04 scale, and an accent border glow proportional to distance (absorbs the dock-style magnify variant). The grid feels like a flashlight of clearance sweeping over classified material.
   _tech: single mousemove + per-tile distance calc setting CSS vars (filter/scale/border-alpha)_
 
@@ -145,15 +145,15 @@
   Moving along a text-first project row summons a floating thumbnail preview that follows the cursor, scaling from 0 with a spring and rotating subtly toward movement direction; a right-aligned status line types 'GET /project → 200 OK · build 47s' (merged from the deploy-log variant). Leaving the row collapses it into the row's accent dot.
   _tech: framer follow-cursor motion value + velocity rotate, portal-positioned img, typer reuse_
 
-- [ ] **35. Cursor-Origin Forensic Zoom** (hook 8, M, showcase lab lightbox)
+- [x] **35. Cursor-Origin Forensic Zoom** (hook 8, M, showcase lab lightbox)
   In the lightbox, the image zooms 2.5x anchored to the exact cursor point while a monospace HUD shows fake pixel coordinates and 'ANALYZING SECTOR [x,y]'; moving the mouse pans like an evidence viewer, ESC or click springs back (absorbs the rotary-crank zoom idea — cursor-anchored is more discoverable).
   _tech: framer motion + pointer events, transform-origin from mousemove_
 
-- [ ] **36. Throw-to-Dismiss Lightbox** (hook 8, M, showcase lab)
+- [x] **36. Throw-to-Dismiss Lightbox** (hook 8, M, showcase lab)
   Lightbox images are draggable with full inertia: flick past a velocity threshold and the image sails off-screen with rotation proportional to throw angle, closing the lightbox (or advancing if thrown sideways); slow drags rubber-band back. The image scales down slightly while grabbed — tactile grow/shrink.
   _tech: framer drag + dragMomentum + velocity threshold on dragEnd_
 
-- [ ] **37. Wipe-Reveal Before/After Portrait** (hook 8, M, hero photo)
+- [x] **37. Wipe-Reveal Before/After Portrait** (hook 8, M, hero photo)
   A second click-mode on the profile photo: a vertical accent line follows the cursor's x-position, revealing a duotone/wireframe rendition of the portrait on one side and the real photo on the other. Drag to scrub the split; release springs it back to 50/50.
   _tech: two stacked layers + clip-path inset from pointermove, framer spring on release_
 
@@ -161,7 +161,7 @@
   Clicking the big hero name detonates it: each letter becomes a physics body that drops, bounces once on an invisible floor, scatters with slight rotation, then flies back and snaps into place with a magnetic spring and an accent flash on landing. One-per-5s cooldown keeps it special.
   _tech: framer per-letter springs on staggered spans, no canvas_
 
-- [ ] **39. Chain-Reaction Node Grid** (hook 8, M, contact backdrop)
+- [x] **39. Chain-Reaction Node Grid** (hook 8, M, contact backdrop)
   A dormant grid of ~24 dim dots behind the contact heading: clicking any dot lights it and propagates to neighbors in an 80ms ripple with rising synth blips — one click cascades like a network worm, then the wave inverts and fades. Clicking mid-cascade spawns colliding waves.
   _tech: BFS timing over grid state, framer scale/glow, WebAudio blips_
 
@@ -169,27 +169,27 @@
   One divider renders as a row of ascii 'FIREWALL' bricks: first click cracks a brick with fissure lines, second shatters it into falling particles. Break them all and the divider retypes as 'FIREWALL BYPASSED — welcome in', then rebuilds brick-by-brick after 10s so the toy is replayable.
   _tech: framer exit particles, state array, CSS clip-path cracks_
 
-- [ ] **41. Flick-Toss Skill Chips** (hook 8, M, skills)
+- [x] **41. Flick-Toss Skill Chips** (hook 8, M, skills)
   Every skill chip is grabbable: flick one and it flies with real momentum, rubber-bands off the grid's invisible walls, then spring-snaps back into its slot with a damped wobble while neighbors shove aside on tiny repulsion springs. Reduced-motion: static chips with plain hover.
   _tech: framer drag + dragElastic + useVelocity + layout spring return_
 
-- [ ] **42. Slingshot Scroll Launcher** (hook 8, M, global (scroll progress bar))
+- [x] **42. Slingshot Scroll Launcher** (hook 8, M, global (scroll progress bar))
   The scroll progress bar gains a draggable thumb: pull it like a bowstring (the bar visibly stretches and bends with elastic tension), release, and the page launches into a momentum scroll matching pull distance, overshooting the target by a few pixels and springing back (absorbs the heading-tether grapple variant — same payoff, one clean control).
   _tech: framer drag + custom rAF momentum scroll with spring settle, SVG bar bend_
 
-- [ ] **43. Scroll Payload Injector** (hook 8, M, global (right edge rail))
+- [x] **43. Scroll Payload Injector** (hook 8, M, global (right edge rail))
   A thin fixed data-conduit line runs down the right edge; scrolling spawns hex-packet glyphs (0x5E, 0xC8...) that travel down at scroll velocity and burst in a tiny spark when they reach the section in view. Fast scrolling floods the conduit, idle drains it — the page feels like data being injected into each section.
   _tech: framer useScroll velocity + mapped glyphs, IntersectionObserver for burst target_
 
-- [ ] **44. Depth-Stacked Hero Parallax** (hook 8, M, hero)
+- [x] **44. Depth-Stacked Hero Parallax** (hook 8, M, hero)
   The hero splits into 4 depth layers — background grid, photo, stats card, floating hex fragments — translating at different rates on scroll, with the photo growing ~4% toward the viewer while the grid recedes and blurs; mouse position adds a subtle secondary parallax on the photo layers (absorbs the mouse-driven portrait-slices pitch). Real depth on the very first scroll gesture.
   _tech: framer useScroll + useTransform per layer, mouse motion values, CSS blur_
 
-- [ ] **45. De-Rez Hero Exit** (hook 8, M, hero)
+- [x] **45. De-Rez Hero Exit** (hook 8, M, hero)
   Scrolling away from the hero dissolves the photo and stats card into horizontal scanline slices that stagger-slide apart and fade (clip-path strips, no canvas); scrolling back reassembles them in reverse (absorbs the clip-path-morph deconstruct variant). Continuous scrub, so visitors play it like a toy.
   _tech: useScroll progress → staggered clip-path/translate on 8 slice divs_
 
-- [ ] **46. Hold-to-Declassify Words** (hook 8, M, about + classified/NDA cards)
+- [x] **46. Hold-to-Declassify Words** (hook 8, M, about + classified/NDA cards)
   Sensitive-looking words in the bio and NDA cards render as redaction bars; press-and-hold decrypts one character by character with a thin progress line, releasing early re-redacts with a scramble collapse. A full 700ms hold reveals the word permanently with a '[DECLASSIFIED]' micro-tag.
   _tech: pointerdown/up timers + per-char scramble reveal, framer progress line_
 
@@ -197,7 +197,7 @@
   One manifesto sentence in About ('I break things to understand them.') is typed and UN-typed strictly by scroll position — scroll down and it types, scroll up and the caret eats characters. Being scrubbed rather than autoplayed makes visitors bounce the scroll just to play with it.
   _tech: useScroll progress mapped to substring length, sticky container_
 
-- [ ] **48. Recruiter Speedrun Timer** (hook 8, M, terminal trigger + global HUD)
+- [x] **48. Recruiter Speedrun Timer** (hook 8, M, terminal trigger + global HUD)
   Typing 'speedrun' in the About terminal starts a visible mm:ss.ms HUD timer; copying the email stops it and prints a rank card ('S-TIER: 00:41.2 — you skim like a senior recruiter'). Best time persists as a ghost target on retry. People screenshot rank cards.
   _tech: rAF timer + scroll detection + localStorage_
 
@@ -209,11 +209,11 @@
   Marquee items nearest the cursor slow down, enlarge slightly and brighten to accent, creating a readable wake in the stream that re-accelerates as the cursor leaves (absorbs the per-char iron-filings variant — item-level is cheaper and more readable). Lets visitors actually read the fast stack by pointing at it.
   _tech: per-item distance→scale/opacity, marquee speed lerp near cursor_
 
-- [ ] **51. Proximity Decrypt Labels** (hook 8, M, classified/NDA cards)
+- [x] **51. Proximity Decrypt Labels** (hook 8, M, classified/NDA cards)
   Card titles in the classified section sit as scrambled cipher text (█▓5f#) and resolve character-by-character as the cursor approaches — resolution percentage maps to distance, so backing away re-encrypts. Clearance-based declassification, scroll-into-view resolve on touch/reduced-motion.
   _tech: distance→progress mapping, per-char scramble in a rAF hook_
 
-- [ ] **52. Image Zoom Under Magnifier Scan** (hook 8, M, showcase lab)
+- [x] **52. Image Zoom Under Magnifier Scan** (hook 8, M, showcase lab)
   Showcase images scale 0.92→1.0 tied to scroll centering, and cursor proximity adds a circular scan lens — a radial mask following the mouse showing the image slightly zoomed and sharpened with a faint grid overlay, fading in from 150px away (absorbs the standalone magnifier-dock pitch). Forensic photo analysis, no hover required.
   _tech: useScroll scale + CSS mask-image radial at pointer var, background-position magnify_
 
@@ -221,7 +221,7 @@
   On mobile, device tilt drives spring-smoothed parallax: hero card, robot eyes, and spotlight highlights all lean with the phone at different spring stiffnesses so the scene feels suspended in fluid. Permission prompt styled as a terminal command; silent fallback on denial. Gives touch users their own version of the proximity magic.
   _tech: DeviceOrientationEvent + framer useSpring per layer, iOS permission gate_
 
-- [ ] **54. KPI Odometer Scrub** (hook 7, S, about (KPIs))
+- [x] **54. KPI Odometer Scrub** (hook 7, S, about (KPIs))
   About KPI numbers count with scroll position: entering the section, each figure rolls up odometer-style proportional to section progress, settling at the true value at full visibility; scrolling up rolls them back down. Pairs with the existing hover re-roll — scroll drives them, hover randomizes them.
   _tech: useScroll element progress → useTransform counter_
 
@@ -253,7 +253,7 @@
   Each navbar link's underline grows and shifts from dim gray to ice-blue based on horizontal cursor distance along the bar — the nearest link is nearly fully underlined before the cursor arrives, neighbors partially. Reads like a targeting system acquiring lock.
   _tech: one mousemove on nav, per-link scaleX + color via CSS vars_
 
-- [ ] **62. Mass-Coupled Image Reveal** (hook 7, S, showcase lab + projects)
+- [x] **62. Mass-Coupled Image Reveal** (hook 7, S, showcase lab + projects)
   Showcase and project images scroll in like weights on springs: scale starts at 0.9 and overshoot past 1.0 is proportional to current scroll velocity — scroll slowly and they ease in politely, scroll fast and they visibly boing (absorbs the continuous velocity-breathing variant). Grow/shrink tied to felt momentum, not canned keyframes.
   _tech: useScroll velocity read at whileInView, mapped to spring stiffness/overshoot_
 
@@ -385,15 +385,15 @@
   Section headings' letter-spacing expands with live scroll velocity (up to +0.15em) with a slight opacity dip like motion blur, snapping back on a spring when scrolling stops. Fast scrolling feels like text resisting wind.
   _tech: framer useVelocity → letterSpacing motion value_
 
-- [ ] **95. Exit-Pixelate Gallery Images** (hook 6, S, showcase lab)
+- [x] **95. Exit-Pixelate Gallery Images** (hook 6, S, showcase lab)
   As a showcase image scrolls OUT of view it de-rezzes — a coarse CSS-gradient mosaic thickens with exit progress plus a brightness dip, like being buffered/encrypted away — and re-resolves crisply scrolling back in. Scrub-tied both directions.
   _tech: useScroll exit progress → overlay grid size + filter CSS vars_
 
-- [ ] **96. Scroll-Scrub Image Mask Sweep** (hook 6, S, showcase lab rows)
+- [x] **96. Scroll-Scrub Image Mask Sweep** (hook 6, S, showcase lab rows)
   Each showcase row image reveals via a diagonal mask sweeping open in sync with that row's scroll progress — a thin accent sliver at 0%, fully revealed with an edge shimmer at center. Scrolling back re-masks, like documents sealed and unsealed.
   _tech: useScroll per-element + clip-path polygon transform_
 
-- [ ] **97. Lab Evidence Board** (hook 6, S, showcase lab)
+- [x] **97. Lab Evidence Board** (hook 6, S, showcase lab)
   Each image opened in the lightbox tags its thumbnail with a persistent 'ANALYZED' corner stamp; analyzing all flips the header to 'SHOWCASE // ALL EVIDENCE PROCESSED' with a decrypt-in and achievement toast. Turns the gallery into a checklist people finish.
   _tech: lightbox open events + localStorage + CSS stamp_
 

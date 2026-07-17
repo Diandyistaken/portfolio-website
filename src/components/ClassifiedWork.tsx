@@ -107,6 +107,168 @@ function PeelBar({ className }: { className: string }) {
 const CLEARANCE_TARGET = 3;
 // teasing words that flicker into view for a beat during the DENIED skit
 const TEASE_WORDS = ["fintech", "gov", "retail", "ai"];
+const TITLE_CIPHER = "█▓▒#$5f%&@01";
+
+/**
+ * #46 Hold-to-declassify: the small second redaction bar hides a sector word.
+ * Press-and-hold decrypts it character by character behind a thin progress
+ * line; release early and it re-scrambles shut. A full 700ms hold reveals it
+ * permanently with a [DECLASSIFIED] micro-tag.
+ */
+function HoldWord({ word }: { word: string }) {
+  const reducedMotion = useReducedMotion();
+  const perfLite = usePerfLite();
+  const [progress, setProgress] = useState(0);
+  const [declassified, setDeclassified] = useState(false);
+  const holding = useRef(false);
+  const raf = useRef(0);
+
+  useEffect(() => {
+    return () => {
+      if (raf.current) cancelAnimationFrame(raf.current);
+    };
+  }, []);
+
+  const onDown = (event: React.PointerEvent<HTMLSpanElement>) => {
+    event.stopPropagation();
+    if (declassified || reducedMotion || perfLite) return;
+    if (window.matchMedia("(hover: none)").matches) return;
+    holding.current = true;
+    event.currentTarget.setPointerCapture(event.pointerId);
+    const startedAt = performance.now();
+    const loop = () => {
+      if (!holding.current) return;
+      const next = Math.min(1, (performance.now() - startedAt) / 700);
+      setProgress(next);
+      if (next >= 1) {
+        holding.current = false;
+        setDeclassified(true);
+        return;
+      }
+      raf.current = requestAnimationFrame(loop);
+    };
+    raf.current = requestAnimationFrame(loop);
+  };
+  const onUp = (event: React.PointerEvent<HTMLSpanElement>) => {
+    event.stopPropagation();
+    if (!holding.current) return;
+    holding.current = false;
+    try {
+      event.currentTarget.releasePointerCapture(event.pointerId);
+    } catch {
+      // already released
+    }
+    // released early → scramble collapse back to fully redacted
+    const shrink = () => {
+      setProgress((current) => {
+        const next = Math.max(0, current - 0.09);
+        if (next > 0) raf.current = requestAnimationFrame(shrink);
+        return next;
+      });
+    };
+    raf.current = requestAnimationFrame(shrink);
+  };
+
+  if (declassified) {
+    return (
+      <span
+        aria-hidden="true"
+        onClick={(event) => event.stopPropagation()}
+        className="inline-flex h-6 items-center gap-1.5 font-mono text-[0.68rem] text-accent"
+      >
+        {word}
+        <span className="text-[0.5rem] tracking-[0.14em] text-accent/70">[DECLASSIFIED]</span>
+      </span>
+    );
+  }
+
+  const revealed = Math.floor(progress * word.length);
+  return (
+    <span
+      aria-hidden="true"
+      onPointerDown={onDown}
+      onPointerUp={onUp}
+      onPointerCancel={onUp}
+      onClick={(event) => event.stopPropagation()}
+      className="redacted-bar relative inline-flex h-6 w-14 cursor-grab touch-none items-center justify-center overflow-hidden rounded-sm sm:w-20"
+    >
+      {progress > 0 && (
+        <>
+          <span className="relative z-10 font-mono text-[0.6rem] text-background">
+            {Array.from(word, (char, index) =>
+              index < revealed ? char : TITLE_CIPHER[(index * 7 + Math.floor(progress * 20)) % TITLE_CIPHER.length],
+            ).join("")}
+          </span>
+          <span
+            className="absolute bottom-0 left-0 z-10 h-[2px] bg-accent"
+            style={{ width: `${progress * 100}%` }}
+          />
+        </>
+      )}
+    </span>
+  );
+}
+
+/**
+ * #51 Proximity decrypt: classified card titles idle as cipher text and
+ * resolve character by character as the cursor approaches — backing away
+ * re-encrypts. Touch / reduced-motion / perf-lite read plain text.
+ */
+function ProxDecrypt({ text }: { text: string }) {
+  const reducedMotion = useReducedMotion();
+  const perfLite = usePerfLite();
+  const ref = useRef<HTMLSpanElement>(null);
+  const [progress, setProgress] = useState(0);
+  const progressRef = useRef(0);
+  const [fine, setFine] = useState(false);
+
+  useEffect(() => {
+    if (reducedMotion || perfLite) return;
+    if (window.matchMedia("(hover: none)").matches) return;
+    const raf0 = requestAnimationFrame(() => setFine(true));
+    let raf = 0;
+    const onMove = (event: MouseEvent) => {
+      if (raf) return;
+      raf = requestAnimationFrame(() => {
+        raf = 0;
+        const el = ref.current;
+        if (!el) return;
+        const bounds = el.getBoundingClientRect();
+        if (bounds.bottom < 0 || bounds.top > window.innerHeight) return;
+        const clampedX = Math.max(bounds.left, Math.min(event.clientX, bounds.right));
+        const clampedY = Math.max(bounds.top, Math.min(event.clientY, bounds.bottom));
+        const distance = Math.hypot(event.clientX - clampedX, event.clientY - clampedY);
+        const next = Math.max(0, Math.min(1, 1 - (distance - 30) / 240));
+        if (Math.abs(next - progressRef.current) >= 0.04 || next === 0 || next === 1) {
+          progressRef.current = next;
+          setProgress(next);
+        }
+      });
+    };
+    window.addEventListener("mousemove", onMove, { passive: true });
+    return () => {
+      cancelAnimationFrame(raf0);
+      window.removeEventListener("mousemove", onMove);
+      if (raf) cancelAnimationFrame(raf);
+    };
+  }, [reducedMotion, perfLite]);
+
+  const staticText = reducedMotion || perfLite || !fine;
+  const resolved = Math.floor(progress * text.length);
+  const display = staticText
+    ? text
+    : Array.from(text, (char, index) =>
+        char === " " || index < resolved
+          ? char
+          : TITLE_CIPHER[(index * 5 + Math.floor(progress * 25)) % TITLE_CIPHER.length],
+      ).join("");
+
+  return (
+    <span ref={ref} aria-label={text}>
+      <span aria-hidden="true">{display}</span>
+    </span>
+  );
+}
 
 function readClearance(): number {
   try {
@@ -232,10 +394,10 @@ function ClassifiedCard({
             )}
           </AnimatePresence>
         </span>
-        <span className="redacted-bar h-6 w-14 rounded-sm sm:w-20" aria-hidden="true" />
+        <HoldWord word={TEASE_WORDS[(index + 2) % TEASE_WORDS.length]} />
       </div>
 
-      <h3 className="font-display mt-4 text-lg font-semibold sm:text-xl">{item.type}</h3>
+      <h3 className="font-display mt-4 text-lg font-semibold sm:text-xl"><ProxDecrypt text={item.type} /></h3>
       <p className="mt-2 text-sm leading-relaxed text-muted">{item.blurb}</p>
 
       <div className="mt-5 flex flex-wrap gap-2">

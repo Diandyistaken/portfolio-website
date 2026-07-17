@@ -113,7 +113,7 @@ function BruteChip({ label }: { label: string }) {
 
 type SkillCategory = ReturnType<typeof useLanguage>["t"]["skills"]["categories"][number];
 
-function SkillCard({ category, matched }: { category: SkillCategory; matched: string | null }) {
+function SkillCard({ category, matched, canToss }: { category: SkillCategory; matched: string | null; canToss: boolean }) {
   const Icon = icons[category.id as keyof typeof icons];
   const meta = skillsMeta[category.id];
   const tilt = useTilt3D<HTMLDivElement>();
@@ -158,6 +158,9 @@ function SkillCard({ category, matched }: { category: SkillCategory; matched: st
       {meta.tools && (
         <div className="mt-5 flex flex-wrap gap-2 [transform:translateZ(12px)]">
           {meta.tools.map((tool, index) => (
+            /* #41 flick-toss: grab a chip and fling it — it flies with real
+               momentum, rubber-bands off invisible walls (dragConstraints +
+               bounce), then spring-snaps back into its slot. */
             <m.span
               key={tool}
               variants={{
@@ -168,8 +171,16 @@ function SkillCard({ category, matched }: { category: SkillCategory; matched: st
                   transition: { duration: 0.3, delay: index * 0.045 },
                 },
               }}
+              drag={canToss}
+              dragSnapToOrigin
+              dragElastic={0.2}
+              dragConstraints={{ left: -150, right: 150, top: -80, bottom: 80 }}
+              dragTransition={{ bounceStiffness: 420, bounceDamping: 13 }}
+              whileDrag={{ scale: 1.15, zIndex: 40 }}
               data-prox
               className={`prox-chip font-mono relative rounded-sm border px-2.5 py-1 text-[0.7rem] text-muted transition-colors ${
+                canToss ? "cursor-grab active:cursor-grabbing" : ""
+              } ${
                 matched && tool.toLowerCase().includes(matched) ? "border-accent bg-accent/10 text-accent" : "border-foreground/12"
               }`}
             >
@@ -188,6 +199,19 @@ export function Skills() {
   // pulses the matching chip and prints a grep toast.
   const [matched, setMatched] = useState<string | null>(null);
   const [toast, setToast] = useState<string | null>(null);
+
+  // #41 chips are flick-tossable on fine pointers only (drag would fight
+  // scrolling on touch); static under reduced-motion / perf-lite.
+  const reducedMotion = useReducedMotion();
+  const perfLite = usePerfLite();
+  const [finePointer, setFinePointer] = useState(false);
+  useEffect(() => {
+    const raf = requestAnimationFrame(() =>
+      setFinePointer(window.matchMedia("(hover: hover) and (pointer: fine)").matches),
+    );
+    return () => cancelAnimationFrame(raf);
+  }, []);
+  const canToss = finePointer && !reducedMotion && !perfLite;
 
   useEffect(() => {
     const tools = t.skills.categories
@@ -239,7 +263,7 @@ export function Skills() {
             className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3 3xl:grid-cols-4 3xl:gap-6"
           >
             {t.skills.categories.map((category) => (
-              <SkillCard key={category.id} category={category} matched={matched} />
+              <SkillCard key={category.id} category={category} matched={matched} canToss={canToss} />
             ))}
           </RevealGroup>
         </div>

@@ -19,6 +19,8 @@ const OverdriveHud = dynamic(() => import("./OverdriveHud").then((mod) => mod.Ov
 const ClearanceHud = dynamic(() => import("./ClearanceHud").then((mod) => mod.ClearanceHud), { ssr: false });
 const SonarReveal = dynamic(() => import("./SonarReveal").then((mod) => mod.SonarReveal), { ssr: false });
 const CursorFx = dynamic(() => import("./CursorFx").then((mod) => mod.CursorFx), { ssr: false });
+const PayloadInjector = dynamic(() => import("./PayloadInjector").then((mod) => mod.PayloadInjector), { ssr: false });
+const SpeedrunHud = dynamic(() => import("./SpeedrunHud").then((mod) => mod.SpeedrunHud), { ssr: false });
 
 export function ClientChrome() {
   useEffect(() => {
@@ -39,6 +41,8 @@ export function ClientChrome() {
       <ClearanceHud />
       <SonarReveal />
       <CursorFx />
+      <PayloadInjector />
+      <SpeedrunHud />
     </>
   );
 }

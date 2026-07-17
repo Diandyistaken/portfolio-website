@@ -18,6 +18,8 @@ type LightboxProps = {
 };
 
 const EASE = [0.22, 1, 0.36, 1] as const;
+// #36: flicks faster than this sail the image off-screen
+const THROW_SPEED = 780;
 
 type LightboxDialogProps = Omit<LightboxProps, "openIndex"> & {
   initialIndex: number;
@@ -30,9 +32,38 @@ function LightboxDialog({ images, initialIndex, onClose }: LightboxDialogProps) 
   const dialogRef = useRef<HTMLDivElement>(null);
   const closeRef = useRef(onClose);
 
+  // #35 forensic zoom: cursor-anchored 2.5x with a fake sector-analysis HUD
+  const [zoomed, setZoomed] = useState(false);
+  const zoomedRef = useRef(false);
+  const [origin, setOrigin] = useState({ x: 50, y: 50 });
+  const zoomRaf = useRef(0);
+  // #36 throw-to-dismiss: state-driven fling (close or advance on landing)
+  const [fine, setFine] = useState(false);
+  const [flying, setFlying] = useState<{ x: number; y: number; rot: number; next: "close" | 1 | -1 } | null>(null);
+  const draggedRef = useRef(false);
+
   useEffect(() => {
     closeRef.current = onClose;
   }, [onClose]);
+
+  useEffect(() => {
+    const raf = requestAnimationFrame(() =>
+      setFine(!window.matchMedia("(hover: none)").matches),
+    );
+    return () => cancelAnimationFrame(raf);
+  }, []);
+
+  useEffect(() => {
+    return () => {
+      if (zoomRaf.current) cancelAnimationFrame(zoomRaf.current);
+    };
+  }, []);
+
+  // #97 evidence board: tell the gallery this image has been analyzed
+  useEffect(() => {
+    const src = images[activeIndex]?.src;
+    if (src) window.dispatchEvent(new CustomEvent("app:evidence-viewed", { detail: src }));
+  }, [activeIndex, images]);
 
   useEffect(() => {
     const previouslyFocused = document.activeElement as HTMLElement | null;
@@ -43,6 +74,12 @@ function LightboxDialog({ images, initialIndex, onClose }: LightboxDialogProps) 
     const onKeyDown = (event: KeyboardEvent) => {
       if (event.key === "Escape") {
         event.preventDefault();
+        // zoomed → Esc springs back to 1x first, second Esc closes
+        if (zoomedRef.current) {
+          zoomedRef.current = false;
+          setZoomed(false);
+          return;
+        }
         closeRef.current();
         return;
       }
@@ -98,6 +135,57 @@ function LightboxDialog({ images, initialIndex, onClose }: LightboxDialogProps) 
 
   const activeImage = images[activeIndex] ?? images[0];
   const duration = reducedMotion ? 0 : 0.3;
+  const canPlay = fine && !reducedMotion;
+
+  const toggleZoom = () => {
+    if (!canPlay || draggedRef.current) return;
+    zoomedRef.current = !zoomedRef.current;
+    setZoomed(zoomedRef.current);
+  };
+
+  const onImageMove = (event: React.MouseEvent<HTMLDivElement>) => {
+    if (!canPlay) return;
+    const bounds = event.currentTarget.getBoundingClientRect();
+    const x = Math.max(0, Math.min(100, ((event.clientX - bounds.left) / bounds.width) * 100));
+    const y = Math.max(0, Math.min(100, ((event.clientY - bounds.top) / bounds.height) * 100));
+    if (zoomRaf.current) return;
+    zoomRaf.current = requestAnimationFrame(() => {
+      zoomRaf.current = 0;
+      setOrigin({ x, y });
+    });
+  };
+
+  const onDragEnd = (
+    _event: MouseEvent | TouchEvent | PointerEvent,
+    info: { velocity: { x: number; y: number } },
+  ) => {
+    // suppress the click that follows a drag so it doesn't toggle zoom
+    draggedRef.current = true;
+    setTimeout(() => {
+      draggedRef.current = false;
+    }, 120);
+    const speed = Math.hypot(info.velocity.x, info.velocity.y);
+    if (speed < THROW_SPEED) return; // slow drags rubber-band back (dragSnapToOrigin)
+    const sideways = Math.abs(info.velocity.x) > Math.abs(info.velocity.y);
+    setFlying({
+      x: info.velocity.x * 0.45,
+      y: info.velocity.y * 0.45,
+      rot: Math.max(-24, Math.min(24, info.velocity.x * 0.02)),
+      // thrown sideways → advance in throw direction; otherwise close
+      next: sideways && images.length > 1 ? (info.velocity.x < 0 ? 1 : -1) : "close",
+    });
+  };
+
+  const onFlightDone = () => {
+    if (!flying) return;
+    if (flying.next === "close") {
+      closeRef.current();
+      return;
+    }
+    const step = flying.next;
+    setFlying(null);
+    setActiveIndex((index) => (index + step + images.length) % images.length);
+  };
 
   return (
     activeImage && (
@@ -160,19 +248,52 @@ function LightboxDialog({ images, initialIndex, onClose }: LightboxDialogProps) 
               <m.div
                 layout
                 key={activeImage.src}
-                className="relative aspect-[16/10] w-[min(92vw,75rem,calc(82vh*1.6))] overflow-hidden rounded-lg border border-white/15 bg-black/30 shadow-[0_30px_100px_rgb(0_0_0/0.65)]"
+                drag={canPlay && !zoomed}
+                dragSnapToOrigin
+                dragElastic={0.5}
+                dragMomentum={false}
+                onDragEnd={canPlay ? onDragEnd : undefined}
+                whileDrag={{ scale: 0.94 }}
+                onClick={toggleZoom}
+                onMouseMove={onImageMove}
+                className={`relative aspect-[16/10] w-[min(92vw,75rem,calc(82vh*1.6))] overflow-hidden rounded-lg border border-white/15 bg-black/30 shadow-[0_30px_100px_rgb(0_0_0/0.65)] ${
+                  canPlay ? (zoomed ? "cursor-zoom-out" : "cursor-zoom-in") : ""
+                }`}
                 initial={reducedMotion ? false : { opacity: 0, scale: 0.92 }}
-                animate={{ opacity: 1, scale: 1 }}
-                exit={{ opacity: 0, scale: 0.96 }}
-                transition={{ duration, ease: EASE }}
+                animate={
+                  flying
+                    ? { opacity: 0, x: flying.x, y: flying.y, rotate: flying.rot }
+                    : { opacity: 1, scale: 1, x: 0, y: 0, rotate: 0 }
+                }
+                onAnimationComplete={flying ? onFlightDone : undefined}
+                exit={reducedMotion ? { opacity: 0 } : { opacity: 0, scale: 0.96 }}
+                transition={flying ? { duration: 0.35, ease: "easeOut" } : { duration, ease: EASE }}
               >
-                <Image
-                  src={activeImage.src}
-                  alt={activeImage.alt}
-                  fill
-                  sizes="92vw"
-                  className="object-contain"
-                />
+                <m.div
+                  className="h-full w-full"
+                  animate={{ scale: zoomed ? 2.5 : 1 }}
+                  transition={{ type: "spring", stiffness: 220, damping: 26 }}
+                  style={{ transformOrigin: `${origin.x}% ${origin.y}%` }}
+                >
+                  <Image
+                    src={activeImage.src}
+                    alt={activeImage.alt}
+                    fill
+                    sizes="92vw"
+                    draggable={false}
+                    className="pointer-events-none object-contain"
+                  />
+                </m.div>
+                {/* #35 HUD: fake sector coordinates while analyzing */}
+                {canPlay && zoomed && (
+                  <span
+                    aria-hidden="true"
+                    className="pointer-events-none absolute left-3 top-3 z-10 rounded border border-accent/40 bg-black/60 px-2 py-1 font-mono text-[0.62rem] tracking-[0.14em] text-accent"
+                  >
+                    ANALYZING SECTOR [{String(Math.round(origin.x * 12.8)).padStart(4, "0")},
+                    {String(Math.round(origin.y * 8)).padStart(3, "0")}] · 2.5x
+                  </span>
+                )}
               </m.div>
             </AnimatePresence>
           </m.div>

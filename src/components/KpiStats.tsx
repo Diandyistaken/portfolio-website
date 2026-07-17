@@ -1,7 +1,14 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
-import { animate, m, useInView, useMotionValue, useReducedMotion } from "framer-motion";
+import {
+  animate,
+  m,
+  useMotionValueEvent,
+  useReducedMotion,
+  useScroll,
+  type MotionValue,
+} from "framer-motion";
 import { useLanguage } from "@/lib/i18n/LanguageProvider";
 import { usePerfLite } from "./SectionBackdrop";
 
@@ -15,23 +22,52 @@ function formatBase(value: number, base: NumberBase): string {
   return String(value);
 }
 
-function Counter({ value, suffix, replay, base }: { value: number; suffix: string; replay: number; base: NumberBase }) {
-  const ref = useRef<HTMLSpanElement>(null);
-  const motionValue = useMotionValue(0);
-  const inView = useInView(ref, { once: true, amount: 0.6 });
+/**
+ * #54 KPI odometer scrub: the figure rolls up odometer-style with the
+ * section's scroll progress and rolls back down when scrolling up. The #16
+ * hover re-roll (replay) briefly takes over, then scroll resumes control.
+ */
+function Counter({
+  value,
+  suffix,
+  replay,
+  base,
+  scrollProgress,
+}: {
+  value: number;
+  suffix: string;
+  replay: number;
+  base: NumberBase;
+  scrollProgress: MotionValue<number>;
+}) {
   const reducedMotion = useReducedMotion();
   const [display, setDisplay] = useState(reducedMotion ? value : 0);
+  const rollingRef = useRef(false);
 
-  useEffect(() => motionValue.on("change", (latest) => setDisplay(Math.round(latest))), [motionValue]);
+  useMotionValueEvent(scrollProgress, "change", (latest) => {
+    if (reducedMotion || rollingRef.current) return;
+    setDisplay(Math.round(Math.max(0, Math.min(1, latest)) * value));
+  });
+
   useEffect(() => {
-    if (!inView) return;
-    if (reducedMotion) { motionValue.set(value); return; }
-    // replay > 0 → hover re-roll: restart from 0 with a snappier run
-    if (replay > 0) motionValue.set(0);
-    return animate(motionValue, value, { duration: replay > 0 ? 0.7 : 1.35, ease: "easeOut" }).stop;
-  }, [inView, motionValue, reducedMotion, value, replay]);
+    if (replay === 0 || reducedMotion) return;
+    rollingRef.current = true;
+    const controls = animate(0, value, {
+      duration: 0.7,
+      ease: "easeOut",
+      onUpdate: (latest) => setDisplay(Math.round(latest)),
+      onComplete: () => {
+        rollingRef.current = false;
+      },
+    });
+    return () => {
+      controls.stop();
+      rollingRef.current = false;
+    };
+  }, [replay, reducedMotion, value]);
 
-  return <span ref={ref} className="font-display break-all text-3xl font-semibold text-foreground sm:text-4xl 3xl:text-6xl 4xl:text-7xl">{formatBase(display, base)}{suffix}</span>;
+  const shown = reducedMotion ? value : display;
+  return <span className="font-display break-all text-3xl font-semibold text-foreground sm:text-4xl 3xl:text-6xl 4xl:text-7xl">{formatBase(shown, base)}{suffix}</span>;
 }
 
 export function KpiStats() {
@@ -40,6 +76,13 @@ export function KpiStats() {
   const perfLite = usePerfLite();
   const [replays, setReplays] = useState<Record<string, number>>({});
   const [bases, setBases] = useState<Record<string, NumberBase>>({});
+
+  // #54: one shared progress for all three counters, scrubbed by scroll
+  const containerRef = useRef<HTMLDivElement>(null);
+  const { scrollYProgress } = useScroll({
+    target: containerRef,
+    offset: ["start 0.95", "start 0.45"],
+  });
 
   const reroll = (label: string) => {
     if (reducedMotion || perfLite) return;
@@ -55,7 +98,7 @@ export function KpiStats() {
   };
 
   return (
-    <m.div className="mt-5 grid grid-cols-1 border-t border-foreground/10 pt-3 sm:grid-cols-3 sm:pt-6 3xl:mt-8 3xl:pt-8" initial="hidden" whileInView="visible" viewport={{ once: true, amount: 0.4 }}>
+    <m.div ref={containerRef} className="mt-5 grid grid-cols-1 border-t border-foreground/10 pt-3 sm:grid-cols-3 sm:pt-6 3xl:mt-8 3xl:pt-8" initial="hidden" whileInView="visible" viewport={{ once: true, amount: 0.4 }}>
       {t.about.stats.map((stat) => (
         <m.div
           key={stat.label}
@@ -77,7 +120,7 @@ export function KpiStats() {
             }}
             className="pointer-events-none absolute inset-2 -z-10 rounded-lg border border-accent/50"
           />
-          <Counter value={stat.value} suffix={stat.suffix} replay={replays[stat.label] ?? 0} base={bases[stat.label] ?? "dec"} />
+          <Counter value={stat.value} suffix={stat.suffix} replay={replays[stat.label] ?? 0} base={bases[stat.label] ?? "dec"} scrollProgress={scrollYProgress} />
           <p className="mt-1 break-words font-mono text-[0.65rem] uppercase tracking-[0.12em] text-muted sm:text-xs 3xl:mt-2 3xl:text-sm">{stat.label}</p>
         </m.div>
       ))}
