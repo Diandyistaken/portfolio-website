@@ -1,13 +1,14 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
-import { m, useReducedMotion, useSpring } from "framer-motion";
+import { m, useMotionValueEvent, useReducedMotion, useScroll, useSpring } from "framer-motion";
 import { Check, Copy, Mail } from "lucide-react";
 import { Reveal } from "./Reveal";
 import { SectionHeading } from "./SectionHeading";
 import { GithubIcon, LinkedinIcon, InstagramIcon } from "./icons";
 import { useLanguage } from "@/lib/i18n/LanguageProvider";
 import { MagneticButton } from "./MagneticButton";
+import { HintTag } from "./HintTag";
 import { CONTAINER } from "@/lib/layout";
 import { usePerfLite } from "./SectionBackdrop";
 
@@ -381,8 +382,41 @@ export function Contact() {
     handleCopyRef.current = handleCopy;
   });
 
+  // #98 uplink handshake: a dashed line scrubbed by scroll draws in from the
+  // robot's corner toward the email card; at full draw the SYN/ACK stamp types.
+  const sectionRef = useRef<HTMLElement>(null);
+  const { scrollYProgress: uplinkProgress } = useScroll({
+    target: sectionRef,
+    offset: ["start 0.95", "start 0.3"],
+  });
+  const [handshaken, setHandshaken] = useState(false);
+  useMotionValueEvent(uplinkProgress, "change", (value) => {
+    if (reducedMotion || perfLite) return;
+    setHandshaken((previous) => (previous === value > 0.96 ? previous : value > 0.96));
+  });
+
   return (
-    <section id="contact" className="relative overflow-hidden px-6 py-24 sm:px-10 sm:py-28 3xl:px-16">
+    <section ref={sectionRef} id="contact" className="relative overflow-hidden px-6 py-24 sm:px-10 sm:py-28 3xl:px-16">
+      {/* #98 the uplink line (desktop only, pure scrub) */}
+      {!reducedMotion && !perfLite && (
+        <div aria-hidden="true" className="pointer-events-none absolute bottom-0 right-0 hidden h-full w-[24rem] xl:block">
+          <svg viewBox="0 0 400 600" className="h-full w-full overflow-visible" preserveAspectRatio="none">
+            <m.path
+              d="M392 592 C 300 500, 360 330, 240 250 C 200 224, 160 216, 120 214"
+              fill="none"
+              stroke="rgb(var(--accent-rgb) / 0.5)"
+              strokeWidth="1.5"
+              strokeDasharray="6 6"
+              style={{ pathLength: uplinkProgress }}
+            />
+          </svg>
+          {handshaken && (
+            <span className="absolute left-2 top-[32%] font-mono text-[0.58rem] tracking-[0.14em] text-accent/80">
+              HANDSHAKE ESTABLISHED — SYN/ACK ✓
+            </span>
+          )}
+        </div>
+      )}
       <div className={`relative z-10 ${CONTAINER}`}>
         <div className="mx-auto max-w-2xl 3xl:max-w-4xl">
         <div className="relative">
@@ -479,6 +513,7 @@ export function Contact() {
                   <span className={signal >= 0.97 ? "text-accent" : ""}>%{Math.round(signal * 100)}</span>
                 </span>
               )}
+              {!reducedMotion && !perfLite && <HintTag text={t.hints.emailNear} />}
               <div className="flex flex-wrap items-center justify-center gap-x-5 gap-y-1.5">
                 <a
                   href={mailtoHref}

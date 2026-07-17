@@ -6,8 +6,6 @@ import {
   useMotionValueEvent,
   useReducedMotion,
   useScroll,
-  useSpring,
-  useTransform,
   useVelocity,
 } from "framer-motion";
 import { Reveal } from "./Reveal";
@@ -70,13 +68,11 @@ export function SectionHeading({
     };
   }, [diffCorrect, alive]);
 
-  // #94 velocity breathe + #92 direction-aware kicker
+  // #92 direction-aware kicker (the #94 letter-spacing "breathe" that used to
+  // ride this velocity was removed entirely on user feedback — no text motion
+  // while scrolling).
   const { scrollY } = useScroll();
   const velocity = useVelocity(scrollY);
-  // toned down after user feedback: the old 0.14em swing at 2600px/s read as
-  // "breathing" text and was nauseating — keep a whisper of it only.
-  const trackingRaw = useTransform(velocity, [-3400, 0, 3400], ["0.04em", "0em", "0.04em"], { clamp: true });
-  const tracking = useSpring(trackingRaw, { stiffness: 160, damping: 34 });
   const [dir, setDir] = useState<"down" | "up" | null>(null);
   useMotionValueEvent(velocity, "change", (value) => {
     if (!alive) return;
@@ -89,6 +85,24 @@ export function SectionHeading({
   const reversals = useRef(0);
   const lastDx = useRef(0);
   const heatTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
+
+  // #115 glyph inspector: double-click x-rays the title for ~2s — baseline +
+  // cap-height guides draw across it and every letter gets a tiny Unicode
+  // codepoint label. A typographic flex for the technically curious.
+  const [inspecting, setInspecting] = useState(false);
+  const inspectTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
+  useEffect(() => {
+    return () => {
+      if (inspectTimer.current) clearTimeout(inspectTimer.current);
+      if (heatTimer.current) clearTimeout(heatTimer.current);
+    };
+  }, []);
+  const inspect = () => {
+    if (!alive) return;
+    setInspecting(true);
+    if (inspectTimer.current) clearTimeout(inspectTimer.current);
+    inspectTimer.current = setTimeout(() => setInspecting(false), 2200);
+  };
 
   const onTitleMove = (event: React.MouseEvent<HTMLHeadingElement>) => {
     if (!alive) return;
@@ -189,13 +203,37 @@ export function SectionHeading({
         data-prox
         data-prox-radius="420"
         onMouseMove={onTitleMove}
+        onDoubleClick={inspect}
         aria-label={title}
-        style={alive ? { letterSpacing: tracking } : undefined}
         className={`prox-title font-display mt-4 max-w-2xl text-section font-medium tracking-tight 3xl:max-w-4xl ${
           glitch > 0 ? "text-accent" : ""
         }`}
       >
-        <span aria-hidden="true">{showDiff ? diffContent : glitchedTitle}</span>
+        <span aria-hidden="true">
+          {inspecting ? (
+            <span className="relative inline-block">
+              {/* cap-height + baseline guides */}
+              <span className="pointer-events-none absolute inset-x-0 top-[0.08em] border-t border-dashed border-accent/40" />
+              <span className="pointer-events-none absolute inset-x-0 bottom-[0.06em] border-t border-dashed border-accent/30" />
+              {Array.from(title).map((char, index) =>
+                char === " " ? (
+                  <span key={index}> </span>
+                ) : (
+                  <span key={index} className="relative inline-block">
+                    <span className="pointer-events-none absolute -top-4 left-1/2 -translate-x-1/2 font-mono text-[9px] font-normal tracking-normal text-accent/80">
+                      U+{(char.codePointAt(0) ?? 0).toString(16).toUpperCase().padStart(4, "0")}
+                    </span>
+                    {char}
+                  </span>
+                ),
+              )}
+            </span>
+          ) : showDiff ? (
+            diffContent
+          ) : (
+            glitchedTitle
+          )}
+        </span>
       </m.h2>
       {description && (
         <p className="mt-3 max-w-xl text-sm text-muted [text-shadow:0_2px_16px_rgb(0_0_0/0.7)] sm:text-base 3xl:max-w-2xl 3xl:text-lg">

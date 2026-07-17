@@ -9,6 +9,9 @@ import { Honeypot } from "./Honeypot";
 import { SysLog } from "./SysLog";
 import { SessionReceipt } from "./SessionReceipt";
 import { usePerfLite } from "./SectionBackdrop";
+import { HintTag } from "./HintTag";
+import { AccessKey } from "./KeyHunt";
+import { FooterGravity, PacketPong } from "./FooterFx";
 
 const CHECKSUM_TARGET = "9e21c4a3f0b7d18e";
 
@@ -108,6 +111,9 @@ export function Footer() {
         className="footer-ecg pointer-events-none absolute inset-x-0 top-0 h-px"
         aria-hidden="true"
       />
+      {/* #118 packet pong rides the heartbeat; #99 gravity debris + ending */}
+      <PacketPong />
+      <FooterGravity />
       <div className={`${CONTAINER} grid grid-cols-1 gap-10 px-6 sm:px-10 md:grid-cols-3 3xl:px-16`}>
         <div>
           <p className="font-display text-lg font-medium">{t.personalInfo.name}</p>
@@ -134,12 +140,16 @@ export function Footer() {
         </div>
       </div>
 
-      <div className={`${CONTAINER} mt-6 flex justify-center border-t border-foreground/10 px-6 pt-4 sm:px-10 3xl:px-16`}>
+      <div className={`${CONTAINER} mt-6 flex flex-col items-center gap-2 border-t border-foreground/10 px-6 pt-4 sm:px-10 3xl:px-16`}>
         <ChecksumStamp
           verifying={t.footer.checksumVerifying}
           verified={t.footer.checksumVerified}
           again={t.footer.checksumAgain}
         />
+        <span className="flex items-center gap-2">
+          <HintTag text={t.hints.sonarHint} />
+          <AccessKey id="footer" />
+        </span>
       </div>
 
       <div className={`${CONTAINER} mt-6 flex flex-col items-center gap-4 border-t border-foreground/10 px-6 pt-6 sm:flex-row sm:justify-between sm:px-10 3xl:px-16`}>

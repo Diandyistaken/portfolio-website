@@ -10,6 +10,7 @@ import { useLanguage } from "@/lib/i18n/LanguageProvider";
 import { CONTAINER } from "@/lib/layout";
 import { isPerfLite } from "@/lib/perfLite";
 import { ping, setSonarEnabled } from "@/lib/sonar";
+import { RecruiterMode } from "./RecruiterMode";
 
 // Overlay only opens on demand (⌘K or the trigger button): no reason to ship
 // it in the initial bundle.
@@ -297,6 +298,7 @@ export function Navbar() {
             ⌘K
           </button>
           <AudioToggle />
+          <RecruiterMode />
           <LanguageSwitcher />
           <button
             type="button"

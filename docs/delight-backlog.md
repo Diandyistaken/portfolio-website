@@ -257,27 +257,27 @@
   Showcase and project images scroll in like weights on springs: scale starts at 0.9 and overshoot past 1.0 is proportional to current scroll velocity — scroll slowly and they ease in politely, scroll fast and they visibly boing (absorbs the continuous velocity-breathing variant). Grow/shrink tied to felt momentum, not canned keyframes.
   _tech: useScroll velocity read at whileInView, mapped to spring stiffness/overshoot_
 
-- [ ] **63. Robot Treat Toss** (hook 9, L, global (robot extension))
+- [x] **63. Robot Treat Toss** (hook 9, L, global (robot extension))
   Click-and-drag on empty background spawns an ice-blue data-cube you can fling; it arcs with spring physics toward the robot, whose eyes visibly TRACK the flying cube before it catches it with a chomp, happy wiggle, and 'nom. 64 bytes.' bubble (absorbs the double-click fetch variant). Serves eye-tracking visibility and companion cuteness in one L-effort hit.
   _tech: framer drag + animate to robot coords, existing robot state machine_
 
-- [ ] **64. sudo Konami Root Shell** (hook 9, L, global easter egg)
+- [x] **64. sudo Konami Root Shell** (hook 9, L, global easter egg)
   Typing 'sudo' anywhere spawns a fake password prompt; two attempts print 'permission denied — nice try', the third 'succeeds' and drops a mini root shell with 3 joke commands (ls /secrets, cat resume.txt → downloads CV, exit) — with the Konami code as an alternate trigger that also skins kickers with sudo-prefixes for 20s (merged). Multi-step payoff people screenshot.
   _tech: keydown buffer + small terminal component, framer, CSS class toggle_
 
-- [ ] **65. Recon Drone Companion** (hook 9, L, global)
+- [x] **65. Recon Drone Companion** (hook 9, L, global)
   The site's ONE auxiliary drone (merges the nav-escort and section-scan pitches): a palm-sized two-rotor drone docks on the robot, detaches when a nav link is clicked or a new section scrolls in, flies a curved path ahead of the scroll, hovers with a scanning light-cone over the section heading for 2s, then returns to dock. Clicking it mid-flight triggers a barrel roll; stays docked in perf-lite/reduced-motion.
   _tech: framer animate() along keyframe paths + IntersectionObserver + nav triggers_
 
-- [ ] **66. Robot Rappel Descent** (hook 9, L, global (robot extension))
+- [x] **66. Robot Rappel Descent** (hook 9, L, global (robot extension))
   The robot grabs a dashed tether and rappels down the viewport edge as you scroll, position mapped to scroll progress with springy lag; fast scrolls swing it outward with wide eyes, and at the footer it lands, dusts off, and waves. Turns dead scroll distance into a companion journey — the single most character-rich L on the list.
   _tech: framer useScroll + useSpring on translateY, rotation from velocity_
 
-- [ ] **67. Hidden Access Keys Hunt** (hook 9, L, global, keys scattered)
+- [x] **67. Hidden Access Keys Hunt** (hook 9, L, global, keys scattered)
   Five tiny key glyphs hidden across the site (divider chip, photo scanline, project row, footer ECG, skills chip); clicking one toasts 'KEY_03 ACQUIRED' and increments a HUD keyring, and all five unlock a hidden vault overlay with a personal note + resume download and a robot celebration. The strongest reason to explore every section.
   _tech: shared context + localStorage + framer layout animations_
 
-- [ ] **68. Draggable ID Badge on a Lanyard** (hook 9, L, hero)
+- [x] **68. Draggable ID Badge on a Lanyard** (hook 9, L, hero)
   A clip-on 'SECURITY CLEARANCE' mini-badge hangs from a drawn SVG lanyard on the hero card: grab and fling it and it swings on a damped spring pendulum with the cord bending via path interpolation, scroll velocity kicks it like wind, and yanking hard widens the robot's eyes (merges the pendulum and hologram-flip pitches). Double-click flips it to a back face with fake barcode, mouse-angle hologram sheen, and 'ACCESS: GRANTED'.
   _tech: framer drag + useSpring, SVG path pendulum, rotateY flip + gradient sheen_
 
@@ -305,7 +305,7 @@
   Timeline nodes are hollow rings that fill with accent and emit one sonar ripple when the cursor crosses within 120px, while the line segment between the two nearest nodes energizes with animated dash flow. Reading the CV becomes patrolling a network diagram.
   _tech: distance check per node, framer ripple, SVG stroke-dashoffset_
 
-- [ ] **75. Timeline Exploit Chain** (hook 7, M, experience)
+- [x] **75. Timeline Exploit Chain** (hook 7, M, experience)
   The timeline restyled as a kill-chain: numbered stages (RECON → FOOTHOLD → ESCALATION → PERSISTENCE for the current role) connected by a scroll-drawn line, each node popping with a lock-opening tick as the line reaches it. Hovering decrypts the stage label; scrolling up re-locks. Complements (or alternative-skins) the packet rider.
   _tech: SVG pathLength scroll-linked + framer node variants_
 
@@ -397,47 +397,47 @@
   Each image opened in the lightbox tags its thumbnail with a persistent 'ANALYZED' corner stamp; analyzing all flips the header to 'SHOWCASE // ALL EVIDENCE PROCESSED' with a decrypt-in and achievement toast. Turns the gallery into a checklist people finish.
   _tech: lightbox open events + localStorage + CSS stamp_
 
-- [ ] **98. Contact Uplink Handshake** (hook 8, L, contact + robot)
+- [x] **98. Contact Uplink Handshake** (hook 8, L, contact + robot)
   As contact approaches, a dashed SVG line scrubbed by scroll draws from the robot's corner to the email card, ending with 'HANDSHAKE ESTABLISHED — SYN/ACK' typing out; the robot's eyes track the line tip as it draws. Ties the mascot to the conversion moment.
   _tech: SVG pathLength scroll scrub + existing eye-target API_
 
-- [ ] **99. Footer Gravity Well** (hook 8, L, pre-footer + footer)
+- [x] **99. Footer Gravity Well** (hook 8, L, pre-footer + footer)
   The last 150vh acts as a gravity well: the ECG heartbeat quickens with proximity to page bottom, debris glyphs drift toward the footer at increasing parallax speed, and at bottom everything lands with the ECG settling into calm plus an 'END OF TRANSMISSION' stamp. Gives the page an actual ending instead of just stopping.
   _tech: useScroll remaining-distance transform, extends ECG, parallax glyph layer_
 
-- [ ] **100. Projects Dossier Unstack** (hook 8, L, projects)
+- [x] **100. Projects Dossier Unstack** (hook 8, L, projects)
   Project rows start stacked like classified folders (slight offsets, 1-2° rotation); scroll scrubs each folder out of the pile, straightening into row position as its redaction bar wipes away, and scrolling up restacks them. Reading projects = declassifying a dossier. (Alternative entrance to Port Scan Reveal — pick one per section.)
   _tech: useScroll per-row transforms (y, rotate, stagger), redaction shimmer reuse_
 
-- [ ] **101. Scroll-Scrubbed Skill Compile** (hook 8, L, skills)
+- [x] **101. Scroll-Scrubbed Skill Compile** (hook 8, L, skills)
   The skills grid pins for ~1.5 viewport heights; scrolling scrubs a fake compiler log ('compiling react.ts... [OK]') while chips light up in build order, each flashing as it links. Scrolling backward decompiles them in reverse. Skills become a build you perform.
   _tech: position sticky + useScroll progress mapped to chip index_
 
-- [ ] **102. Magnetic Grid Distortion Field** (hook 8, L, global background (hero + about))
+- [x] **102. Magnetic Grid Distortion Field** (hook 8, L, global background (hero + about))
   A faint canvas dot-grid where dots within ~150px of the cursor repel outward and brighten to accent, spring-snapping back as it leaves — the hero/about background becomes a fluid the visitor stirs. Disabled in perf-lite.
   _tech: single canvas, spatial-hash lattice, spring integration in rAF_
 
-- [ ] **103. Robot Trust Meter** (hook 8, L, corner robot (extended))
+- [x] **103. Robot Trust Meter** (hook 8, L, corner robot (extended))
   A hidden affinity score raised by petting the robot, consecutive-day visits, and easter eggs; at thresholds its behavior visibly upgrades — faster wider eye-tracking, waving when you return to the hero, and at max an occasional ice-blue heart-glyph blink. Never shown as a number; visitors discover the robot warming up to them.
   _tech: localStorage score + framer variants on existing robot_
 
-- [ ] **104. Achievement Toast System** (hook 8, L, global)
+- [x] **104. Achievement Toast System** (hook 8, L, global)
   One reusable bottom-center toast styled as a terminal log line — '[ACHIEVEMENT] first_contact — copied email' — firing for ~8 discoverable acts (email copy, chat demo finish, 3 lightbox opens, all chips hovered, hack egg...). The list is viewable via the HUD counter with locked ones shown as ██████. The backbone that makes the other gamification ideas cohere.
   _tech: event bus + localStorage + framer slide/decrypt_
 
-- [ ] **105. Ghost Trace Replay** (hook 8, L, terminal command + overlay)
+- [x] **105. Ghost Trace Replay** (hook 8, L, terminal command + overlay)
   The site samples the visitor's scroll depth (session only); typing 'trace' in the terminal renders their session as a vertical minimap with an animated dot replaying the journey and dwell-heat bands per section, ending 'deepest dwell: PROJECTS — good taste.' The site was profiling you back.
   _tech: scroll sampling + SVG minimap + framer replay_
 
-- [ ] **106. Recruiter Mode Switch** (hook 8, L, global (navbar + sections))
+- [x] **106. Recruiter Mode Switch** (hook 8, L, global (navbar + sections))
   A labeled [RECRUITER MODE] toggle near the navbar: the robot salutes, then key hiring signals highlight in sequence — KPIs pulse and re-roll, the CV/contact CTA gains a persistent beacon, and a guided line auto-scrolls through experience → projects → contact with typed callouts. Toggle off restores normal state. Keep the auto-scroll skippable on any input.
   _tech: framer orchestrated sequence + scrollIntoView steps, context flag_
 
-- [ ] **107. Marquee Catch-and-Throw** (hook 8, L, tech marquee / hero)
+- [x] **107. Marquee Catch-and-Throw** (hook 8, L, tech marquee / hero)
   Marquee logos are grabbable mid-scroll: snatch one out of the stream into a free physics chip you can toss around the hero with spring drag and edge bounces; flick it back and it merges into the flow with a stagger ripple. Left dropped, the robot stares at it until it auto-returns.
   _tech: framer drag + layoutId reparenting, velocity from drag end_
 
-- [ ] **108. Tethered Drone Companion** (hook 8, L, global (robot area))
+- [x] **108. Tethered Drone Companion** (hook 8, L, global (robot area))
   A tiny one-eyed drone floats near the robot on a thin elastic tether with real spring physics: it lags scroll with momentum, bobs on an idle sine, and grabbing and tossing it makes it boomerang around the robot before the tether reels it in — with the robot's eyes tracking it the whole time. (Overlaps Recon Drone; ship one drone, this is the physics-toy flavor.)
   _tech: rAF spring integrator + SVG tether line, framer drag for toss_
 
@@ -457,15 +457,15 @@
   Hovered/tapped chips get a faint persistent underline tick; completing a full row or column fires a line-sweep across it and logs 'SKILL VECTOR VERIFIED' via the achievement toast. Silently turns idle chip-hovering into a compulsive completion loop.
   _tech: hover/tap state + grid row/col math + CSS sweep_
 
-- [ ] **113. Section Boss Stamps** (hook 6, M, experience timeline)
+- [x] **113. Section Boss Stamps** (hook 6, M, experience timeline)
   Timeline entries get a small hollow hexagon that certifies when fully scrolled into view — stroke draws via pathLength and fills with a faint tint, persisted — with the header showing 'CERTIFIED 3/5'. Half-read visitors feel the pull to finish the career story.
   _tech: IntersectionObserver + SVG pathLength (framer) + localStorage_
 
-- [ ] **114. Daily Cipher Chip** (hook 6, M, dividers + about terminal)
+- [x] **114. Daily Cipher Chip** (hook 6, M, dividers + about terminal)
   One divider chip per day shows a short date-seeded ROT13/hex word; typing the decoded word into the About terminal awards a CRYPTANALYST badge and the chip unlocks with a decrypt animation. A different cipher each day quietly rewards streaks with no streak UI.
   _tech: date-seeded encode + terminal command hook + localStorage_
 
-- [ ] **115. Glyph Inspector Mode** (hook 6, M, hero + section headings)
+- [x] **115. Glyph Inspector Mode** (hook 6, M, hero + section headings)
   Double-clicking a heading enters a 2-second inspector state: baseline grid and cap-height lines draw across the text and each letter gets a floating 9px accent-mono Unicode codepoint label ('U+004D') before fading out. A typographic x-ray for technical recruiters.
   _tech: dblclick toggle + positioned per-char labels, CSS grid lines_
 
@@ -477,15 +477,15 @@
   Holding the mouse still for 2s spawns three follower packets trailing the cursor ring in a queued line like ducklings; fast movement scatters them, clicking makes them orbit once. Capped at 3, disabled in perf-lite.
   _tech: rAF lerp chain rendered as fixed divs, no canvas_
 
-- [ ] **118. Packet Pong on the ECG Line** (hook 7, L, footer)
+- [x] **118. Packet Pong on the ECG Line** (hook 7, L, footer)
   Clicking the footer heartbeat detaches a packet dot that bounces along the ECG trace with the cursor as a vertical paddle; each bounce speeds it up and increments a mono HITS counter, a miss plays the flatline gag before the heartbeat resumes. Auto-dismisses after 15s idle.
   _tech: SVG/canvas rAF loop, pointer position, existing ECG path_
 
-- [ ] **119. Idle Sentry Minigame** (hook 7, L, robot buddy overlay)
+- [x] **119. Idle Sentry Minigame** (hook 7, L, robot buddy overlay)
   After 45s idle the robot deploys a one-button minigame: a radar sweep rotates past 3 blips — tap/space when the sweep crosses one to neutralize it; 3/3 awards a SENTRY badge and a robot high-five. Any other interaction dismisses it instantly; never auto-appears under reduced-motion.
   _tech: idle timer + SVG rotate + rAF hit detection + framer_
 
-- [ ] **120. Rubber-Band Project Deck** (hook 6, L, projects)
+- [x] **120. Rubber-Band Project Deck** (hook 6, L, projects)
   Featured projects as a horizontally flickable deck with real inertia, rubber-band resistance at the ends, and velocity-based card advance with overshoot-then-snap — the chat-bot demo card 'weighs more' via higher drag resistance as a subtle joke. Ranked last: it restructures an existing section's layout for moderate payoff; the ideas above enhance without rearchitecting.
   _tech: framer drag='x' + dragConstraints + snap-point springs, per-card drag mass_
 

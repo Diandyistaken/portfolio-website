@@ -8,6 +8,7 @@ import { SectionHeading } from "./SectionHeading";
 import { useLanguage } from "@/lib/i18n/LanguageProvider";
 import { CONTAINER } from "@/lib/layout";
 import { usePerfLite } from "./SectionBackdrop";
+import { HintTag } from "./HintTag";
 
 /** #8 Redaction peel: press-and-HOLD a bar to peel a clip-path hole revealing
  *  a wireframe underneath — but at ~70% a CLEARANCE DENIED stamp snaps it
@@ -534,7 +535,10 @@ export function ClassifiedWork() {
         </RevealGroup>
 
         <div className="mt-6 flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
-          <p className="font-mono text-xs leading-relaxed text-muted">{t.classified.note}</p>
+          <p className="font-mono text-xs leading-relaxed text-muted">
+            {t.classified.note}
+            <HintTag text={t.hints.ndaHold} className="mt-1 block" />
+          </p>
           <span
             className={`flex shrink-0 items-center gap-1.5 rounded-full border px-3 py-1.5 font-mono text-[0.65rem] tracking-[0.14em] transition-colors ${
               cleared ? "border-accent/60 text-accent" : "border-foreground/15 text-muted"

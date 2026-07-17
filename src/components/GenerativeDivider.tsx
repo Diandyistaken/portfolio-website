@@ -13,6 +13,70 @@ import {
 } from "framer-motion";
 import { useLanguage } from "@/lib/i18n/LanguageProvider";
 import { usePerfLite } from "./SectionBackdrop";
+import { AccessKey } from "./KeyHunt";
+
+// #114 daily cipher: date-seeded ROT13 word; typing the decoded word anywhere
+// awards the CRYPTANALYST badge. English tech words — terminal artifacts.
+const CIPHER_WORDS = ["firewall", "cipher", "packet", "kernel", "exploit", "socket", "daemon"];
+const rot13 = (word: string) =>
+  word.replace(/[a-z]/g, (char) =>
+    String.fromCharCode(((char.charCodeAt(0) - 97 + 13) % 26) + 97),
+  );
+
+/**
+ * #114 Daily cipher chip: shows today's ROT13'd word under the day divider;
+ * decoding it (typing the plain word anywhere) fires a decrypt animation and
+ * the CRYPTANALYST achievement. A new cipher every day, no streak UI.
+ */
+function CipherChip() {
+  const [dayWord, setDayWord] = useState<string | null>(null);
+  const [solved, setSolved] = useState(false);
+
+  useEffect(() => {
+    const raf = requestAnimationFrame(() => {
+      const dayIndex = Math.floor(Date.now() / 86400000);
+      const word = CIPHER_WORDS[dayIndex % CIPHER_WORDS.length];
+      setDayWord(word);
+      try {
+        setSolved(localStorage.getItem("mm-cipher-v1") === String(dayIndex));
+      } catch {
+        // ignore
+      }
+    });
+    return () => cancelAnimationFrame(raf);
+  }, []);
+
+  useEffect(() => {
+    if (!dayWord || solved) return;
+    let buffer = "";
+    const onKey = (event: KeyboardEvent) => {
+      const target = event.target as HTMLElement | null;
+      if (target && /^(INPUT|TEXTAREA|SELECT)$/.test(target.tagName)) return;
+      if (event.key.length !== 1) return;
+      buffer = (buffer + event.key.toLowerCase()).slice(-dayWord.length);
+      if (buffer === dayWord) {
+        setSolved(true);
+        try {
+          localStorage.setItem("mm-cipher-v1", String(Math.floor(Date.now() / 86400000)));
+        } catch {
+          // ignore
+        }
+        window.dispatchEvent(new Event("app:cipher-solved"));
+      }
+    };
+    window.addEventListener("keydown", onKey);
+    return () => window.removeEventListener("keydown", onKey);
+  }, [dayWord, solved]);
+
+  if (!dayWord) return null;
+  return (
+    <p aria-hidden="true" className="mt-3 font-mono text-[0.6rem] tracking-[0.14em] text-muted/70">
+      cipher_of_day:{" "}
+      <span className={solved ? "text-accent" : ""}>{solved ? `${dayWord} ✓` : rot13(dayWord)}</span>
+      {!solved && <span className="ml-1.5 text-muted/50">(rot13)</span>}
+    </p>
+  );
+}
 
 /**
  * #79 Cursor gravity well: the divider's flanking hairlines are rendered as
@@ -379,6 +443,13 @@ export function GenerativeDivider({ quoteId }: { quoteId: "day" | "sunset" }) {
         </div>
         {/* #80 beads on the day divider, #78 packet stream on sunset */}
         {quoteId === "day" ? <OscillatorBeads /> : <PacketStream />}
+        {quoteId === "day" && (
+          <div className="flex items-center gap-2">
+            <CipherChip />
+            {/* #67 hidden key no.1 */}
+            <AccessKey id="divider" className="mt-3" />
+          </div>
+        )}
       </div>
     </section>
   );

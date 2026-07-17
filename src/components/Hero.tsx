@@ -11,6 +11,10 @@ import { FollowMenu } from "./FollowMenu";
 import { DecryptText } from "./DecryptText";
 import { MagneticButton } from "./MagneticButton";
 import { BreachCTA, LedRack, UptimeCounter } from "./HeroExtras";
+import { HintTag } from "./HintTag";
+import { AccessKey } from "./KeyHunt";
+import { HeroBadge } from "./HeroBadge";
+import { HeroDotGrid } from "./HeroDotGrid";
 import { useLanguage } from "@/lib/i18n/LanguageProvider";
 import { CONTAINER } from "@/lib/layout";
 import { goalsMeta } from "@/lib/data";
@@ -83,36 +87,8 @@ export function Hero() {
   const wipeRightInset = useTransform(splitX, (value) => 100 - value);
   const wipeClip = useMotionTemplate`inset(0 ${wipeRightInset}% 0 0)`;
   const wipeLinePos = useMotionTemplate`${splitX}%`;
-
-  // #83 ASCII light-source shadow: the name casts a faint copy whose offset
-  // treats the cursor as a light source — move left, shadow stretches right.
-  const shadowDX = useSpring(0, { stiffness: 120, damping: 20 });
-  const shadowDY = useSpring(0, { stiffness: 120, damping: 20 });
-  const nameWrapRef = useRef<HTMLDivElement>(null);
-  useEffect(() => {
-    if (reduceMotion || perfLite) return;
-    if (window.matchMedia("(hover: none)").matches) return;
-    let raf = 0;
-    const onMove = (event: MouseEvent) => {
-      if (raf) return;
-      raf = requestAnimationFrame(() => {
-        raf = 0;
-        const el = nameWrapRef.current;
-        if (!el) return;
-        const bounds = el.getBoundingClientRect();
-        if (bounds.bottom < 0 || bounds.top > window.innerHeight) return;
-        const centerX = bounds.left + bounds.width / 2;
-        const centerY = bounds.top + bounds.height / 2;
-        shadowDX.set(Math.max(-16, Math.min(16, (centerX - event.clientX) * 0.03)));
-        shadowDY.set(Math.max(-10, Math.min(10, (centerY - event.clientY) * 0.03)));
-      });
-    };
-    window.addEventListener("mousemove", onMove, { passive: true });
-    return () => {
-      window.removeEventListener("mousemove", onMove);
-      if (raf) cancelAnimationFrame(raf);
-    };
-  }, [reduceMotion, perfLite, shadowDX, shadowDY]);
+  // (#83 cursor-driven name shadow was removed on user feedback — too much
+  // ambient motion in the hero.)
 
   useEffect(() => {
     if (reduceMotion || perfLite || t.hero.ticker.length < 2) {
@@ -186,6 +162,9 @@ export function Hero() {
         <HeroBackdrop />
       </m.div>
 
+      {/* #102 magnetic dot grid the cursor stirs (canvas, hero only) */}
+      {!staticHero && <HeroDotGrid />}
+
       {/* #44 layer 4: floating hex debris, fastest parallax rate */}
       {!staticHero && (
         <m.div aria-hidden="true" style={{ y: hexY }} className="pointer-events-none absolute inset-0 z-[1] hidden lg:block">
@@ -247,21 +226,7 @@ export function Hero() {
             />
           </Reveal>
 
-          <div ref={nameWrapRef} className="relative">
-          {/* #83 shadow copy — offset rides the cursor like a light source */}
-          {!staticHero && (
-            <m.span
-              aria-hidden="true"
-              style={{ x: shadowDX, y: shadowDY }}
-              className="font-display pointer-events-none absolute inset-x-0 top-0 mt-6 flex select-none flex-wrap gap-x-[0.22em] text-hero font-medium leading-[1.02] tracking-tight text-foreground/[0.07]"
-            >
-              {t.personalInfo.name.split(" ").map((word, index) => (
-                <span key={`${word}-${index}`} className="inline-block pb-[0.08em]">
-                  {word}
-                </span>
-              ))}
-            </m.span>
-          )}
+          <div className="relative">
           {dropRun === 0 ? (
             <m.h1
               aria-label={t.personalInfo.name}
@@ -394,6 +359,10 @@ export function Hero() {
               <FollowMenu />
             </div>
           </Reveal>
+
+          <Reveal delay={0.48}>
+            <HintTag text={t.hints.heroToys} className="mt-4" />
+          </Reveal>
         </m.div>
 
         <m.div
@@ -512,6 +481,12 @@ export function Hero() {
               <span className="surface font-mono absolute -bottom-3 -right-3 z-10 rounded-full px-2.5 py-1 text-[0.65rem] tracking-wide text-accent">
                 {t.hero.onlineLabel}
               </span>
+              {/* #67 hidden key no.2, tucked into the photo card corner */}
+              <span className="absolute bottom-2 left-2 z-10">
+                <AccessKey id="photo" />
+              </span>
+              {/* #68 clearance badge swinging on its lanyard */}
+              {!staticHero && <HeroBadge />}
             </m.div>
           </div>
 

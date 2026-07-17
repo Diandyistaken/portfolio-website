@@ -343,6 +343,7 @@ export const en: Content = {
   },
   achievements: {
     unlocked: "ACHIEVEMENT UNLOCKED",
+    listTitle: "ACHIEVEMENTS",
     items: [
       { id: "robot-friend", title: "New Friend — you said hi to the robot" },
       { id: "white-hat", title: "White Hat — you found the hidden command" },
@@ -352,7 +353,22 @@ export const en: Content = {
       { id: "status-dj", title: "Status DJ — cycled the badge 5 times" },
       { id: "honeypot", title: "Honeypot — clicked what you shouldn't have" },
       { id: "chatterbox", title: "Chatterbox — 5 messages with the robot" },
+      { id: "speedrunner", title: "Speedrunner — finished the speedrun" },
+      { id: "cryptanalyst", title: "Cryptanalyst — solved the daily cipher" },
+      { id: "keymaster", title: "Keymaster — found all 5 hidden keys" },
+      { id: "sentry", title: "Sentry — 3/3 in the radar game" },
     ],
+  },
+  hints: {
+    heroToys: "hold the CTA · click the name · double-click the portrait",
+    emailNear: "move the cursor closer: the signal resolves · drag the email to snap-copy",
+    chipsToss: "chips can be grabbed and flung · hover them all",
+    kpiTricks: "click a number: hex/binary · pull a tile down and release: slot machine",
+    goalHandle: "pull back the handle at the bar's edge and release",
+    ndaHold: "press and hold the redaction bar",
+    lightboxTips: "click: 2.5x analysis · drag & throw: close/advance",
+    terminalEggs: "type anywhere: 'hack' · 'speedrun' · 'sudo' · 'trace' · the daily cipher",
+    sonarHint: "double-click empty space: every toy lights up · drag the robot's head",
   },
   robotChat: {
     title: "SENTRY-BOT v2.1",

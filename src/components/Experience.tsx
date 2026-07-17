@@ -10,25 +10,44 @@ import { AnimatePresence, m, useInView, useReducedMotion, useScroll, useSpring, 
 import { CONTAINER } from "@/lib/layout";
 import { usePerfLite } from "./SectionBackdrop";
 
+// #75 kill-chain skin: each timeline entry doubles as an attack-chain stage
+const KILL_CHAIN = ["RECON", "FOOTHOLD", "ESCALATION", "PERSISTENCE"];
+const CERT_KEY = "mm-cert-v1";
+
 /**
  * Timeline row whose node dot lights up the moment the row enters view.
  * #73 plunger nodes: the dot is also a mechanical push-button — clicking
  * depresses it, re-decrypts the role text and fires a current line from the
  * node to the card. Plunging every node triggers a full-spine sweep.
+ * #75 exploit-chain: rows carry kill-chain stage tags that unlock in view.
+ * #113 boss stamps: a hollow hexagon certifies once the row is fully read.
  */
 function TimelineRow({
   exp,
+  stageIndex,
   company,
   animated,
+  certified,
+  onCertified,
   onPlunge,
 }: {
   exp: ReturnType<typeof useLanguage>["t"]["experience"]["items"][number];
+  stageIndex: number;
   company: string;
   animated: boolean;
+  certified: boolean;
+  onCertified: (id: string) => void;
   onPlunge: (id: string) => void;
 }) {
   const rowRef = useRef<HTMLDivElement>(null);
   const lit = useInView(rowRef, { once: true, amount: 0.5 });
+  // #113: fully-in-view = "read" → the hexagon draws and stays certified
+  const fullyRead = useInView(rowRef, { once: true, amount: 0.85 });
+  useEffect(() => {
+    if (!fullyRead || certified) return;
+    const raf = requestAnimationFrame(() => onCertified(exp.id));
+    return () => cancelAnimationFrame(raf);
+  }, [fullyRead, certified, onCertified, exp.id]);
   const [pressCount, setPressCount] = useState(0);
   const currentTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
   const [currentOn, setCurrentOn] = useState(false);
@@ -85,11 +104,36 @@ function TimelineRow({
           />
         )}
       </AnimatePresence>
-      <p className="font-mono text-xs text-muted">{exp.period}</p>
+      <p className="font-mono text-xs text-muted">
+        {exp.period}
+        {/* #75 kill-chain stage tag — unlocks (accent) once the row is read */}
+        <span
+          aria-hidden="true"
+          className={`mt-1 block font-mono text-[0.55rem] tracking-[0.16em] transition-colors duration-500 ${
+            lit ? "text-accent/70" : "text-muted/40"
+          }`}
+        >
+          {lit ? "▢" : "▣"} {String(stageIndex + 1).padStart(2, "0")} · {KILL_CHAIN[stageIndex % KILL_CHAIN.length]}
+        </span>
+      </p>
       <div className="min-w-0">
-        <h3 className="font-display text-lg font-semibold">
-          {animated && pressCount > 0 ? <DecryptText key={pressCount} text={exp.role} delay={0} /> : exp.role}
-        </h3>
+        <div className="flex items-center gap-2.5">
+          <h3 className="font-display text-lg font-semibold">
+            {animated && pressCount > 0 ? <DecryptText key={pressCount} text={exp.role} delay={0} /> : exp.role}
+          </h3>
+          {/* #113 boss stamp: hexagon draws + fills once fully read */}
+          <svg width="16" height="18" viewBox="0 0 16 18" aria-hidden="true" className="shrink-0">
+            <m.path
+              d="M8 1 L15 5 L15 13 L8 17 L1 13 L1 5 Z"
+              fill={certified ? "rgb(var(--accent-rgb) / 0.14)" : "none"}
+              stroke="rgb(var(--accent-rgb) / 0.75)"
+              strokeWidth="1.2"
+              initial={false}
+              animate={{ pathLength: certified ? 1 : 0, opacity: certified ? 1 : 0.25 }}
+              transition={{ duration: animated ? 0.7 : 0, ease: "easeOut" }}
+            />
+          </svg>
+        </div>
         <p className="text-sm text-accent">{company}</p>
         <p className="mt-3 max-w-2xl break-words text-sm leading-relaxed text-muted 3xl:max-w-4xl 3xl:text-base">
           {exp.description}
@@ -116,6 +160,32 @@ export function Experience() {
     }
   };
 
+  // #113: certified entries persist; the header counts them
+  const [certifiedIds, setCertifiedIds] = useState<string[]>([]);
+  useEffect(() => {
+    const raf = requestAnimationFrame(() => {
+      try {
+        const raw = localStorage.getItem(CERT_KEY);
+        if (raw) setCertifiedIds(JSON.parse(raw) as string[]);
+      } catch {
+        // storage unavailable — certifications reset per visit
+      }
+    });
+    return () => cancelAnimationFrame(raf);
+  }, []);
+  const onCertified = (id: string) => {
+    setCertifiedIds((previous) => {
+      if (previous.includes(id)) return previous;
+      const next = [...previous, id];
+      try {
+        localStorage.setItem(CERT_KEY, JSON.stringify(next));
+      } catch {
+        // ignore
+      }
+      return next;
+    });
+  };
+
   // The accent spine now DRAWS with scroll (scrubbed, not one-shot): it
   // grows as you read down the timeline and springs smoothly between steps.
   const listRef = useRef<HTMLDivElement>(null);
@@ -137,6 +207,11 @@ export function Experience() {
 
         <p className="mt-6 max-w-2xl text-sm leading-relaxed text-muted 3xl:max-w-3xl 3xl:text-base">
           {t.experience.intro}
+        </p>
+
+        {/* #113 header counter — reads like a mission log */}
+        <p aria-hidden="true" className="mt-3 font-mono text-[0.62rem] tracking-[0.2em] text-accent/70">
+          CERTIFIED {Math.min(certifiedIds.length, t.experience.items.length)}/{t.experience.items.length}
         </p>
 
         <div ref={listRef}>
@@ -164,12 +239,15 @@ export function Experience() {
                 className="absolute left-0 h-14 w-[2px] -translate-x-1/2 bg-gradient-to-b from-transparent via-white to-transparent shadow-[0_0_16px_rgb(var(--accent-rgb)/1)]"
               />
             )}
-            {t.experience.items.map((exp) => (
+            {t.experience.items.map((exp, index) => (
               <TimelineRow
                 key={exp.id}
                 exp={exp}
+                stageIndex={index}
                 company={experienceMeta[exp.id].company}
                 animated={!reducedMotion && !perfLite}
+                certified={certifiedIds.includes(exp.id)}
+                onCertified={onCertified}
                 onPlunge={onPlunge}
               />
             ))}

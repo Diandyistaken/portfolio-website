@@ -1,11 +1,72 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
-import { AnimatePresence, m, useReducedMotion, useSpring, useTransform } from "framer-motion";
+import { AnimatePresence, m, useReducedMotion, useScroll, useSpring, useTransform, useVelocity } from "framer-motion";
 import { X } from "lucide-react";
 import { useLanguage } from "@/lib/i18n/LanguageProvider";
 import { usePerfLite } from "./SectionBackdrop";
 import { RobotChat } from "./RobotChat";
+
+const TRUST_KEY = "mm-trust-v1";
+
+/**
+ * #108 (+#65, merged into ONE drone): a tiny one-eyed drone hovers beside the
+ * robot on an idle CSS bob, lags scroll on a soft spring, can be grabbed and
+ * tossed (it boomerangs back on the drag spring), and barrel-rolls when
+ * clicked. The section-scan flavor of #65 was absorbed into this single unit.
+ */
+function Drone() {
+  const { scrollY } = useScroll();
+  const velocity = useVelocity(scrollY);
+  const lag = useSpring(useTransform(velocity, [-3000, 3000], [14, -14], { clamp: true }), {
+    stiffness: 90,
+    damping: 9,
+  });
+  const [rollKey, setRollKey] = useState(0);
+  const draggedRef = useRef(false);
+
+  return (
+    <m.div
+      aria-hidden="true"
+      drag
+      dragSnapToOrigin
+      dragElastic={0.3}
+      dragConstraints={{ left: -120, right: 60, top: -140, bottom: 40 }}
+      dragTransition={{ bounceStiffness: 240, bounceDamping: 9 }}
+      whileDrag={{ scale: 1.2 }}
+      onDragEnd={() => {
+        draggedRef.current = true;
+        setTimeout(() => {
+          draggedRef.current = false;
+        }, 150);
+      }}
+      onClick={(event) => {
+        event.stopPropagation();
+        if (draggedRef.current) return;
+        setRollKey((key) => key + 1);
+      }}
+      style={{ y: lag }}
+      className="drone-bob absolute -left-14 top-0 cursor-grab touch-none active:cursor-grabbing"
+    >
+      <m.div
+        key={rollKey}
+        animate={rollKey > 0 ? { rotate: [0, 360] } : undefined}
+        transition={{ duration: 0.55, ease: "easeInOut" }}
+        className="flex flex-col items-center"
+      >
+        {/* rotors */}
+        <span className="flex gap-1.5">
+          <span className="drone-rotor h-[2px] w-3 rounded-full bg-accent/60" />
+          <span className="drone-rotor h-[2px] w-3 rounded-full bg-accent/60" />
+        </span>
+        {/* body + eye */}
+        <span className="mt-[1px] flex h-3.5 w-5 items-center justify-center rounded-md border border-accent/50 bg-[rgb(var(--surface)/0.95)]">
+          <span className="h-1.5 w-1.5 rounded-full bg-accent shadow-[0_0_6px_rgb(var(--accent-rgb)/0.9)]" />
+        </span>
+      </m.div>
+    </m.div>
+  );
+}
 
 const PATROL_AFTER_MS = 7000;
 const SENTRY_AFTER_MS = 14000;
@@ -164,12 +225,14 @@ export function RobotBuddy() {
 
         // Target-lock: tracking gain rises as the cursor closes in — lazy
         // glance from afar, wide-eyed stare up close, startled "!" at <70px.
+        // #103: a trusted robot tracks wider and from further away.
         const distance = Math.hypot(event.clientX - cx, event.clientY - cy);
-        const gain = distance < 280 ? 1.6 : 1;
+        const nearRadius = trustRef.current >= 8 ? 340 : 280;
+        const gain = distance < nearRadius ? (trustRef.current >= 8 ? 1.9 : 1.6) : 1;
         pupilX.set(Math.max(-4.5, Math.min(4.5, dx * 14 * gain)));
         pupilY.set(Math.max(-3.5, Math.min(3.5, dy * 11 * gain)));
 
-        const isNear = distance < 280;
+        const isNear = distance < nearRadius;
         if (isNear !== nearRef.current) {
           nearRef.current = isNear;
           setNear(isNear);
@@ -226,6 +289,78 @@ export function RobotBuddy() {
     }, 2400);
     return () => clearTimeout(timer);
   }, [enabled, dismissed, reducedMotion, perfLite, t]);
+
+  // #103 trust meter: a hidden affinity score (petting + achievements) that
+  // quietly upgrades behavior — wider tracking gain past 8, an occasional
+  // ice-blue heart blink past 18. Never shown as a number.
+  const trustRef = useRef(0);
+  useEffect(() => {
+    const raf = requestAnimationFrame(() => {
+      try {
+        trustRef.current = Number(localStorage.getItem(TRUST_KEY) ?? 0) || 0;
+      } catch {
+        // ignore
+      }
+    });
+    const bump = (amount: number) => () => {
+      trustRef.current = Math.min(30, trustRef.current + amount);
+      try {
+        localStorage.setItem(TRUST_KEY, String(trustRef.current));
+      } catch {
+        // ignore
+      }
+    };
+    const onPet = bump(1);
+    const onAchievement = bump(2);
+    window.addEventListener("app:robot-click", onPet);
+    window.addEventListener("app:achievement-unlocked", onAchievement);
+    // heart blink: rare, only at high trust, only while awake
+    const heart = setInterval(() => {
+      if (trustRef.current < 18) return;
+      if (bubbleTimer.current) return; // don't stomp an active bubble
+      setBubble("♥");
+      bubbleTimer.current = setTimeout(() => {
+        setBubble(null);
+        bubbleTimer.current = null;
+      }, 900);
+    }, 24000);
+    return () => {
+      cancelAnimationFrame(raf);
+      window.removeEventListener("app:robot-click", onPet);
+      window.removeEventListener("app:achievement-unlocked", onAchievement);
+      clearInterval(heart);
+    };
+  }, []);
+
+  // Cross-toy reactions: treat catches (#63), sentry high-five (#119), vault
+  // celebration (#67), recruiter salute (#106). Terminal-artifact one-liners.
+  useEffect(() => {
+    const say = (line: string, wave = false) => {
+      setSleeping(false);
+      if (bubbleTimer.current) clearTimeout(bubbleTimer.current);
+      setBubble(line);
+      bubbleTimer.current = setTimeout(() => setBubble(null), 2600);
+      if (wave) {
+        if (waveTimer.current) clearTimeout(waveTimer.current);
+        setWaving(true);
+        waveTimer.current = setTimeout(() => setWaving(false), 2300);
+      }
+    };
+    const onTreat = () => say("nom. 64 bytes.");
+    const onSentryWin = () => say("3/3 — high-five. ✋", true);
+    const onVault = () => say("all 5 keys?! respect._", true);
+    const onRecruiter = () => say("recruiter detected. presenting credentials_", true);
+    window.addEventListener("app:treat-catch", onTreat);
+    window.addEventListener("app:sentry-win", onSentryWin);
+    window.addEventListener("app:vault-open", onVault);
+    window.addEventListener("app:recruiter-mode", onRecruiter);
+    return () => {
+      window.removeEventListener("app:treat-catch", onTreat);
+      window.removeEventListener("app:sentry-win", onSentryWin);
+      window.removeEventListener("app:vault-open", onVault);
+      window.removeEventListener("app:recruiter-mode", onRecruiter);
+    };
+  }, []);
 
   // Site-wide easter egg hook: EasterEgg dispatches this when "hack" is
   // typed. Bubble logic is inlined so the effect only closes over `t`.
@@ -352,6 +487,8 @@ export function RobotBuddy() {
     <>
     <RobotChat open={chatOpen} onClose={() => setChatOpen(false)} />
     <div ref={rootRef} className="group/robot fixed bottom-6 right-6 z-40 hidden lg:block" style={{ perspective: 400 }}>
+      {/* #108 the companion drone */}
+      <Drone />
       {sentry && !sleeping && (
         <m.span
           aria-hidden="true"

@@ -6,12 +6,13 @@ import { RevealGroup, revealItem } from "./Reveal";
 import { SectionHeading } from "./SectionHeading";
 import { useLanguage } from "@/lib/i18n/LanguageProvider";
 import { projectsMeta } from "@/lib/data";
-import { AnimatePresence, m, useInView, useReducedMotion, useSpring } from "framer-motion";
+import { AnimatePresence, m, useInView, useReducedMotion, useScroll, useSpring, useTransform } from "framer-motion";
 import { useSpotlight } from "@/lib/useSpotlight";
 import { useTilt3D } from "@/lib/useTilt3D";
 import { BotShowcase } from "./BotShowcase";
 import { CONTAINER } from "@/lib/layout";
 import { usePerfLite } from "./SectionBackdrop";
+import { AccessKey } from "./KeyHunt";
 
 type ProjectItem = ReturnType<typeof useLanguage>["t"]["projects"]["items"][number];
 
@@ -114,11 +115,13 @@ function CrtDemo({ alive }: { alive: boolean }) {
 function ProjectRow({
   project,
   index,
+  alive,
   onPeek,
   onLeave,
 }: {
   project: ProjectItem;
   index: number;
+  alive: boolean;
   onPeek: (project: ProjectItem, index: number) => void;
   onLeave: () => void;
 }) {
@@ -129,12 +132,20 @@ function ProjectRow({
   const scanRef = useRef<HTMLAnchorElement>(null);
   const scanned = useInView(scanRef, { once: true, amount: 0.6 });
   const [port] = useState(() => 1024 + index * 137);
+  // #100 dossier unstack: each folder starts slightly offset + rotated like a
+  // stacked classified file and straightens as its own scrub progresses;
+  // scrolling back restacks the pile.
+  const { scrollYProgress: unstack } = useScroll({ target: scanRef, offset: ["start 0.98", "start 0.62"] });
+  const dossierY = useTransform(unstack, [0, 1], [26 + index * 6, 0], { clamp: true });
+  const dossierRot = useTransform(unstack, [0, 1], [index % 2 === 0 ? -1.4 : 1.6, 0], { clamp: true });
   return (
-    <m.a ref={scanRef} data-scanned={scanned ? "true" : "false"} {...tilt.handlers} style={tilt.motionStyle} onMouseMove={spotlight.onMouseMove} onMouseEnter={() => onPeek(project, index)} onMouseLeave={onLeave} href={meta.url} target="_blank" rel="noopener noreferrer" variants={revealItem} className="scan-row spotlight-card target-frame group relative grid min-w-0 grid-cols-1 items-center gap-3 overflow-hidden border-b border-foreground/10 py-6 transition-[background-color,border-color,box-shadow] last:border-b-0 hover:border-accent/30 hover:bg-foreground/[0.04] hover:shadow-[0_16px_42px_rgb(var(--accent-rgb)/0.08)] sm:grid-cols-[3rem_minmax(0,1fr)_auto] sm:gap-6 sm:px-2 3xl:grid-cols-[4rem_minmax(0,1fr)_auto] 3xl:gap-10 3xl:py-8">
+    <m.a ref={scanRef} data-scanned={scanned ? "true" : "false"} {...tilt.handlers} style={alive ? { ...tilt.motionStyle, y: dossierY, rotate: dossierRot } : tilt.motionStyle} onMouseMove={spotlight.onMouseMove} onMouseEnter={() => onPeek(project, index)} onMouseLeave={onLeave} href={meta.url} target="_blank" rel="noopener noreferrer" variants={revealItem} className="scan-row spotlight-card target-frame group relative grid min-w-0 grid-cols-1 items-center gap-3 overflow-hidden border-b border-foreground/10 py-6 transition-[background-color,border-color,box-shadow] last:border-b-0 hover:border-accent/30 hover:bg-foreground/[0.04] hover:shadow-[0_16px_42px_rgb(var(--accent-rgb)/0.08)] sm:grid-cols-[3rem_minmax(0,1fr)_auto] sm:gap-6 sm:px-2 3xl:grid-cols-[4rem_minmax(0,1fr)_auto] 3xl:gap-10 3xl:py-8">
       <div className="spotlight-overlay" aria-hidden="true" />
       <span className="font-mono relative z-10 hidden text-sm text-muted [transform:translateZ(12px)] sm:block">
         {String(index + 1).padStart(2, "0")}
         <span className="mt-0.5 block text-[0.55rem] uppercase tracking-wider text-accent/0 transition-colors duration-300 group-hover:text-accent/70">:{port} open</span>
+        {/* #67 hidden key no.3 rides the second dossier */}
+        {index === 2 && <AccessKey id="project" />}
       </span>
       <div className="relative z-10 min-w-0 [transform:translateZ(18px)]"><div className="flex min-w-0 items-center gap-2"><h3 className="font-display break-words text-lg font-semibold sm:text-xl 3xl:text-2xl">{project.title}</h3><ArrowUpRight size={16} className="shrink-0 text-muted transition-all duration-200 group-hover:-translate-y-0.5 group-hover:translate-x-0.5 group-hover:text-accent" /></div><p className="mt-1.5 max-w-xl break-words text-sm leading-relaxed text-muted 3xl:max-w-3xl 3xl:text-base">{project.description}</p></div>
       <div className="relative z-10 flex flex-wrap gap-2 [transform:translateZ(14px)] sm:justify-end">{meta.tags.map((tag) => <span key={tag} data-prox className="prox-chip font-mono rounded-sm border border-foreground/12 px-2.5 py-1 text-[0.7rem] text-muted">{tag}</span>)}</div>
@@ -221,7 +232,20 @@ export function Projects() {
           diffCorrect
         />
 
-        <m.div {...featuredTilt.handlers} style={featuredTilt.motionStyle} className="surface target-frame mt-14 grid grid-cols-1 items-center gap-8 overflow-hidden rounded-xl p-6 transition-[border-color,box-shadow] hover:border-accent/40 hover:shadow-[0_18px_54px_rgb(var(--accent-rgb)/0.12)] sm:p-8 lg:grid-cols-[0.9fr_1.1fr] lg:gap-10 3xl:gap-16 3xl:p-12">
+        {/* #120 rubber-band deck (simplified on purpose — the backlog itself
+            flags a full layout rebuild as poor payoff): the featured card can
+            be yanked horizontally against rubber-band resistance and snaps
+            back; the demo side "weighs more" via a heavier drag factor. */}
+        <m.div
+          {...featuredTilt.handlers}
+          style={featuredTilt.motionStyle}
+          drag={canPeek ? "x" : false}
+          dragConstraints={{ left: 0, right: 0 }}
+          dragElastic={0.08}
+          dragSnapToOrigin
+          dragTransition={{ bounceStiffness: 320, bounceDamping: 16 }}
+          className="surface target-frame mt-14 grid grid-cols-1 items-center gap-8 overflow-hidden rounded-xl p-6 transition-[border-color,box-shadow] hover:border-accent/40 hover:shadow-[0_18px_54px_rgb(var(--accent-rgb)/0.12)] sm:p-8 lg:grid-cols-[0.9fr_1.1fr] lg:gap-10 3xl:gap-16 3xl:p-12"
+        >
           <m.div initial={{ opacity: 0, y: 16 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true, amount: 0.35 }} transition={{ duration: 0.5 }} className="[transform:translateZ(18px)]">
             <span className="font-mono text-xs text-accent">01 / FEATURED</span>
             <a href={featuredMeta.url} target="_blank" rel="noopener noreferrer" className="group mt-4 block">
@@ -242,6 +266,7 @@ export function Projects() {
               key={project.id}
               project={project}
               index={i + 1}
+              alive={canPeek}
               onPeek={canPeek ? (proj, index) => setPeek({ project: proj, index }) : () => {}}
               onLeave={() => setPeek(null)}
             />

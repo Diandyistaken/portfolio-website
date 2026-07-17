@@ -5,11 +5,13 @@ import { RevealGroup, revealItem } from "./Reveal";
 import { SectionHeading } from "./SectionHeading";
 import { useLanguage } from "@/lib/i18n/LanguageProvider";
 import { skillsMeta } from "@/lib/data";
-import { AnimatePresence, m, useReducedMotion } from "framer-motion";
+import { AnimatePresence, m, useMotionValueEvent, useReducedMotion, useScroll } from "framer-motion";
 import { useEffect, useRef, useState } from "react";
 import { CONTAINER } from "@/lib/layout";
 import { useTilt3D } from "@/lib/useTilt3D";
 import { usePerfLite } from "./SectionBackdrop";
+import { HintTag } from "./HintTag";
+import { AccessKey } from "./KeyHunt";
 
 /** #116 Firefly: a lone glow-dot drifts among the chips and flees the cursor;
  *  idle, it perches on a random spot and pulses. */
@@ -118,6 +120,7 @@ function SkillCard({
   matched,
   canToss,
   ticked,
+  built,
   onChipHover,
   justVerified,
 }: {
@@ -125,6 +128,7 @@ function SkillCard({
   matched: string | null;
   canToss: boolean;
   ticked: string[];
+  built: string[];
   onChipHover: (tool: string, categoryId: string) => void;
   justVerified: boolean;
 }) {
@@ -209,7 +213,7 @@ function SkillCard({
               onMouseEnter={() => onChipHover(tool, category.id)}
               className={`prox-chip font-mono relative rounded-sm border px-2.5 py-1 text-[0.7rem] text-muted transition-colors ${
                 canToss ? "cursor-grab active:cursor-grabbing" : ""
-              } ${ticked.includes(tool) ? "chip-ticked" : ""} ${
+              } ${ticked.includes(tool) ? "chip-ticked" : ""} ${built.includes(tool) ? "chip-built" : "opacity-70"} ${
                 matched && tool.toLowerCase().includes(matched) ? "border-accent bg-accent/10 text-accent" : "border-foreground/12"
               }`}
             >
@@ -270,6 +274,24 @@ export function Skills() {
       if (bingoTimer.current) clearTimeout(bingoTimer.current);
     };
   }, []);
+
+  // #101 scroll-scrubbed skill compile: scrolling through the grid scrubs a
+  // fake compiler log while chips "link" in build order; scrolling back up
+  // decompiles them in reverse. (No pinning — scrub only, layout untouched.)
+  const gridRef = useRef<HTMLDivElement>(null);
+  const allTools = t.skills.categories.flatMap((category) => skillsMeta[category.id].tools ?? []);
+  const { scrollYProgress: compileProgress } = useScroll({
+    target: gridRef,
+    offset: ["start 0.9", "end 0.7"],
+  });
+  const [builtCount, setBuiltCount] = useState(0);
+  useMotionValueEvent(compileProgress, "change", (progress) => {
+    if (reducedMotion || perfLite) return;
+    const next = Math.max(0, Math.min(allTools.length, Math.round(progress * allTools.length)));
+    setBuiltCount((previous) => (previous === next ? previous : next));
+  });
+  const builtTools = reducedMotion || perfLite ? allTools : allTools.slice(0, builtCount);
+  const compiling = builtCount > 0 && builtCount < allTools.length;
 
   const onChipHover = (tool: string, categoryId: string) => {
     setTicked((previous) => {
@@ -348,7 +370,7 @@ export function Skills() {
           description={t.skills.description}
         />
 
-        <div className="relative mt-14">
+        <div ref={gridRef} className="relative mt-14">
           <Firefly />
           <RevealGroup
             stagger={0.08}
@@ -361,11 +383,28 @@ export function Skills() {
                 matched={matched}
                 canToss={canToss}
                 ticked={ticked}
+                built={builtTools}
                 onChipHover={onChipHover}
                 justVerified={justVerified === category.id}
               />
             ))}
           </RevealGroup>
+        </div>
+
+        {/* #101 compiler log line, scrubbed by scroll */}
+        {!reducedMotion && !perfLite && builtCount > 0 && (
+          <p aria-hidden="true" className="mt-4 font-mono text-[0.62rem] text-muted">
+            <span className="text-accent">$</span>{" "}
+            {compiling
+              ? `compiling ${(allTools[builtCount - 1] ?? "").toLowerCase().replace(/[^a-z0-9.#+]/g, "")}.ts … [OK] · ${builtCount}/${allTools.length}`
+              : `build complete ✓ ${allTools.length}/${allTools.length} linked`}
+          </p>
+        )}
+
+        <div className="mt-4 flex items-center gap-2">
+          <HintTag text={t.hints.chipsToss} />
+          {/* #67 hidden key no.4 */}
+          <AccessKey id="skills" />
         </div>
 
         <AnimatePresence>

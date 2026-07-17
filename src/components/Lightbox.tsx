@@ -5,6 +5,7 @@ import { AnimatePresence, m, useReducedMotion } from "framer-motion";
 import { ChevronLeft, ChevronRight, X } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
 import { useLanguage } from "@/lib/i18n/LanguageProvider";
+import { HintTag } from "./HintTag";
 
 type LightboxImage = {
   src: string;
@@ -335,6 +336,11 @@ function LightboxDialog({ images, initialIndex, onClose }: LightboxDialogProps) 
                 )}
               </m.div>
             </AnimatePresence>
+            {canPlay && (
+              <span className="pointer-events-none absolute bottom-2 left-1/2 z-20 -translate-x-1/2">
+                <HintTag text={t.hints.lightboxTips} />
+              </span>
+            )}
           </m.div>
         </m.div>
     )

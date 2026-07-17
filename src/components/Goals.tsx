@@ -9,6 +9,7 @@ import { useLanguage } from "@/lib/i18n/LanguageProvider";
 import { goalsMeta } from "@/lib/data";
 import { CONTAINER } from "@/lib/layout";
 import { usePerfLite } from "./SectionBackdrop";
+import { HintTag } from "./HintTag";
 
 /** #29 Decryption percent: the number scrambles through random digits and
  *  resolves to the real value — a bar "decrypting" its progress. Restarts on
@@ -296,6 +297,9 @@ export function Goals() {
             );
           })}
         </RevealGroup>
+        <div className="mt-3">
+          <HintTag text={t.hints.goalHandle} />
+        </div>
         </div>
       </div>
     </section>

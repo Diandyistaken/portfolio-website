@@ -434,7 +434,8 @@ html.custom-cursor [role="button"] {
   width: 22%;
   background: linear-gradient(to right, transparent, rgb(var(--accent-rgb) / 0.9), transparent);
   transform: translateX(-120%);
-  animation: footer-ecg-sweep 6s ease-in-out infinite;
+  /* #99: the heartbeat quickens near the page bottom (var set from JS) */
+  animation: footer-ecg-sweep var(--ecg-speed, 6s) ease-in-out infinite;
   will-change: transform;
 }
 
@@ -651,6 +652,30 @@ html.custom-cursor [role="button"] {
 .robot-shadow {
   background: radial-gradient(50% 100% at 50% 50%, rgb(0 0 0 / 0.55), transparent 70%);
   filter: blur(3px);
+}
+
+/* #108 companion drone: idle sine bob + spinning rotor shimmer */
+@keyframes drone-bob {
+  0%, 100% { translate: 0 0; }
+  50% { translate: 0 -5px; }
+}
+
+.drone-bob {
+  animation: drone-bob 2.8s ease-in-out infinite;
+}
+
+@keyframes drone-rotor-spin {
+  0%, 100% { transform: scaleX(1); opacity: 0.9; }
+  50% { transform: scaleX(0.35); opacity: 0.4; }
+}
+
+.drone-rotor {
+  animation: drone-rotor-spin 0.22s linear infinite;
+}
+
+.perf-lite .drone-bob,
+.perf-lite .drone-rotor {
+  animation: none;
 }
 
 /* ── Achievement toasts ─────────────────────────────────────────────────── */
@@ -990,6 +1015,42 @@ html.custom-cursor [role="button"] {
   transition: box-shadow 0.2s linear, border-color 0.2s linear;
 }
 
+/* #67 hidden access keys: faint key glyphs tucked around the site. */
+.access-key {
+  display: inline-grid;
+  place-items: center;
+  padding: 2px;
+  color: rgb(var(--accent-rgb) / 0.28);
+  cursor: pointer;
+  transition: color 0.2s linear, transform 0.2s ease;
+}
+
+.access-key:hover {
+  color: var(--accent);
+  transform: scale(1.25) rotate(-12deg);
+}
+
+/* Discovery hints: quiet mono labels that decode the hidden toys for new
+   visitors. Deliberately static and low-contrast — informative, not noisy. */
+.hint-tag {
+  display: inline-flex;
+  align-items: baseline;
+  gap: 0.35em;
+  font-family: var(--font-mono);
+  font-size: 0.58rem;
+  letter-spacing: 0.07em;
+  color: rgb(var(--foreground-rgb) / 0.38);
+  transition: color 0.2s linear;
+}
+
+.hint-tag:hover {
+  color: rgb(var(--accent-rgb) / 0.75);
+}
+
+.hint-tag__glyph {
+  color: rgb(var(--accent-rgb) / 0.5);
+}
+
 /* #89 Proximity lean field: chips tilt away from the approaching cursor like
    grass in wind (--prox strength, --prox-dx direction, fed by ProximityField
    on data-prox-lean elements). Transition supplies the per-chip spring lag. */
@@ -1006,6 +1067,13 @@ html.custom-cursor [role="button"] {
 /* #112 Skills bingo: hovered chips keep a faint persistent underline tick. */
 .chip-ticked {
   background-image: linear-gradient(to top, rgb(var(--accent-rgb) / 0.55) 2px, transparent 2px);
+}
+
+/* #101 compile scrub: chips "link" in build order as you scroll the grid. */
+.chip-built {
+  border-color: rgb(var(--accent-rgb) / 0.35) !important;
+  opacity: 1;
+  transition: border-color 0.3s linear, opacity 0.3s linear;
 }
 
 /* #53 Gyro tilt (mobile): device orientation writes --gyro-x/--gyro-y (px)

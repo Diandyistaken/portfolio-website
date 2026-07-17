@@ -144,6 +144,19 @@ export function KpiStats() {
     setReplays((previous) => ({ ...previous, [label]: (previous[label] ?? 0) + 1 }));
   };
 
+  // #106 recruiter mode: pulse + re-roll every KPI when the tour starts
+  useEffect(() => {
+    const onRecruiter = () => {
+      setReplays((previous) => {
+        const next: Record<string, number> = { ...previous };
+        for (const stat of t.about.stats) next[stat.label] = (next[stat.label] ?? 0) + 1;
+        return next;
+      });
+    };
+    window.addEventListener("app:recruiter-mode", onRecruiter);
+    return () => window.removeEventListener("app:recruiter-mode", onRecruiter);
+  }, [t]);
+
   const cycleBase = (label: string) => {
     setBases((previous) => {
       const order: NumberBase[] = ["dec", "hex", "bin"];

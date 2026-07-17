@@ -3,6 +3,77 @@
 > Kullanıcı talebi: "bunları şunları ekledim diye log sun." Her parti buraya
 > işlenir; kaynak sıralama `delight-backlog.md`.
 
+## Parti 12 — 2026-07-17 (Fable 5 · FINAL: kalan 24 fikir + ipucu sistemi + kaldırmalar) — BACKLOG 120/120 ✓
+
+**Kullanıcı geri bildirimi (kaldırmalar):**
+- **#94 nefes animasyonu TAMAMEN çıkarıldı** (scroll'da harf-aralığı artık hiç oynamıyor).
+- **#83 hero isim gölgesi TAMAMEN çıkarıldı** (başlangıçtaki "hareket eden gölgeler").
+
+**İpucu sistemi (keşfedilebilirlik):** `HintTag` bileşeni + i18n `hints` bloğu
+(tr/en/de, 9 metin). Yerleşimler: hero (CTA bas-tut/isim/portre), Contact
+e-posta (imleci yaklaştır/sürükle), Skills çipleri, KPI (tıkla/çek), Goals
+tutamacı, NDA bas-tut, lightbox (zoom/fırlat), About terminali (tüm yazma
+egg'leri: hack·speedrun·sudo·trace·günün şifresi), footer (çift-tık sonar +
+robot sürükleme). Statik, düşük kontrast — yeni hareket eklemez.
+
+**Kalan 24 fikir:**
+- **#63 Treat toss:** boş zeminde sürükle-bırak → veri küpü robota uçar,
+  robot "nom. 64 bytes." der.
+- **#64 sudo root shell:** "sudo" yaz (veya Konami kodu) → sahte parola, 2 ret
+  sonra mini root shell: `ls /secrets`, `cat resume.txt` (CV indirir), `exit`.
+- **#65+#108 TEK drone (birleştirildi):** robot yanında tek gözlü drone —
+  idle bob, scroll'da yaylı gecikme, tut-fırlat bumerang, tıkla → barrel roll.
+- **#66 Rappel bot:** SOL kenarda kesikli halatta mini-bot scroll'la iner,
+  hızlı scroll savurur, dipte iniş + kol selamı.
+- **#67 Anahtar avı:** 5 gizli anahtar (day divider, hero foto, 2. proje
+  satırı, footer, skills) → "KEY_03 ACQUIRED" toast + keyring HUD; 5/5 →
+  kasa overlay'i (not + CV) + robot kutlaması + KEYMASTER rozeti.
+- **#68 Kimlik rozeti:** hero fotosunda halatta sallanan "SECURITY CLEARANCE"
+  rozeti — tut-fırlat sarkaç, çift tık → barkodlu arka yüz "ACCESS: GRANTED".
+- **#75 Kill-chain:** timeline satırlarına RECON→FOOTHOLD→ESCALATION→
+  PERSISTENCE etiketleri, görünüme girince kilit açılır (#24 ile beraber).
+- **#98 Uplink handshake:** Contact'a yaklaşırken robot köşesinden e-posta
+  kartına scroll-scrub kesikli çizgi + "HANDSHAKE ESTABLISHED — SYN/ACK ✓".
+- **#99 Gravity well:** dibe inerken EKG hızlanır (CSS var), hex debris
+  footer'a akar, dipte "END OF TRANSMISSION" damgası.
+- **#100 Dossier unstack:** proje satırları hafif offset+dönük başlar,
+  scroll'la düzelir (geri sarılır).
+- **#101 Skill compile:** grid scroll'uyla sahte derleyici satırı
+  ("compiling nmap.ts … [OK] · 7/23") + çipler build sırasına göre yanar.
+- **#102 Nokta ızgarası:** hero'da canvas dot-grid, imleç 150px içinde itip
+  parlatır, yayla döner (perf-lite kapalı, sadece hero görünürken çalışır).
+- **#103 Trust meter:** gizli yakınlık (okşama+rozetler) — 8+ geniş göz
+  takibi, 18+ ara sıra ♥ baloncuğu. Sayı asla gösterilmez.
+- **#104 Başarım sistemi genişletildi:** 4 yeni rozet (speedrunner,
+  cryptanalyst, keymaster, sentry) + sol altta kalıcı sayaç çipi → tıkla →
+  liste paneli (kilitliler ██████).
+- **#105 Ghost trace:** oturum scroll derinliği örneklenir; "trace" yaz →
+  dwell-heat bantlı dikey minimap + yolculuğu oynatan nokta + "deepest
+  dwell: X — good taste."
+- **#106 Recruiter mode:** navbar'da [RECRUITER] — robot selamı, KPI'lar
+  yeniden yuvarlanır, experience→projects→contact rehberli tur (her girişte
+  iptal).
+- **#107 Marquee yakala-fırlat:** marquee logoları tutulup savrulabilir,
+  yayla akışa döner (hover zaten durduruyor).
+- **#113 Boss stamps:** timeline girdileri tam okununca altıgen çizilip
+  dolar (localStorage) + başlıkta "CERTIFIED n/N".
+- **#114 Günün şifresi:** day divider'da tarih-tohumlu ROT13 kelime; çözümü
+  yaz → CRYPTANALYST + çip çözülür.
+- **#115 Glyph inspector:** başlığa çift tık → 2sn baseline/cap çizgileri +
+  harf başına U+XXXX etiketi.
+- **#118 Packet pong:** footer kalp çizgisine tıkla → imleç-palet mini pong,
+  HITS sayacı, kaçırınca "flatline" gag'i, 15sn boşta kapanır.
+- **#119 Idle sentry:** 45sn boşta radar mini oyunu — süpürme blip'ten
+  geçerken tıkla/space, 3/3 → SENTRY + robot beşliği; scroll anında kapatır.
+- **#120 Rubber-band featured (bilinçli sade):** featured kart yatay çekilip
+  bırakılınca lastikle döner — backlog'un kendisi tam yeniden-kurulumu
+  "düşük getirili" işaretlediği için layout korundu.
+
+Basitleştirme notları: #65 tarama davranışı tek drone'a absorbe; #68 scroll
+rüzgârı ve robot-göz tepkisi absorbe; #63 küp fizik yayı yerine eğrisel uçuş;
+robot cross-toy replikleri İngilizce terminal-artifact. Gate: tsc + eslint +
+vitest (34) + build yeşil. **Backlog bitti: 120/120.**
+
 ## Parti 11 — 2026-07-17 (Fable 5 · 20 fikir + #94 yumuşatma)
 
 **Kullanıcı geri bildirimi:** #94 harf-aralığı "nefesi" mide bulandırıcıydı →

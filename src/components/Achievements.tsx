@@ -16,7 +16,11 @@ export type AchievementId =
   | "first-contact"
   | "status-dj"
   | "honeypot"
-  | "chatterbox";
+  | "chatterbox"
+  | "speedrunner"
+  | "cryptanalyst"
+  | "keymaster"
+  | "sentry";
 
 /** Event → achievement wiring. Components dispatch, this component listens. */
 const EVENT_MAP: Record<string, AchievementId> = {
@@ -24,6 +28,11 @@ const EVENT_MAP: Record<string, AchievementId> = {
   "app:hack-egg": "white-hat",
   "app:email-copied": "first-contact",
   "app:honeypot": "honeypot",
+  // #104 expansion: the parti-12 discovery layer
+  "app:speedrun-done": "speedrunner",
+  "app:cipher-solved": "cryptanalyst",
+  "app:vault-open": "keymaster",
+  "app:sentry-win": "sentry",
 };
 
 /** Counted events: unlock after N occurrences. */
@@ -52,6 +61,9 @@ export function Achievements() {
   const { t } = useLanguage();
   const [toast, setToast] = useState<AchievementId | null>(null);
   const [unlockedCount, setUnlockedCount] = useState(0);
+  // #104: the list panel needs the concrete ids (locked ones render ██████)
+  const [unlockedIds, setUnlockedIds] = useState<AchievementId[]>([]);
+  const [listOpen, setListOpen] = useState(false);
   const unlockedRef = useRef<Set<AchievementId> | null>(null);
   const countsRef = useRef<Record<string, number>>({});
   const queueRef = useRef<AchievementId[]>([]);
@@ -60,6 +72,12 @@ export function Achievements() {
 
   useEffect(() => {
     unlockedRef.current = loadUnlocked();
+    const seedRaf = requestAnimationFrame(() => {
+      const unlocked = unlockedRef.current;
+      if (!unlocked) return;
+      setUnlockedCount(unlocked.size);
+      setUnlockedIds([...unlocked]);
+    });
 
     const showNext = () => {
       const next = queueRef.current.shift();
@@ -76,6 +94,7 @@ export function Achievements() {
       if (!unlocked || unlocked.has(id)) return;
       unlocked.add(id);
       setUnlockedCount(unlocked.size);
+      setUnlockedIds([...unlocked]);
       try {
         localStorage.setItem(STORAGE_KEY, JSON.stringify([...unlocked]));
       } catch {
@@ -120,6 +139,7 @@ export function Achievements() {
     sections.forEach((section) => observer.observe(section));
 
     return () => {
+      cancelAnimationFrame(seedRaf);
       handlers.forEach(([event, handler]) => window.removeEventListener(event, handler));
       observer.disconnect();
       if (timerRef.current) clearTimeout(timerRef.current);
@@ -130,6 +150,33 @@ export function Achievements() {
 
   return (
     <div className="pointer-events-none fixed bottom-6 left-6 z-50" aria-live="polite">
+      {/* #104 list panel: unlocked titles readable, locked ones redacted */}
+      <AnimatePresence>
+        {listOpen && (
+          <m.div
+            initial={{ opacity: 0, y: 12 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: 8 }}
+            className="achievement-chip pointer-events-auto mb-2 w-72 rounded-lg p-4"
+          >
+            <p className="font-mono text-[0.6rem] uppercase tracking-[0.2em] text-accent">
+              {t.achievements.listTitle} · {unlockedCount}/{totalCount}
+            </p>
+            <ul className="mt-2 space-y-1.5 font-mono text-[0.68rem]">
+              {t.achievements.items.map((entry) => {
+                const unlocked = unlockedIds.includes(entry.id as AchievementId);
+                return (
+                  <li key={entry.id} className={unlocked ? "text-foreground/90" : "text-muted/50"}>
+                    <span className={`mr-1.5 ${unlocked ? "text-accent" : ""}`}>{unlocked ? "◆" : "◇"}</span>
+                    {unlocked ? entry.title : "██████████████"}
+                  </li>
+                );
+              })}
+            </ul>
+          </m.div>
+        )}
+      </AnimatePresence>
+
       <AnimatePresence>
         {item && (
           <m.div
@@ -138,7 +185,7 @@ export function Achievements() {
             animate={{ opacity: 1, y: 0, scale: 1 }}
             exit={{ opacity: 0, y: 10, scale: 0.95 }}
             transition={{ type: "spring", stiffness: 300, damping: 24 }}
-            className="achievement-chip flex items-center gap-3 rounded-lg px-4 py-3"
+            className="achievement-chip mb-2 flex items-center gap-3 rounded-lg px-4 py-3"
           >
             <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-md border border-accent/40 text-accent">
               <Award size={16} />
@@ -152,6 +199,19 @@ export function Achievements() {
           </m.div>
         )}
       </AnimatePresence>
+
+      {/* #104 persistent HUD chip — opens the list */}
+      {unlockedCount > 0 && (
+        <button
+          type="button"
+          onClick={() => setListOpen((value) => !value)}
+          aria-expanded={listOpen}
+          aria-label={t.achievements.listTitle}
+          className="pointer-events-auto hidden items-center gap-1.5 rounded-full border border-foreground/15 bg-background/85 px-2.5 py-1 font-mono text-[0.6rem] text-muted transition-colors hover:border-accent/50 hover:text-foreground lg:flex"
+        >
+          <Award size={10} className="text-accent" /> {unlockedCount}/{totalCount}
+        </button>
+      )}
     </div>
   );
 }

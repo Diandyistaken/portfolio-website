@@ -6,6 +6,7 @@ import { Reveal } from "./Reveal";
 import { SectionHeading } from "./SectionHeading";
 import { useLanguage } from "@/lib/i18n/LanguageProvider";
 import { KpiStats } from "./KpiStats";
+import { HintTag } from "./HintTag";
 import { CONTAINER } from "@/lib/layout";
 import { AboutTerminal } from "./AboutTerminal";
 import { usePerfLite } from "./SectionBackdrop";
@@ -54,11 +55,17 @@ export function About() {
         </Reveal>
         <ScrubManifesto text={t.about.manifesto} />
         <KpiStats />
+        <div className="mt-3 text-center">
+          <HintTag text={t.hints.kpiTricks} />
+        </div>
         <Reveal delay={0.15} className="mt-14 sm:mt-16">
           <p className="mb-5 font-display text-lg font-medium text-foreground/90 sm:text-xl">
             {t.about.terminalLead}
           </p>
           <AboutTerminal />
+          <div className="mt-3">
+            <HintTag text={t.hints.terminalEggs} />
+          </div>
         </Reveal>
       </div>
     </section>

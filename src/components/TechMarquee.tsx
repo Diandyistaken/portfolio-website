@@ -1,7 +1,7 @@
 "use client";
 
-import { useState } from "react";
-import { useMotionValueEvent, useReducedMotion, useScroll } from "framer-motion";
+import { useEffect, useState } from "react";
+import { m, useMotionValueEvent, useReducedMotion, useScroll } from "framer-motion";
 import { VelocityTrack } from "./VelocityTrack";
 import { usePerfLite } from "./SectionBackdrop";
 
@@ -40,7 +40,7 @@ function hexAlias(item: string): string {
 
 const HEX_ALIASES = ITEMS.map(hexAlias);
 
-function Row({ hidden, swapped }: { hidden?: boolean; swapped: number }) {
+function Row({ hidden, swapped, canGrab }: { hidden?: boolean; swapped: number; canGrab: boolean }) {
   return (
     <div aria-hidden={hidden} className="flex shrink-0 items-center">
       {ITEMS.map((item, index) => {
@@ -50,15 +50,24 @@ function Row({ hidden, swapped }: { hidden?: boolean; swapped: number }) {
             key={item}
             className="flex items-center font-mono text-[0.65rem] tracking-[0.25em] text-muted 3xl:text-sm 4xl:text-base"
           >
-            <span
+            {/* #107 catch-and-throw: snatch a logo out of the stream, toss it
+                around and it springs back into the flow (marquee pauses on
+                hover, so grabbing feels natural). */}
+            <m.span
+              drag={canGrab}
+              dragSnapToOrigin
+              dragElastic={0.25}
+              dragConstraints={{ left: -220, right: 220, top: -130, bottom: 130 }}
+              dragTransition={{ bounceStiffness: 260, bounceDamping: 11 }}
+              whileDrag={{ scale: 1.35, zIndex: 50 }}
               data-prox
               data-prox-radius="140"
               className={`prox-wake inline-block px-5 transition-colors duration-300 3xl:px-8 4xl:px-10 ${
                 hexed ? "text-accent/60" : ""
-              }`}
+              } ${canGrab ? "cursor-grab active:cursor-grabbing" : ""}`}
             >
               {hexed ? HEX_ALIASES[index] : item}
-            </span>
+            </m.span>
             <span className="text-accent" style={{ fontSize: "0.5rem" }}>
               ◆
             </span>
@@ -82,12 +91,22 @@ export function TechMarquee() {
     setSwapped((previous) => (previous === next ? previous : next));
   });
 
+  // #107: grabbing is fine-pointer only (drag would fight touch scrolling)
+  const [finePointer, setFinePointer] = useState(false);
+  useEffect(() => {
+    const raf = requestAnimationFrame(() =>
+      setFinePointer(window.matchMedia("(hover: hover) and (pointer: fine)").matches),
+    );
+    return () => cancelAnimationFrame(raf);
+  }, []);
+  const canGrab = alive && finePointer;
+
   return (
     <div className="marquee relative overflow-hidden border-y border-white/6 py-3.5 3xl:py-5 4xl:py-6">
       <VelocityTrack>
         <div className="marquee-track flex w-max">
-          <Row swapped={alive ? swapped : 0} />
-          <Row hidden swapped={alive ? swapped : 0} />
+          <Row swapped={alive ? swapped : 0} canGrab={canGrab} />
+          <Row hidden swapped={alive ? swapped : 0} canGrab={canGrab} />
         </div>
       </VelocityTrack>
       {/* #91 stowaway: a tiny robot silhouette rides the ticker */}

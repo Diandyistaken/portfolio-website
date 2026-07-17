@@ -99,6 +99,7 @@ export function SpeedrunHud() {
       if (!runningRef.current) return;
       const ms = performance.now() - startRef.current;
       stopRun();
+      window.dispatchEvent(new Event("app:speedrun-done"));
       setBest((previousBest) => {
         const pb = previousBest === null || ms < previousBest;
         const nextBest = pb ? ms : previousBest;

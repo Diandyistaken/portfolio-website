@@ -345,6 +345,7 @@ export const tr: Content = {
   },
   achievements: {
     unlocked: "BAŞARIM AÇILDI",
+    listTitle: "BAŞARIMLAR",
     items: [
       { id: "robot-friend", title: "Yeni Arkadaş — robota merhaba dedin" },
       { id: "white-hat", title: "Beyaz Şapka — gizli komutu buldun" },
@@ -354,7 +355,22 @@ export const tr: Content = {
       { id: "status-dj", title: "Durum DJ'i — rozeti 5 kez çevirdin" },
       { id: "honeypot", title: "Bal Küpü — tıklamaman gerekeni tıkladın" },
       { id: "chatterbox", title: "Sohbet Kutusu — robotla 5 mesajlaştın" },
+      { id: "speedrunner", title: "Hız Koşucusu — speedrun'ı bitirdin" },
+      { id: "cryptanalyst", title: "Kriptanalist — günün şifresini çözdün" },
+      { id: "keymaster", title: "Anahtar Ustası — 5 gizli anahtarı buldun" },
+      { id: "sentry", title: "Nöbetçi — radar oyununda 3/3 yaptın" },
     ],
+  },
+  hints: {
+    heroToys: "CTA'yı basılı tut · isme tıkla · portreye çift tıkla",
+    emailNear: "imleci yaklaştır: sinyal çözülür · e-postayı sürükleyip kopar: kopyalar",
+    chipsToss: "çipleri sürükleyip fırlatabilirsin · hepsinin üzerinden geç",
+    kpiTricks: "sayıya tıkla: hex/binary · karoyu aşağı çekip bırak: slot makinesi",
+    goalHandle: "bar ucundaki tutamacı geri çekip bırak",
+    ndaHold: "redaksiyon barına basılı tut",
+    lightboxTips: "tıkla: 2.5x analiz · sürükleyip fırlat: kapat/geçir",
+    terminalEggs: "bir yere yaz: 'hack' · 'speedrun' · 'sudo' · 'trace' · günün şifresi",
+    sonarHint: "boşluğa çift tıkla: tüm oyuncaklar yanar · robotun kafasını sürükle",
   },
   robotChat: {
     title: "NÖBETÇİ-BOT v2.1",

@@ -23,6 +23,12 @@ const PayloadInjector = dynamic(() => import("./PayloadInjector").then((mod) => 
 const SpeedrunHud = dynamic(() => import("./SpeedrunHud").then((mod) => mod.SpeedrunHud), { ssr: false });
 const SectionScanline = dynamic(() => import("./SectionScanline").then((mod) => mod.SectionScanline), { ssr: false });
 const GyroTilt = dynamic(() => import("./GyroTilt").then((mod) => mod.GyroTilt), { ssr: false });
+const RootShell = dynamic(() => import("./RootShell").then((mod) => mod.RootShell), { ssr: false });
+const TreatToss = dynamic(() => import("./TreatToss").then((mod) => mod.TreatToss), { ssr: false });
+const GhostTrace = dynamic(() => import("./GhostTrace").then((mod) => mod.GhostTrace), { ssr: false });
+const IdleSentry = dynamic(() => import("./IdleSentry").then((mod) => mod.IdleSentry), { ssr: false });
+const RappelBot = dynamic(() => import("./RappelBot").then((mod) => mod.RappelBot), { ssr: false });
+const KeyHunt = dynamic(() => import("./KeyHunt").then((mod) => mod.KeyHunt), { ssr: false });
 
 export function ClientChrome() {
   useEffect(() => {
@@ -47,6 +53,12 @@ export function ClientChrome() {
       <SpeedrunHud />
       <SectionScanline />
       <GyroTilt />
+      <RootShell />
+      <TreatToss />
+      <GhostTrace />
+      <IdleSentry />
+      <RappelBot />
+      <KeyHunt />
     </>
   );
 }

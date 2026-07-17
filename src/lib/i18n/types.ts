@@ -109,7 +109,20 @@ export type Content = {
   };
   achievements: {
     unlocked: string;
+    listTitle: string;
     items: { id: string; title: string }[];
+  };
+  /** Tiny discovery hints for hard-to-find toys ("◇ hold the CTA…"). */
+  hints: {
+    heroToys: string;
+    emailNear: string;
+    chipsToss: string;
+    kpiTricks: string;
+    goalHandle: string;
+    ndaHold: string;
+    lightboxTips: string;
+    terminalEggs: string;
+    sonarHint: string;
   };
   robotChat: {
     title: string;

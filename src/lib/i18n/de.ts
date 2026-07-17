@@ -343,6 +343,7 @@ export const de: Content = {
   },
   achievements: {
     unlocked: "ERFOLG FREIGESCHALTET",
+    listTitle: "ERFOLGE",
     items: [
       { id: "robot-friend", title: "Neuer Freund — du hast den Roboter begrüßt" },
       { id: "white-hat", title: "White Hat — du hast den geheimen Befehl gefunden" },
@@ -352,7 +353,22 @@ export const de: Content = {
       { id: "status-dj", title: "Status-DJ — Badge 5-mal gewechselt" },
       { id: "honeypot", title: "Honigtopf — geklickt, was du nicht solltest" },
       { id: "chatterbox", title: "Plaudertasche — 5 Nachrichten mit dem Roboter" },
+      { id: "speedrunner", title: "Speedrunner — Speedrun abgeschlossen" },
+      { id: "cryptanalyst", title: "Kryptoanalytiker — Tages-Chiffre gelöst" },
+      { id: "keymaster", title: "Schlüsselmeister — alle 5 Schlüssel gefunden" },
+      { id: "sentry", title: "Wache — 3/3 im Radar-Spiel" },
     ],
+  },
+  hints: {
+    heroToys: "CTA gedrückt halten · Name anklicken · Porträt doppelklicken",
+    emailNear: "Cursor nähern: das Signal löst sich auf · E-Mail ziehen: kopiert",
+    chipsToss: "Chips lassen sich greifen und schleudern · fahre über alle",
+    kpiTricks: "Zahl anklicken: hex/binär · Kachel nach unten ziehen: Slotmaschine",
+    goalHandle: "den Griff am Balkenende zurückziehen und loslassen",
+    ndaHold: "Schwärzungsbalken gedrückt halten",
+    lightboxTips: "Klick: 2,5x-Analyse · ziehen & werfen: schließen/weiter",
+    terminalEggs: "irgendwo tippen: 'hack' · 'speedrun' · 'sudo' · 'trace' · Tages-Chiffre",
+    sonarHint: "Doppelklick ins Leere: alle Toys leuchten · zieh am Kopf des Roboters",
   },
   robotChat: {
     title: "WACH-BOT v2.1",
