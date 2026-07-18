@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <!-- Belge URL'i sabit (mode/autostart); tarayıcı eski HTML'i önbelleğe alıp
+       yeni ?v referanslarını hiç istemesin diye HTML'i taze tutuyoruz. -->
+  <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+  <meta http-equiv="Pragma" content="no-cache">
+  <meta http-equiv="Expires" content="0">
+  <title>Maksut'un Siber Yolculuğu</title>
+  <link rel="stylesheet" href="css/style.css?v=12">
+  <link rel="stylesheet" href="css/ui2.css?v=12">
+</head>
+<body>
+  <canvas id="game"></canvas>
+
+  <!-- HUD üst bar -->
+  <div id="hud"></div>
+
+  <!-- alt ipuçları -->
+  <div id="help-tip"><b>A / D</b> yürü · <b>F</b> uç ✈️ (sonra <b>W/S</b>) · <b>E</b> binaya gir · <b>⚙️</b> özelleştir</div>
+  <div class="mini-map-legend">
+    <span><i class="dot" style="background:#5eead4"></i>Temel</span>
+    <span><i class="dot" style="background:#ef4444"></i>Red</span>
+    <span><i class="dot" style="background:#38bdf8"></i>Blue</span>
+    <span>✅ usta</span>
+  </div>
+
+  <!-- ada paneli -->
+  <div id="overlay" class="overlay"></div>
+
+  <!-- merkez modal -->
+  <div id="modal" class="modal"><div class="box"></div></div>
+
+  <!-- toast -->
+  <div id="toast-wrap"></div>
+
+  <!-- açılış -->
+  <div id="boot">
+    <div class="maskot">🧑‍💻</div>
+    <h1>Maksut'un Siber Yolculuğu</h1>
+    <p>Neon bir siber şehir seni bekliyor — öğrendiğin her konu dev bir gökdelen/bölge.
+       Minik Maksut'la caddede koş, jetpack'le uç, binalara gir; "sorunla karşılaşınca nereye
+       bakmalıyım?" rehberlerini aç ve Red &amp; Blue Team uzmanı ol.</p>
+    <button id="btn-play" class="btn-play">▶ Şehre Gir</button>
+    <div class="boot-hint"><b>A / D</b> yürü · <b>F</b> jetpack ile uç ✈️ · <b>E</b> binaya gir</div>
+  </div>
+
+  <script src="js/data.js?v=12"></script>
+  <script src="js/curriculum.js?v=12"></script>
+  <script src="js/links.js?v=12"></script>
+  <script src="js/sound.js?v=12"></script>
+  <script src="js/engine.js?v=12"></script>
+  <script src="js/npc.js?v=12"></script>
+  <script src="js/robot.js?v=12"></script>
+  <script src="js/dialog.js?v=12"></script>
+  <script src="js/ai.js?v=12"></script>
+  <script src="js/touch.js?v=12"></script>
+  <script src="js/game.js?v=12"></script>
+</body>
+</html>

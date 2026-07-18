@@ -31,6 +31,7 @@ export const tr: Content = {
     goals: "Hedefler",
     contact: "İletişim",
     arena: "Mülakat",
+    nerede: "Siber Şehir",
   },
   common: {
     openMenu: "Menüyü aç",

@@ -60,6 +60,7 @@ export type Content = {
     goals: string;
     contact: string;
     arena: string;
+    nerede: string;
   };
   common: {
     openMenu: string;

@@ -22,6 +22,12 @@ const nextConfig: NextConfig = {
         destination: "/mulakatmicro1/app/index.html",
         permanent: false,
       },
+      {
+        // same deal for the "Maksut şu an nerede?" city game
+        source: "/nerede/app",
+        destination: "/nerede/app/index.html",
+        permanent: false,
+      },
     ];
   },
   async headers() {

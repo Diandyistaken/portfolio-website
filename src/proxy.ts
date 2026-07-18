@@ -4,6 +4,12 @@ import { SESSION_COOKIE, verifySessionToken } from "@/lib/auth/session";
 const ARENA_APP_PREFIX = "/mulakatmicro1/app";
 const ARENA_TR_PREFIX = "/mülakatmicro1"; // hand-typed Turkish URL variant
 
+// "Maksut şu an nerede?" — a static canvas game under public/nerede/app with
+// plain <script src> tags. Like the arena it can't run under the nonce/
+// strict-dynamic CSP, so it gets a conservative self-only CSP. Unlike the
+// arena it is PUBLIC (visitors watch the AI Maksut), so no admin gate.
+const GAME_APP_PREFIX = "/nerede/app";
+
 /**
  * The micro1 arena is a static app under public/ with plain <script src> tags
  * and inline handlers — the nonce/strict-dynamic CSP would break it. It gets
@@ -47,6 +53,24 @@ export async function proxy(request: NextRequest) {
     const url = request.nextUrl.clone();
     url.pathname = "/mulakatmicro1" + decodedPathname.slice(ARENA_TR_PREFIX.length);
     return NextResponse.redirect(url, 308);
+  }
+
+  // The game is public: give it the conservative static-app CSP (self +
+  // inline for its plain scripts) and let it frame only within our own site.
+  if (pathname.startsWith(GAME_APP_PREFIX)) {
+    const response = NextResponse.next();
+    response.headers.set(
+      "Content-Security-Policy",
+      ARENA_APP_CSP.replace("frame-ancestors 'none'", "frame-ancestors 'self'"),
+    );
+    // The HTML document URL is stable (…/index.html?mode=…&autostart=1), so a
+    // cached copy would keep pointing at stale ?v= asset URLs and never pull an
+    // update. Force revalidation of the document; the assets carry ?v= and stay
+    // cacheable, so this costs one conditional request, not the whole game.
+    if (pathname.endsWith("/index.html") || pathname === GAME_APP_PREFIX) {
+      response.headers.set("Cache-Control", "no-cache, must-revalidate");
+    }
+    return response;
   }
 
   // Access gate: the static arena app is admin-only. Everything else under
@@ -108,5 +132,8 @@ export const config = {
     // the arena's static files (dotted paths the rule above skips) must
     // still pass the access gate — no prefetch exception here on purpose
     { source: "/mulakatmicro1/:path*" },
+    // the game's static files need the same treatment so index.html (a
+    // dotted path) still receives the conservative game CSP
+    { source: "/nerede/:path*" },
   ],
 };

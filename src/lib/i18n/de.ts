@@ -31,6 +31,7 @@ export const de: Content = {
     goals: "Ziele",
     contact: "Kontakt",
     arena: "Interview",
+    nerede: "Cyber-Stadt",
   },
   common: {
     openMenu: "Menü öffnen",

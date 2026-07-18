@@ -293,6 +293,15 @@ export function Navbar() {
               {t.nav.arena}
             </Link>
           </li>
+          <li>
+            <Link
+              href="/nerede"
+              className="nav-link inline-flex items-center gap-1.5 rounded-sm border border-accent/30 px-2 py-1 text-accent transition-colors hover:border-accent/60 hover:text-foreground"
+            >
+              <span aria-hidden="true">🌃</span>
+              {t.nav.nerede}
+            </Link>
+          </li>
         </ul>
 
         <div className="flex items-center gap-1">
@@ -375,6 +384,15 @@ export function Navbar() {
                   className="block rounded-md px-2 py-2.5 text-accent transition-colors hover:text-foreground"
                 >
                   🛡️ {t.nav.arena}
+                </Link>
+              </li>
+              <li>
+                <Link
+                  href="/nerede"
+                  onClick={() => setOpen(false)}
+                  className="block rounded-md px-2 py-2.5 text-accent transition-colors hover:text-foreground"
+                >
+                  🌃 {t.nav.nerede}
                 </Link>
               </li>
               <li>

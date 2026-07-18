@@ -31,6 +31,7 @@ export const en: Content = {
     goals: "Goals",
     contact: "Contact",
     arena: "Interview",
+    nerede: "Cyber City",
   },
   common: {
     openMenu: "Open menu",
