@@ -578,6 +578,8 @@ export const de: Content = {
   admin: {
     greeting: "Willkommen zurück Maksut — Admin-Modus aktiv",
     navChip: "ADMIN",
+    loginCta: "Anmelden",
+    panelCta: "Admin-Panel",
   },
   footer: {
     rights: "Alle Rechte vorbehalten.",

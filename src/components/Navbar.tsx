@@ -287,13 +287,22 @@ export function Navbar() {
         </ul>
 
         <div className="flex items-center gap-1">
-          {isAdmin && (
+          {isAdmin ? (
             <Link
               href="/admin"
               className="mr-1 flex h-8 items-center gap-1.5 rounded-md border border-accent/40 bg-accent/10 px-2 font-mono text-[0.6rem] tracking-wide text-accent transition-colors hover:bg-accent/20"
             >
               <span className="h-1.5 w-1.5 animate-pulse rounded-full bg-accent" aria-hidden="true" />
-              {t.admin.navChip} · MAKSUT
+              <span className="hidden sm:inline">{t.admin.navChip} · MAKSUT</span>
+              <span className="sm:hidden">{t.admin.navChip}</span>
+            </Link>
+          ) : (
+            <Link
+              href="/admin"
+              className="mr-1 flex h-8 items-center gap-1.5 rounded-md border border-foreground/10 px-2 font-mono text-[0.6rem] uppercase tracking-wide text-muted transition-colors hover:border-accent/40 hover:text-foreground"
+            >
+              <span className="h-1.5 w-1.5 rounded-full border border-muted" aria-hidden="true" />
+              {t.admin.loginCta}
             </Link>
           )}
           <button
@@ -350,6 +359,17 @@ export function Navbar() {
                   </a>
                 </li>
               ))}
+              <li className="mt-1 border-t border-white/10 pt-2">
+                <Link
+                  href="/admin"
+                  onClick={() => setOpen(false)}
+                  className={`block rounded-md px-2 py-2.5 transition-colors ${
+                    isAdmin ? "text-accent" : "text-muted hover:text-foreground"
+                  }`}
+                >
+                  {isAdmin ? `● ${t.admin.navChip} · ${t.admin.panelCta}` : `○ ${t.admin.loginCta}`}
+                </Link>
+              </li>
             </ul>
           </m.div>
         )}

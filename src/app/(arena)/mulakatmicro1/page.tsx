@@ -119,6 +119,12 @@ export default async function MulakatMicro1Page({
           </p>
           <div className="mt-6">
             <LoginForm next={APP_PATH} />
+            <p className="mt-4 font-mono text-xs text-muted">
+              Şifreni mi unuttun?{" "}
+              <Link href="/admin" className="underline decoration-dotted underline-offset-4 hover:text-accent">
+                Yönetici girişinden yenile
+              </Link>
+            </p>
           </div>
         </section>
       )}

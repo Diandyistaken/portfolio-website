@@ -3,6 +3,7 @@ import Link from "next/link";
 import { ARENA_APP_PATH } from "@/lib/arenaPaths";
 import { isAdminRequest } from "@/lib/auth/admin";
 import { logoutAction } from "../actions";
+import { ForgotPassword } from "../ForgotPassword";
 import { LoginForm } from "../LoginForm";
 
 export const metadata: Metadata = {
@@ -61,6 +62,7 @@ export default async function AdminPage() {
           </p>
           <div className="mt-8">
             <LoginForm next="/admin" />
+            <ForgotPassword />
           </div>
         </>
       )}

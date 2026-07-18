@@ -1,7 +1,8 @@
 // Node-only credential check for the login server action. The stored hash
 // format is `scrypt:N:r:p:saltB64url:hashB64url` (generated once, kept in
 // ADMIN_PASSWORD_HASH — never a plaintext password in the environment).
-import { scryptSync, timingSafeEqual, createHash } from "node:crypto";
+import { scryptSync, timingSafeEqual, createHash, randomBytes } from "node:crypto";
+import { getStoredPasswordHash } from "./adminStore";
 
 const MAX_INPUT_LENGTH = 256;
 
@@ -31,9 +32,19 @@ export function verifyPassword(password: string, storedHash: string): boolean {
   }
 }
 
-export function verifyCredentials(username: string, password: string): boolean {
+/** Generate a fresh scrypt hash string for a new password. */
+export function hashPassword(password: string): string {
+  const N = 16384;
+  const r = 8;
+  const p = 1;
+  const salt = randomBytes(16);
+  const hash = scryptSync(password, salt, 64, { N, r, p });
+  return `scrypt:${N}:${r}:${p}:${salt.toString("base64url")}:${hash.toString("base64url")}`;
+}
+
+export async function verifyCredentials(username: string, password: string): Promise<boolean> {
   const expectedUsername = process.env.ADMIN_USERNAME;
-  const storedHash = process.env.ADMIN_PASSWORD_HASH;
+  const storedHash = await getStoredPasswordHash();
   if (!expectedUsername || !storedHash) return false;
   if (!username || username.length > MAX_INPUT_LENGTH) return false;
   const usernameOk = safeEqual(username, expectedUsername);

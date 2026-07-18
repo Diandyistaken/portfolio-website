@@ -313,5 +313,7 @@ export type Content = {
   admin: {
     greeting: string;
     navChip: string;
+    loginCta: string;
+    panelCta: string;
   };
 };

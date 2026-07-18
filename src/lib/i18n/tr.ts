@@ -580,6 +580,8 @@ export const tr: Content = {
   admin: {
     greeting: "Hoş geldin Maksut — yönetici modu aktif",
     navChip: "ADMIN",
+    loginCta: "Giriş",
+    panelCta: "Yönetici paneli",
   },
   footer: {
     rights: "Tüm hakları saklıdır.",
