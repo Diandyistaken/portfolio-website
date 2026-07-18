@@ -13,12 +13,16 @@
     try { const s = JSON.parse(localStorage.getItem(KEY)); if (s) return { mastered: [], visited: [], xp: 0, streak: 0, lastPlay: "", ...s }; } catch (e) {}
     return { mastered: [], visited: [], xp: 0, streak: 0, lastPlay: "" };
   }
-  function save() { localStorage.setItem(KEY, JSON.stringify(state)); }
+  /* Ziyaretçi modu = SALT OKUNUR: hiçbir ilerleme (XP, ustalık, seri, kurs)
+     kaydedilmez/değiştirilemez. Ziyaretçi yalnızca "ne var ne yok" görür. */
+  const isVisitor = () => MODE === "visitor"; // MODE aşağıda detectMode() ile set edilir (kapanış, çağrı anında hazır)
+  function save() { if (isVisitor()) return; localStorage.setItem(KEY, JSON.stringify(state)); }
   const masteredSet = () => new Set(state.mastered);
 
   /* ---- günlük seri (retention) ---- */
   const todayStr = () => new Date().toISOString().slice(0, 10);
   function touchStreak() {
+    if (isVisitor()) return; // ziyaretçide seri tutulmaz
     const t = todayStr();
     if (state.lastPlay === t) return;
     const y = new Date(Date.now() - 864e5).toISOString().slice(0, 10);
@@ -55,7 +59,7 @@
     for (let i = 1; i <= (CURR.watchedUpTo || 0); i++) watched.push(i);
     return { watched };
   }
-  function saveCurr() { try { localStorage.setItem(CURR_KEY, JSON.stringify(curr)); } catch (e) {} }
+  function saveCurr() { if (isVisitor()) return; try { localStorage.setItem(CURR_KEY, JSON.stringify(curr)); } catch (e) {} }
   const currSet = () => new Set(curr.watched);
   function currStats(set) {
     set = set || currSet();
@@ -259,7 +263,7 @@
   function openIsland(is) {
     Engine.pause();
     sfx("open");
-    if (!state.visited.includes(is.id)) { state.visited.push(is.id); addXP(10); sfx("xp"); save(); floatXP("+10 XP", is.color); renderHUD(); }
+    if (!isVisitor() && !state.visited.includes(is.id)) { state.visited.push(is.id); addXP(10); sfx("xp"); save(); floatXP("+10 XP", is.color); renderHUD(); }
     const set = masteredSet(), done = set.has(is.id);
     const sec = (title, inner) => inner ? `<div class="sec"><h3>${title}</h3>${inner}</div>` : "";
     const chips = (arr, up) => arr.map((t) => `<span class="chip ${up ? "up" : ""}">${up ? "" : "✓ "}${esc(t)}</span>`).join("");
@@ -287,7 +291,7 @@
     }).join("")}<button class="reslink more" data-hub="1"><span class="rn">🌐 Öğrenme Merkezi</span>
       <span class="rd">Tüm platformlar, laboratuvarlar ve referanslar tek yerde</span><span class="rgo">›</span></button></div>`;
 
-    const isVisitor = window.Engine && Engine.getMode && Engine.getMode() === "visitor";
+    const visitorView = isVisitor();
 
     /* İçerik artık dikey uzun bir sayfa değil; ekrana sığan sekmelere bölündü.
        Boş bölümler sekme üretmez. Kanatlar (Bina/Kaynaklar) geniş ekranda yan
@@ -309,7 +313,7 @@
       sec("🛠️ Sorunla Karşılaşınca — Nereye Bak?", probs));
     addTab("bina", "🏢 Bina", leftWing(is), true);
     addTab("kaynak", "🔗 Kaynaklar", rightWing(is), true);
-    if (done || (is.quiz && is.quiz.length)) tabs.push({ id: "gorev", label: "🎯 Görev", html: `<div id="quiz-slot"></div>`, wing: false });
+    if (!isVisitor() && (done || (is.quiz && is.quiz.length))) tabs.push({ id: "gorev", label: "🎯 Görev", html: `<div id="quiz-slot"></div>`, wing: false });
 
     const tabBar = tabs.map((t, i) =>
       `<button class="btab${t.wing ? " tab-wing" : ""}${i === 0 ? " active" : ""}" data-tab="${t.id}">${t.label}</button>`).join("");
@@ -323,7 +327,7 @@
           <div class="row"><span class="icon">${is.icon}</span>
             <div><h2>${esc(is.name)}</h2><span class="track tr-${is.track}">${trackName(is.track)} · Seviye ${is.tier}</span></div></div>
           <p class="tagline">${esc(is.tagline || "")}</p>
-          ${isVisitor ? `<div class="visitor-note">👁️ Ziyaretçi görünümü — Maksut'un bu bölgede öğrendikleri</div>` : ""}
+          ${visitorView ? `<div class="visitor-note">👁️ Ziyaretçi görünümü — Maksut'un bu bölgede öğrendikleri</div>` : ""}
         </div>
         <div class="bld-grid">
           <aside class="bwing bwing-left">${leftWing(is)}</aside>
@@ -434,6 +438,7 @@
   }
 
   function masterIsland(is) {
+    if (isVisitor()) return; // ziyaretçi ilerleme değiştiremez
     if (state.mastered.includes(is.id)) return;
     state.mastered.push(is.id); addXP(50); save(); renderHUD();
     Engine.splash(Engine.getPlayer().x, Engine.getPlayer().y, is.color);
@@ -443,7 +448,7 @@
     if (mmRefresh) mmRefresh();
     checkCertUnlock();
   }
-  function addXP(n) { state.xp = (state.xp || 0) + n; }
+  function addXP(n) { if (isVisitor()) return; state.xp = (state.xp || 0) + n; }
 
   function closeOverlay() { sfx("close"); overlay.classList.remove("open", "wide", "enter-anim"); overlay.removeAttribute("role"); overlay.removeAttribute("aria-modal"); Engine.resume(); if (lastFocus && lastFocus.focus) { lastFocus.focus(); lastFocus = null; } }
   overlay.onclick = (e) => { if (e.target === overlay) closeOverlay(); };
@@ -551,6 +556,7 @@
       <div class="cl-headbar"><i id="cl-head-bar" style="width:${st.pct}%"></i></div>`;
   }
   function openCurriculum() {
+    const vis = isVisitor(); // ziyaretçi → salt okunur
     const set = currSet();
     const st = currStats(set);
     // o an bulunulan bölümü açık getir
@@ -561,7 +567,7 @@
       let rows = "";
       for (let g = sec.start; g <= sec.end; g++) {
         const l = CURR_FLAT[g - 1], on = set.has(g);
-        rows += `<button class="cl-row${on ? " done" : ""}" data-g="${g}" role="checkbox" aria-checked="${on}">
+        rows += `<button class="cl-row${on ? " done" : ""}${vis ? " ro" : ""}" data-g="${g}"${vis ? " disabled aria-disabled=\"true\"" : ` role="checkbox" aria-checked="${on}"`}>
           <span class="cl-box"></span><span class="cl-n">${g}</span>
           <span class="cl-t">${esc(l.title)}</span><span class="cl-m">${l.min}dk</span></button>`;
       }
@@ -575,16 +581,18 @@
         <div class="cl-rows">${rows}</div></details>`;
     }).join("");
     openModal(`<button class="x-close" onclick="__closeModal()">✕</button>
-      <h2>📚 Kurs İlerlemem</h2>
-      <p class="sub">Udemy "Etik Hacker / Siber Güvenlik" müfredatım — ${CURR_FLAT.length} ders. İzlediğin dersi tıkla, ✓ olsun; yüzde anında ilerler ve tarayıcına kaydedilir. Şu an <b>Shodan</b> bölümündeyim.</p>
-      <div class="cl-head">${currHeadHTML(st)}
+      <h2>📚 ${vis ? "Maksut'un Kurs İlerlemesi" : "Kurs İlerlemem"}</h2>
+      <p class="sub">${vis
+        ? `Maksut'un Udemy "Etik Hacker / Siber Güvenlik" müfredatındaki ilerlemesi — ${CURR_FLAT.length} ders. 👁️ <b>Yalnızca görüntüleme</b>; ziyaretçi olarak değiştiremezsin.`
+        : `Udemy "Etik Hacker / Siber Güvenlik" müfredatım — ${CURR_FLAT.length} ders. İzlediğin dersi tıkla, ✓ olsun; yüzde anında ilerler ve tarayıcına kaydedilir. Şu an <b>Shodan</b> bölümündeyim.`}</p>
+      <div class="cl-head">${currHeadHTML(st)}${vis ? "" : `
         <div class="cl-actions">
           <button class="cl-act" data-cl="all">✓ Tümünü işaretle</button>
           <button class="cl-act" data-cl="clear">Temizle</button>
-        </div>
+        </div>`}
       </div>
       <div class="cl-list">${secHtml}</div>`);
-    wireCurriculum();
+    if (!vis) wireCurriculum();
   }
   function wireCurriculum() {
     const refreshHead = () => {
@@ -1003,6 +1011,12 @@
 
   /* ========================= BOOT ========================= */
   function boot() {
+    // Ziyaretçi: kurs + oyun ilerlemesini KANONİK Maksut değerine sabitle
+    // (kendi tarayıcısındaki eski düzenlemeler görünmesin, hiçbir şey yazılmaz).
+    if (isVisitor()) {
+      curr = { watched: [] };
+      for (let i = 1; i <= (CURR.watchedUpTo || 0); i++) curr.watched.push(i);
+    }
     touchStreak();
     renderHUD();
     const set = masteredSet();

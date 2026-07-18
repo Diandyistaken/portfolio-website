@@ -292,6 +292,10 @@ h1,h2,#boot h1,.panel-head h2{font-family:var(--f-display); letter-spacing:-.01e
 .cl-t{flex:1; min-width:0; font-size:13px; overflow:hidden; text-overflow:ellipsis; white-space:nowrap}
 .cl-row.done .cl-t{color:var(--muted); text-decoration:line-through; text-decoration-color:rgba(148,163,184,.5)}
 .cl-m{flex:0 0 auto; font-size:10.5px; color:var(--muted); font-variant-numeric:tabular-nums}
+/* ziyaretçi: salt okunur satırlar (tıklanamaz ama net görünür) */
+.cl-row.ro{cursor:default; opacity:1}
+.cl-row.ro:hover{background:none; border-color:transparent}
+.cl-row.ro .cl-box{border-color:rgba(148,163,184,.3)}
 
 /* ---- ZİYARETÇİ KARAKTER SEÇİMİ ---- */
 #guest-setup{position:fixed; inset:0; z-index:80; display:flex; align-items:center; justify-content:center; padding:24px;
