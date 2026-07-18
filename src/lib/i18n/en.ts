@@ -499,6 +499,17 @@ export const en: Content = {
     lightboxClose: "Close gallery",
     lightboxPrevious: "Previous screenshot",
     lightboxNext: "Next screenshot",
+    micro1: {
+      badge: "Locked Module",
+      title: "micro1 Interview Arena",
+      description:
+        "The private training platform I built for cybersecurity interviews: question banks, a voice-driven AI interview simulator, English practice and company intel.",
+      lockedBadge: "Access: Admin",
+      unlockedBadge: "Access Granted",
+      lockedCta: "Peek inside + request access →",
+      unlockedCta: "Launch the arena →",
+      note: "> visible to everyone; the equipment only runs with an authorized session.",
+    },
   },
   freelance: {
     kicker: "Work With Me",
@@ -563,6 +574,10 @@ export const en: Content = {
   },
   overdrive: {
     label: "OVERDRIVE",
+  },
+  admin: {
+    greeting: "Welcome back Maksut — admin mode active",
+    navChip: "ADMIN",
   },
   footer: {
     rights: "All rights reserved.",

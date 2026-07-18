@@ -3,7 +3,9 @@ import { Geist, Geist_Mono } from "next/font/google";
 import { Analytics } from "@vercel/analytics/next";
 import "../globals.css";
 import { LanguageProvider } from "@/lib/i18n/LanguageProvider";
+import { AdminProvider } from "@/components/AdminProvider";
 import { MotionProvider } from "@/components/MotionProvider";
+import { isAdminRequest } from "@/lib/auth/admin";
 import { getDictionary, resolveLocale, localePath, supportedLocales } from "@/lib/i18n/route";
 import type { Content, Locale } from "@/lib/i18n/types";
 
@@ -134,6 +136,7 @@ export default async function RootLayout({
   const locale = resolveLocale(segments);
   const content = getDictionary(locale);
   const personJsonLd = buildPersonJsonLd(locale, content);
+  const isAdmin = await isAdminRequest();
 
   return (
     <html
@@ -158,7 +161,7 @@ export default async function RootLayout({
       <body className="min-h-full flex flex-col overflow-x-hidden">
         <MotionProvider>
           <LanguageProvider initialLocale={locale} initialDict={content}>
-            {children}
+            <AdminProvider isAdmin={isAdmin}>{children}</AdminProvider>
           </LanguageProvider>
         </MotionProvider>
         <Analytics />

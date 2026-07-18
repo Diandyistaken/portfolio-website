@@ -11,11 +11,13 @@ import {
   useTransform,
   useVelocity,
 } from "framer-motion";
-import { Eye } from "lucide-react";
+import { Eye, Lock, Unlock } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
 import { Lightbox } from "./Lightbox";
 import { SectionHeading } from "./SectionHeading";
 import { RevealGroup, revealItem } from "./Reveal";
+import { useAdmin } from "./AdminProvider";
+import { ARENA_APP_PATH, ARENA_PREVIEW_PATH } from "@/lib/arenaPaths";
 import { useLanguage } from "@/lib/i18n/LanguageProvider";
 import { useSpotlight } from "@/lib/useSpotlight";
 import { useTilt3D } from "@/lib/useTilt3D";
@@ -224,6 +226,66 @@ function ShowcaseCard({
   );
 }
 
+/**
+ * micro1 arena teaser: visible to every visitor as a locked module (redacted
+ * bars, admin-only badge); with an admin session it unlocks and launches the
+ * arena directly. The links leave the single-page tree — plain anchors.
+ */
+function Micro1Card() {
+  const { t } = useLanguage();
+  const { isAdmin } = useAdmin();
+  const content = t.showcase.micro1;
+  const spotlight = useSpotlight<HTMLDivElement>();
+
+  return (
+    <m.article
+      variants={revealItem}
+      onMouseMove={spotlight.onMouseMove}
+      data-prox
+      data-prox-radius="360"
+      className="spotlight-card group relative min-w-0 overflow-hidden rounded-lg border border-dashed border-accent/25 bg-[rgb(var(--surface)/0.92)] p-6 transition-[border-color,box-shadow] hover:border-accent/50 hover:shadow-[0_18px_48px_rgb(var(--accent-rgb)/0.1)] sm:p-8 3xl:p-10"
+    >
+      <div className="spotlight-overlay" aria-hidden="true" />
+      <div className="relative z-10">
+        <div className="flex flex-wrap items-center justify-between gap-3">
+          <span className="inline-flex items-center gap-2 rounded-sm border border-accent/30 px-2.5 py-1 font-mono text-[0.65rem] uppercase tracking-wider text-accent">
+            <span className="h-1.5 w-1.5 bg-accent" />
+            {content.badge}
+          </span>
+          <span
+            className={`inline-flex items-center gap-1.5 font-mono text-[0.6rem] uppercase tracking-[0.14em] ${
+              isAdmin ? "text-accent" : "text-muted"
+            }`}
+          >
+            {isAdmin ? <Unlock size={12} /> : <Lock size={12} />}
+            {isAdmin ? content.unlockedBadge : content.lockedBadge}
+          </span>
+        </div>
+        <h3 className="font-display mt-5 text-2xl font-semibold tracking-tight">{content.title}</h3>
+        <p className="mt-3 text-sm leading-relaxed text-muted sm:text-base">{content.description}</p>
+        {!isAdmin && (
+          <div aria-hidden="true" className="mt-6 space-y-2">
+            {[86, 64, 74].map((width) => (
+              <div
+                key={width}
+                className="h-2.5 rounded-full bg-foreground/10 blur-[1px]"
+                style={{ width: `${width}%` }}
+              />
+            ))}
+          </div>
+        )}
+        <a
+          href={isAdmin ? ARENA_APP_PATH : ARENA_PREVIEW_PATH}
+          className="mt-6 inline-flex items-center gap-2 rounded-md border border-accent/40 bg-accent/10 px-4 py-2.5 font-mono text-xs uppercase tracking-[0.12em] text-accent transition-colors hover:bg-accent/20"
+        >
+          {isAdmin ? content.unlockedCta : content.lockedCta}
+        </a>
+        <p className="mt-4 font-mono text-[0.6rem] tracking-[0.1em] text-muted/70">{content.note}</p>
+      </div>
+    </m.article>
+  );
+}
+
 export function ShowcaseLab() {
   const { t } = useLanguage();
   const [lightboxIndex, setLightboxIndex] = useState<number | null>(null);
@@ -273,6 +335,7 @@ export function ShowcaseLab() {
         <SectionHeading index="08" kicker={t.showcase.kicker} title={t.showcase.title} description={t.showcase.description} />
         <RevealGroup stagger={0.1} className="mt-14 grid gap-5 lg:grid-cols-2 3xl:gap-8">
           {t.showcase.items.map((item) => <ShowcaseCard key={item.id} item={item} pipeline={t.showcase.pipeline} analyzed={analyzed} onOpenScreenshot={setLightboxIndex} />)}
+          <Micro1Card />
         </RevealGroup>
         <div className="mt-6 flex flex-col items-center gap-1.5">
           <div className="flex items-center justify-center gap-2 font-mono text-xs text-muted"><Eye size={14} className="text-accent" />{t.showcase.note}</div>

@@ -248,6 +248,16 @@ export type Content = {
     lightboxClose: string;
     lightboxPrevious: string;
     lightboxNext: string;
+    micro1: {
+      badge: string;
+      title: string;
+      description: string;
+      lockedBadge: string;
+      unlockedBadge: string;
+      lockedCta: string;
+      unlockedCta: string;
+      note: string;
+    };
   };
   freelance: {
     kicker: string;
@@ -299,5 +309,9 @@ export type Content = {
   };
   overdrive: {
     label: string;
+  };
+  admin: {
+    greeting: string;
+    navChip: string;
   };
 };

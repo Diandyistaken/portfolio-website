@@ -501,6 +501,17 @@ export const tr: Content = {
     lightboxClose: "Galeriyi kapat",
     lightboxPrevious: "Önceki ekran görüntüsü",
     lightboxNext: "Sonraki ekran görüntüsü",
+    micro1: {
+      badge: "Kilitli Modül",
+      title: "micro1 Mülakat Arenası",
+      description:
+        "Siber güvenlik mülakatlarına hazırlık için kurduğum özel antrenman platformu: soru bankaları, sesli AI mülakat simülasyonu, İngilizce pratik ve şirket istihbaratı.",
+      lockedBadge: "Erişim: Yönetici",
+      unlockedBadge: "Erişim Açık",
+      lockedCta: "İçeriğe göz at + erişim iste →",
+      unlockedCta: "Arenayı başlat →",
+      note: "> bu modül herkese görünür; ekipmanlar yalnızca yetkili oturumla çalışır.",
+    },
   },
   freelance: {
     kicker: "Birlikte Çalışalım",
@@ -565,6 +576,10 @@ export const tr: Content = {
   },
   overdrive: {
     label: "AŞIRI HIZ",
+  },
+  admin: {
+    greeting: "Hoş geldin Maksut — yönetici modu aktif",
+    navChip: "ADMIN",
   },
   footer: {
     rights: "Tüm hakları saklıdır.",

@@ -13,6 +13,17 @@ const nextConfig: NextConfig = {
     formats: ["image/avif", "image/webp"],
     qualities: [75, 90, 95, 100],
   },
+  async redirects() {
+    return [
+      {
+        // the arena app is a static index.html in public/ — Next doesn't
+        // serve directory indexes, so the pretty path forwards to the file
+        source: "/mulakatmicro1/app",
+        destination: "/mulakatmicro1/app/index.html",
+        permanent: false,
+      },
+    ];
+  },
   async headers() {
     return [
       {
@@ -36,6 +47,27 @@ const nextConfig: NextConfig = {
             // origin isolation (also a Lighthouse best-practices audit)
             key: "Cross-Origin-Opener-Policy",
             value: "same-origin",
+          },
+        ],
+      },
+      {
+        // hidden admin surfaces: reachable by URL, invisible to crawlers
+        source: "/(mulakatmicro1|admin)/:path*",
+        headers: [{ key: "X-Robots-Tag", value: "noindex, nofollow" }],
+      },
+      {
+        source: "/(mulakatmicro1|admin)",
+        headers: [{ key: "X-Robots-Tag", value: "noindex, nofollow" }],
+      },
+      {
+        // the micro1 arena uses SpeechRecognition — re-allow the microphone
+        // here only (last matching entry wins per header key)
+        source: "/mulakatmicro1/app/:path*",
+        headers: [
+          {
+            key: "Permissions-Policy",
+            value:
+              "accelerometer=(), autoplay=(), browsing-topics=(), camera=(), display-capture=(), encrypted-media=(), geolocation=(), gyroscope=(), magnetometer=(), microphone=(self), midi=(), payment=(), picture-in-picture=(), publickey-credentials-get=(), screen-wake-lock=(), usb=(), xr-spatial-tracking=()",
           },
         ],
       },

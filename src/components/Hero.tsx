@@ -15,6 +15,7 @@ import { HintTag } from "./HintTag";
 import { AccessKey } from "./KeyHunt";
 import { HeroBadge } from "./HeroBadge";
 import { HeroDotGrid } from "./HeroDotGrid";
+import { useAdmin } from "./AdminProvider";
 import { useLanguage } from "@/lib/i18n/LanguageProvider";
 import { CONTAINER } from "@/lib/layout";
 import { goalsMeta } from "@/lib/data";
@@ -33,6 +34,7 @@ const getPerfLiteSnapshot = () =>
 
 export function Hero() {
   const { t } = useLanguage();
+  const { isAdmin } = useAdmin();
   const reduceMotion = useReducedMotion();
   const titleWords = t.personalInfo.title.split(" ");
   const [scanRun, setScanRun] = useState(0);
@@ -220,7 +222,7 @@ export function Hero() {
 
           <Reveal delay={0.08}>
             <DecryptText
-              text={`> ${t.hero.greeting}_`}
+              text={`> ${isAdmin ? t.admin.greeting : t.hero.greeting}_`}
               className="kicker mt-6 block"
               delay={0.05}
             />

@@ -2,10 +2,12 @@
 
 import { useEffect, useId, useRef, useState } from "react";
 import dynamic from "next/dynamic";
+import Link from "next/link";
 import { AnimatePresence, m, useReducedMotion } from "framer-motion";
 import { Menu, X } from "lucide-react";
 import { Logo } from "./Logo";
 import { LanguageSwitcher } from "./LanguageSwitcher";
+import { useAdmin } from "./AdminProvider";
 import { useLanguage } from "@/lib/i18n/LanguageProvider";
 import { CONTAINER } from "@/lib/layout";
 import { isPerfLite } from "@/lib/perfLite";
@@ -164,6 +166,7 @@ export function Navbar() {
   const [activeSection, setActiveSection] = useState<string | null>(null);
   const paletteTriggerRef = useRef<HTMLButtonElement>(null);
   const { t } = useLanguage();
+  const { isAdmin } = useAdmin();
   const mobileMenuId = useId();
 
   const navLinks = [
@@ -284,6 +287,15 @@ export function Navbar() {
         </ul>
 
         <div className="flex items-center gap-1">
+          {isAdmin && (
+            <Link
+              href="/admin"
+              className="mr-1 flex h-8 items-center gap-1.5 rounded-md border border-accent/40 bg-accent/10 px-2 font-mono text-[0.6rem] tracking-wide text-accent transition-colors hover:bg-accent/20"
+            >
+              <span className="h-1.5 w-1.5 animate-pulse rounded-full bg-accent" aria-hidden="true" />
+              {t.admin.navChip} · MAKSUT
+            </Link>
+          )}
           <button
             ref={paletteTriggerRef}
             type="button"

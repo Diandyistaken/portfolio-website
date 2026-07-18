@@ -499,6 +499,17 @@ export const de: Content = {
     lightboxClose: "Galerie schließen",
     lightboxPrevious: "Vorheriger Screenshot",
     lightboxNext: "Nächster Screenshot",
+    micro1: {
+      badge: "Gesperrtes Modul",
+      title: "micro1 Interview-Arena",
+      description:
+        "Meine private Trainingsplattform für Cybersecurity-Interviews: Fragenkataloge, ein sprachgesteuerter KI-Interview-Simulator, Englisch-Training und Firmen-Intel.",
+      lockedBadge: "Zugriff: Admin",
+      unlockedBadge: "Zugriff offen",
+      lockedCta: "Reinschauen + Zugriff anfragen →",
+      unlockedCta: "Arena starten →",
+      note: "> für alle sichtbar; die Ausrüstung läuft nur mit autorisierter Sitzung.",
+    },
   },
   freelance: {
     kicker: "Zusammenarbeiten",
@@ -563,6 +574,10 @@ export const de: Content = {
   },
   overdrive: {
     label: "OVERDRIVE",
+  },
+  admin: {
+    greeting: "Willkommen zurück Maksut — Admin-Modus aktiv",
+    navChip: "ADMIN",
   },
   footer: {
     rights: "Alle Rechte vorbehalten.",

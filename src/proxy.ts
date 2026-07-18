@@ -1,4 +1,27 @@
 import { NextRequest, NextResponse } from "next/server";
+import { SESSION_COOKIE, verifySessionToken } from "@/lib/auth/session";
+
+const ARENA_APP_PREFIX = "/mulakatmicro1/app";
+const ARENA_TR_PREFIX = "/mülakatmicro1"; // hand-typed Turkish URL variant
+
+/**
+ * The micro1 arena is a static app under public/ with plain <script src> tags
+ * and inline handlers — the nonce/strict-dynamic CSP would break it. It gets
+ * its own conservative CSP instead (everything self, no external hosts).
+ */
+const ARENA_APP_CSP = [
+  "default-src 'self'",
+  "script-src 'self' 'unsafe-inline'",
+  "style-src 'self' 'unsafe-inline'",
+  "img-src 'self' data:",
+  "font-src 'self' data:",
+  "connect-src 'self'",
+  "object-src 'none'",
+  "base-uri 'self'",
+  "form-action 'self'",
+  "frame-ancestors 'none'",
+  "upgrade-insecure-requests",
+].join("; ");
 
 /**
  * Per-request nonce CSP (securityheaders.com A+ requirement: no bare
@@ -10,7 +33,38 @@ import { NextRequest, NextResponse } from "next/server";
  *   both when a nonce is present, old browsers keep working
  * Pages therefore render dynamically (see layout's force-dynamic).
  */
-export function proxy(request: NextRequest) {
+export async function proxy(request: NextRequest) {
+  const pathname = request.nextUrl.pathname;
+
+  // /mülakatmicro1... → /mulakatmicro1... (browsers send it percent-encoded)
+  let decodedPathname = pathname;
+  try {
+    decodedPathname = decodeURIComponent(pathname);
+  } catch {
+    // malformed escape sequence — fall through with the raw path
+  }
+  if (decodedPathname.startsWith(ARENA_TR_PREFIX)) {
+    const url = request.nextUrl.clone();
+    url.pathname = "/mulakatmicro1" + decodedPathname.slice(ARENA_TR_PREFIX.length);
+    return NextResponse.redirect(url, 308);
+  }
+
+  // Access gate: the static arena app is admin-only. Everything else under
+  // /mulakatmicro1 (the preview page) stays public.
+  if (pathname.startsWith(ARENA_APP_PREFIX)) {
+    const token = request.cookies.get(SESSION_COOKIE)?.value;
+    const isAdmin = await verifySessionToken(token);
+    if (!isAdmin) {
+      const url = request.nextUrl.clone();
+      url.pathname = "/mulakatmicro1";
+      url.search = "?erisim=red";
+      return NextResponse.redirect(url);
+    }
+    const response = NextResponse.next();
+    response.headers.set("Content-Security-Policy", ARENA_APP_CSP);
+    return response;
+  }
+
   const nonce = Buffer.from(crypto.randomUUID()).toString("base64");
   const isDev = process.env.NODE_ENV === "development";
 
@@ -51,5 +105,8 @@ export const config = {
         { type: "header", key: "purpose", value: "prefetch" },
       ],
     },
+    // the arena's static files (dotted paths the rule above skips) must
+    // still pass the access gate — no prefetch exception here on purpose
+    { source: "/mulakatmicro1/:path*" },
   ],
 };

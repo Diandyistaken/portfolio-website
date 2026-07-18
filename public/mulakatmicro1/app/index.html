@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>micro1 Prep Arena — Cyber Security Analyst</title>
+<link rel="stylesheet" href="css/main.css">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🛡️</text></svg>">
+</head>
+<body>
+<div id="bg-grid"></div>
+
+<header id="topbar">
+  <div class="brand" onclick="go('home')">
+    <span class="brand-icon">🛡️</span>
+    <span class="brand-name">micro1 <b>Prep Arena</b></span>
+  </div>
+  <nav id="nav">
+    <button class="nav-btn" data-view="home">🏠 <span data-i18n="nav_home"></span></button>
+    <button class="nav-btn" data-view="learn">📚 <span data-i18n="nav_learn"></span></button>
+    <button class="nav-btn" data-view="games">🎮 <span data-i18n="nav_games"></span></button>
+    <button class="nav-btn" data-view="qbank">📖 <span data-i18n="nav_qbank"></span></button>
+    <button class="nav-btn" data-view="english">🇬🇧 <span data-i18n="nav_english"></span></button>
+    <button class="nav-btn" data-view="stories">🎤 <span data-i18n="nav_stories"></span></button>
+    <button class="nav-btn" data-view="interview">🤖 <span data-i18n="nav_interview"></span></button>
+    <button class="nav-btn" data-view="intel">🕵️ Intel</button>
+  </nav>
+  <div class="topbar-right">
+    <div id="xp-pill" title="XP">⚡ <span id="xp-val">0</span> XP · Lv <span id="lvl-val">1</span></div>
+    <button id="lang-toggle" title="Dil / Language">TR</button>
+  </div>
+</header>
+
+<div id="rolebar"></div>
+
+<main id="view"></main>
+
+<div id="toast-wrap"></div>
+<canvas id="confetti"></canvas>
+
+<script src="js/engine.js"></script>
+<script src="js/data.js"></script>
+<script src="js/data-pentester.js"></script>
+<script src="js/interview-data.js"></script>
+<script src="js/interview-pentester.js"></script>
+<script src="js/analyst-qbank.js"></script>
+<script src="js/pentester-qbank.js"></script>
+<script src="js/roles.js"></script>
+<script src="js/learn.js"></script>
+<script src="js/games.js"></script>
+<script src="js/english.js"></script>
+<script src="js/stories.js"></script>
+<script src="js/interview.js"></script>
+<script src="js/qbank.js"></script>
+<script src="js/intel.js"></script>
+<script src="js/main.js"></script>
+</body>
+</html>
