@@ -30,6 +30,7 @@ export const tr: Content = {
     freelance: "Freelance",
     goals: "Hedefler",
     contact: "İletişim",
+    arena: "Mülakat",
   },
   common: {
     openMenu: "Menüyü aç",

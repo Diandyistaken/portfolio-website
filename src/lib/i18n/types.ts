@@ -59,6 +59,7 @@ export type Content = {
     freelance: string;
     goals: string;
     contact: string;
+    arena: string;
   };
   common: {
     openMenu: string;

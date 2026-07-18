@@ -30,6 +30,7 @@ export const de: Content = {
     freelance: "Freelance",
     goals: "Ziele",
     contact: "Kontakt",
+    arena: "Interview",
   },
   common: {
     openMenu: "Menü öffnen",

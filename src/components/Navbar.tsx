@@ -284,6 +284,15 @@ export function Navbar() {
               <ScrambleLink label={link.label} href={link.href} onNavigate={pingSection} />
             </li>
           ))}
+          <li>
+            <Link
+              href="/mulakatmicro1"
+              className="nav-link inline-flex items-center gap-1.5 rounded-sm border border-accent/30 px-2 py-1 text-accent transition-colors hover:border-accent/60 hover:text-foreground"
+            >
+              <span aria-hidden="true">🛡️</span>
+              {t.nav.arena}
+            </Link>
+          </li>
         </ul>
 
         <div className="flex items-center gap-1">
@@ -360,6 +369,15 @@ export function Navbar() {
                 </li>
               ))}
               <li className="mt-1 border-t border-white/10 pt-2">
+                <Link
+                  href="/mulakatmicro1"
+                  onClick={() => setOpen(false)}
+                  className="block rounded-md px-2 py-2.5 text-accent transition-colors hover:text-foreground"
+                >
+                  🛡️ {t.nav.arena}
+                </Link>
+              </li>
+              <li>
                 <Link
                   href="/admin"
                   onClick={() => setOpen(false)}
