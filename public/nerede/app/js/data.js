@@ -10,7 +10,7 @@ const META = {
   school: "Osmaniye Korkut Ata Üniversitesi — Bilgisayar Mühendisliği",
   internship: {
     company: "Cyber4 Intelligence Bilişim A.Ş.", place: "Ankara Teknopark, Yenimahalle",
-    start: "14.07.2025", end: "11.08.2025", code: "Yaz Stajı - 1", pages: 99, pdf: "assets/staj-raporu.pdf",
+    start: "14.07.2025", end: "11.08.2025", code: "Yaz Stajı - 1", pages: 99,
   },
   source: "Udemy — Etik Hacker / Siber Güvenlik müfredatı (229 ders)",
 };

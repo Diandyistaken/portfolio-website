@@ -528,8 +528,8 @@
         <div><b>Tarih</b>${esc(m.start)} – ${esc(m.end)}</div>
         <div><b>Kod</b>${esc(m.code)} · ${m.pages} sayfa</div>
       </div>
-      <p class="sub">Cyber4 Intelligence'taki 1 aylık siber güvenlik stajının tam raporu. Bu oyun, o stajda ve Udemy müfredatında öğrendiklerinin canlı bir haritası.</p>
-      <iframe class="pdf-frame" src="${m.pdf}"></iframe>`);
+      <p class="sub">Cyber4 Intelligence'taki 1 aylık siber güvenlik stajı. Bu oyun, o stajda ve Udemy müfredatında öğrendiklerinin canlı bir haritası.</p>
+      <p class="sub">Staj raporunun kendisi yayınlanmıyor: kurumun kaşesi, imzası ve üçüncü kişilerin bilgileri var. Talep üzerine görüşmede paylaşılır.</p>`);
   }
 
   function openHelp() {
