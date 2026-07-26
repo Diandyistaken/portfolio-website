@@ -100,8 +100,8 @@ export function CommandPalette({ open, onOpenChange, triggerRef }: CommandPalett
             initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} />
           <m.div role="dialog" aria-modal="true" aria-label={t.commandPalette.openLabel}
             initial={reduceMotion ? false : { opacity: 0, y: -14, scale: 0.98 }} animate={{ opacity: 1, y: 0, scale: 1 }} exit={{ opacity: 0, y: -8, scale: 0.99 }}
-            transition={{ duration: reduceMotion ? 0 : 0.18 }} className="surface relative w-full max-w-xl overflow-hidden rounded-xl border border-white/10 bg-[#090d16]/95 shadow-[0_28px_100px_rgb(0_0_0/0.6)]">
-            <div className="flex items-center gap-3 border-b border-white/10 px-4">
+            transition={{ duration: reduceMotion ? 0 : 0.18 }} className="surface relative w-full max-w-xl overflow-hidden rounded-xl border border-foreground/12 bg-[rgb(var(--surface)/0.95)] shadow-[0_28px_100px_rgb(0_0_0/0.6)]">
+            <div className="flex items-center gap-3 border-b border-foreground/12 px-4">
               <Search size={17} className="shrink-0 text-muted" />
               <input ref={inputRef} value={query} onChange={(e) => { setQuery(e.target.value); setActiveIndex(0); }} placeholder={t.commandPalette.placeholder}
                 aria-controls="command-palette-list" aria-activedescendant={filtered[activeIndex]?.id ? `command-${filtered[activeIndex].id}` : undefined}

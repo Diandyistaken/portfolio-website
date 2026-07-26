@@ -206,7 +206,7 @@ function ShowcaseCard({
               alt={item.alt}
               wrapperClassName="absolute inset-x-4 top-0 w-[calc(100%-2rem)]"
               buttonClassName="focal-zoom cursor-zoom-in rounded-md transition-transform duration-300 hover:scale-[1.04] hover:brightness-110 focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-accent motion-reduce:transform-none"
-              imageClassName="w-full rounded-md border border-foreground/10 object-cover opacity-55"
+              imageClassName="w-full rounded-md border border-foreground/10 object-cover [opacity:var(--shot-veil)]"
               analyzed={analyzed.includes("/showcase/platform-2.webp")}
               onOpen={() => onOpenScreenshot(1)}
             />

@@ -7,6 +7,7 @@ import { AnimatePresence, m, useReducedMotion } from "framer-motion";
 import { Menu, X } from "lucide-react";
 import { Logo } from "./Logo";
 import { LanguageSwitcher } from "./LanguageSwitcher";
+import { ThemeToggle } from "./ThemeToggle";
 import { useAdmin } from "./AdminProvider";
 import { useLanguage } from "@/lib/i18n/LanguageProvider";
 import { CONTAINER } from "@/lib/layout";
@@ -288,7 +289,11 @@ export function Navbar() {
           </span>
         </a>
 
-        <ul className="hidden items-center gap-5 font-mono text-xs uppercase tracking-[0.08em] text-muted lg:flex">
+        {/* min-w-0 + overflow-hidden lets the link list absorb the squeeze:
+            without it the whole right-hand control cluster (theme, language,
+            palette) was pushed past the viewport edge on every width between
+            1024px and ~1900px and became unclickable. */}
+        <ul className="hidden min-w-0 items-center gap-5 overflow-hidden font-mono text-xs uppercase tracking-[0.08em] text-muted lg:flex">
           {navLinks.map((link) => (
             <li key={link.href}>
               <ScrambleLink label={link.label} href={link.href} onNavigate={pingSection} />
@@ -314,7 +319,7 @@ export function Navbar() {
           </li>
         </ul>
 
-        <div className="flex items-center gap-1">
+        <div className="flex shrink-0 items-center gap-1">
           {isAdmin ? (
             <Link
               href="/admin"
@@ -348,6 +353,7 @@ export function Navbar() {
           </button>
           <AudioToggle />
           <RecruiterMode />
+          <ThemeToggle />
           <LanguageSwitcher />
           <button
             type="button"

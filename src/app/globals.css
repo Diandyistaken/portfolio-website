@@ -7,6 +7,7 @@
    the full rationale behind the v8 ground-up redesign. */
 :root,
 .dark {
+  color-scheme: dark;
   --background: #050608;
   --background-rgb: 5 6 8;
   --foreground: #f4f6fa;
@@ -15,8 +16,53 @@
   --surface-border: 244 246 250;
   --accent: #5ec8ff;
   --accent-rgb: 94 200 255;
+  /* text that sits ON an accent fill — flips with the accent */
+  --accent-contrast: #050608;
+  --accent-contrast-rgb: 5 6 8;
   --muted: #8993a3;
   --focus-color: #5ec8ff;
+  --border-alpha: 0.08;
+  /* Two different jobs that both happened to be black in the dark theme:
+     SHADOW sinks away from the surface, SCRIM lifts text off the page.
+     In light mode they move in opposite directions, so they are separate. */
+  --shadow-rgb: 0 0 0;
+  --shadow-gain: 1;
+  --scrim-rgb: 5 6 8;
+  --glow: 1;
+  --shot-veil: 0.55;
+}
+
+/* "Daylight": the same 220° cool-grey axis mirrored, not inverted. The accent
+   keeps its exact hue/saturation (hsl 200.5 100%) and only drops lightness
+   68% → 30%, so it reads as the same instrument under different light.
+   Background is deliberately not #fff — pure white leaves no room for the
+   site's radial atmospheres to lift, and glares at full-viewport size. */
+.light {
+  color-scheme: light;
+  --background: #eceff5;
+  --background-rgb: 236 239 245;
+  --foreground: #13171f;
+  --foreground-rgb: 19 23 31;
+  --surface: 253 254 255;
+  --surface-border: 19 23 31;
+  --accent: #00669b;
+  --accent-rgb: 0 102 155;
+  --accent-contrast: #ffffff;
+  --accent-contrast-rgb: 255 255 255;
+  --muted: #565f71;
+  --focus-color: #00669b;
+  --border-alpha: 0.12;
+  --shadow-rgb: 16 26 43;
+  --shadow-gain: 0.32;
+  --scrim-rgb: 236 239 245;
+  --glow: 0.35;
+  --shot-veil: 1;
+}
+
+/* Theme-independent: a surface that IS a screen stays dark in both themes.
+   A machine's display does not emit daylight. */
+:root {
+  --theater-rgb: 8 10 14;
 }
 
 /* Breakpoints and fluid type live in a plain @theme block: `@theme inline`
@@ -1628,4 +1674,79 @@ html.custom-cursor [role="button"] {
   .robot-trail::before { display: none; }
 
   /* ...mevcut blok devam eder... */
+}
+/* ============================================================================
+   DAYLIGHT OVERRIDES
+   One scoped block instead of editing ~19 component files: `.light .surface`
+   is specificity (0,2,0) and beats a Tailwind `shadow-[...]` utility (0,1,0),
+   so the hardcoded dark shadows in TSX are overridden here rather than
+   rewritten there.
+   ========================================================================= */
+
+/* BLOCKER — the custom cursor uses `mix-blend-mode: difference` against a
+   light foreground, which in light mode cancels out to nothing. Combined with
+   `cursor: none` that leaves the page with no visible pointer at all. */
+.light .custom-cursor__dot {
+  mix-blend-mode: normal;
+  background: var(--foreground);
+}
+
+.light .custom-cursor__ring {
+  mix-blend-mode: normal;
+  border-color: rgb(var(--foreground-rgb) / 0.55);
+}
+
+.light .custom-cursor__ring--interactive {
+  border-color: var(--accent);
+}
+
+/* Readability scrims point at the PAGE, not at black: in light mode dark text
+   needs a light halo, otherwise the shadow muddies the glyph edges. */
+.light .glow-text,
+.light .prox-title {
+  text-shadow: 0 1px 2px rgb(var(--scrim-rgb) / 0.9);
+}
+
+/* Panels: sink softly instead of casting a heavy black shadow. */
+.light .surface,
+.light .terminal-panel {
+  box-shadow:
+    0 8px 24px rgb(var(--shadow-rgb) / 0.1),
+    0 1px 3px rgb(var(--shadow-rgb) / 0.07);
+}
+
+/* Hover: in daylight nothing glows — the gesture becomes a ring, not a bloom. */
+.light .surface-hover:hover {
+  box-shadow: 0 10px 28px rgb(var(--shadow-rgb) / 0.12);
+  border-color: rgb(var(--accent-rgb) / 0.55);
+}
+
+.light .spotlight-card:hover {
+  box-shadow: 0 10px 28px rgb(var(--shadow-rgb) / 0.12);
+}
+
+/* Decorative low-alpha layers were tuned for additive light. Boosting them on
+   white adds grime, so they are quietened instead. */
+.light .divider-grid,
+.light .wipe-grid,
+.light .pixel-mosaic,
+.light .spotlight-overlay {
+  opacity: 0.45;
+}
+
+.light .scan-row::before,
+.light .section-scanline {
+  opacity: 0.5;
+}
+
+/* Hairlines need slightly more ink on white to read as the same weight. */
+.surface {
+  border-color: rgb(var(--surface-border) / var(--border-alpha));
+}
+
+/* perf-lite must still win over the daylight shadows above. */
+.perf-lite.light .surface,
+.perf-lite.light .terminal-panel,
+.perf-lite.light .surface-hover:hover {
+  box-shadow: none;
 }

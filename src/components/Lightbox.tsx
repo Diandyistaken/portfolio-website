@@ -191,7 +191,7 @@ function LightboxDialog({ images, initialIndex, onClose }: LightboxDialogProps) 
   return (
     activeImage && (
         <m.div
-      className="fixed inset-0 z-[100] flex items-center justify-center bg-[rgb(5_7_12/0.9)] p-4 backdrop-blur-md sm:p-8"
+      className="fixed inset-0 z-[100] flex items-center justify-center bg-[rgb(var(--theater-rgb)/0.92)] p-4 backdrop-blur-md sm:p-8"
           initial={reducedMotion ? false : { opacity: 0 }}
           animate={{ opacity: 1 }}
           exit={{ opacity: 0 }}

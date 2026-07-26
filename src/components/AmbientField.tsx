@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useRef } from "react";
+import { onThemeChange } from "@/lib/theme";
 
 type Particle = { x: number; y: number; life: number; speed: number };
 
@@ -34,9 +35,19 @@ export function AmbientField() {
     const reducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
     if (reducedMotion || document.documentElement.classList.contains("perf-lite")) return;
 
-    const rootStyle = getComputedStyle(document.documentElement);
-    const bg = (rootStyle.getPropertyValue("--background-rgb").trim() || "5 6 8").split(/\s+/).join(",");
-    const accent = (rootStyle.getPropertyValue("--accent-rgb").trim() || "94 200 255").split(/\s+/).join(",");
+    // Colours are re-read on theme change rather than captured once: this
+    // canvas paints the whole viewport, so a stale background would leave the
+    // entire page in the old theme. The effect is deliberately NOT re-run on
+    // theme (no `theme` dep) — tearing it down would reseed the particles and
+    // flash an opaque fillRect.
+    let bg = "5 6 8";
+    let accent = "94 200 255";
+    const readTokens = () => {
+      const rootStyle = getComputedStyle(document.documentElement);
+      bg = (rootStyle.getPropertyValue("--background-rgb").trim() || "5 6 8").split(/\s+/).join(",");
+      accent = (rootStyle.getPropertyValue("--accent-rgb").trim() || "94 200 255").split(/\s+/).join(",");
+    };
+    readTokens();
 
     const isSmall = window.innerWidth < 768;
     const count = isSmall ? 90 : 190;
@@ -112,12 +123,21 @@ export function AmbientField() {
     resize();
     raf = requestAnimationFrame(step);
 
+    // Repaint the base once with the new palette; the particles keep living.
+    const onTheme = () => {
+      readTokens();
+      context.fillStyle = `rgb(${bg})`;
+      context.fillRect(0, 0, width, height);
+    };
+
     window.addEventListener("resize", resize);
     document.addEventListener("visibilitychange", onVisibility);
+    const offTheme = onThemeChange(onTheme);
 
     return () => {
       disposed = true;
       cancelAnimationFrame(raf);
+      offTheme();
       window.removeEventListener("resize", resize);
       document.removeEventListener("visibilitychange", onVisibility);
     };

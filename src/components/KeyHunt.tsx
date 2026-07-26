@@ -130,7 +130,7 @@ export function KeyHunt() {
             initial={reducedMotion ? false : { opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
-            className="fixed inset-0 z-[90] flex items-center justify-center bg-[rgb(5_7_12/0.85)] p-6 backdrop-blur-sm"
+            className="fixed inset-0 z-[90] flex items-center justify-center bg-[rgb(var(--scrim-rgb)/0.88)] p-6 backdrop-blur-sm"
             onMouseDown={(event) => {
               if (event.target === event.currentTarget) setVaultOpen(false);
             }}

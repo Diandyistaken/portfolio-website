@@ -6,6 +6,8 @@ import { LanguageProvider } from "@/lib/i18n/LanguageProvider";
 import { AdminProvider } from "@/components/AdminProvider";
 import { MotionProvider } from "@/components/MotionProvider";
 import { isAdminRequest } from "@/lib/auth/admin";
+import { cookies } from "next/headers";
+import { THEME_COOKIE } from "@/lib/theme";
 import { getDictionary, resolveLocale, localePath, supportedLocales } from "@/lib/i18n/route";
 import type { Content, Locale } from "@/lib/i18n/types";
 
@@ -137,13 +139,17 @@ export default async function RootLayout({
   const content = getDictionary(locale);
   const personJsonLd = buildPersonJsonLd(locale, content);
   const isAdmin = await isAdminRequest();
+  // Theme comes from a cookie and is printed server-side, so the first paint is
+  // already correct — no inline script, no flash. Dark is the canonical
+  // identity, so anything other than an explicit "light" falls back to it.
+  const theme = (await cookies()).get(THEME_COOKIE)?.value === "light" ? "light" : "dark";
 
   return (
     <html
       lang={locale}
       data-scroll-behavior="smooth"
       suppressHydrationWarning
-      className={`${geist.variable} ${geistMono.variable} h-full antialiased`}
+      className={`${theme} ${geist.variable} ${geistMono.variable} h-full antialiased`}
     >
       <head>
         <script
