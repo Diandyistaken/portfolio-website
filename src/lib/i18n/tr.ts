@@ -1102,6 +1102,8 @@ export const tr: Content = {
   footer: {
     rights: "Tüm hakları saklıdır.",
     tagline: "İstanbul'dan, kahve ve terminal eşliğinde.",
+    visitsToday: "bugün",
+    visitsTotal: "toplam ziyaret",
     backToTop: "Başa dön",
     checksumVerifying: "sayfa bütünlüğü: doğrulanıyor…",
     checksumVerified: "DOĞRULANDI ✓ oynama tespit edilmedi",

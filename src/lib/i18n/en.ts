@@ -1101,6 +1101,8 @@ export const en: Content = {
   footer: {
     rights: "All rights reserved.",
     tagline: "From Istanbul, fueled by coffee and terminal windows.",
+    visitsToday: "today",
+    visitsTotal: "total visits",
     backToTop: "Back to top",
     checksumVerifying: "page integrity: verifying…",
     checksumVerified: "VERIFIED ✓ no tampering detected",

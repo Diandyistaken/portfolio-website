@@ -12,6 +12,7 @@ import { usePerfLite } from "./SectionBackdrop";
 import { HintTag } from "./HintTag";
 import { AccessKey } from "./KeyHunt";
 import { FooterGravity, PacketPong } from "./FooterFx";
+import { VisitCounter } from "./VisitCounter";
 
 const CHECKSUM_TARGET = "9e21c4a3f0b7d18e";
 
@@ -153,9 +154,12 @@ export function Footer() {
       </div>
 
       <div className={`${CONTAINER} mt-6 flex flex-col items-center gap-4 border-t border-foreground/10 px-6 pt-6 sm:flex-row sm:justify-between sm:px-10 3xl:px-16`}>
-        <p className="font-mono text-xs text-muted">
-          © {new Date().getFullYear()} {t.personalInfo.name}. {t.footer.rights}
-        </p>
+        <div className="flex flex-col items-center gap-2 sm:items-start">
+          <p className="font-mono text-xs text-muted">
+            © {new Date().getFullYear()} {t.personalInfo.name}. {t.footer.rights}
+          </p>
+          <VisitCounter />
+        </div>
         <Honeypot />
         <a
           href="#top"

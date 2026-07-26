@@ -1099,6 +1099,8 @@ export const de: Content = {
   footer: {
     rights: "Alle Rechte vorbehalten.",
     tagline: "Aus Istanbul, mit Kaffee und Terminal-Fenstern.",
+    visitsToday: "heute",
+    visitsTotal: "Besuche gesamt",
     backToTop: "Nach oben",
     checksumVerifying: "Seitenintegrität: wird geprüft…",
     checksumVerified: "VERIFIZIERT ✓ keine Manipulation erkannt",

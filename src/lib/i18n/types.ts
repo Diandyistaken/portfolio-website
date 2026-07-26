@@ -342,6 +342,8 @@ export type Content = {
   footer: {
     rights: string;
     tagline: string;
+    visitsToday: string;
+    visitsTotal: string;
     backToTop: string;
     checksumVerifying: string;
     checksumVerified: string;
