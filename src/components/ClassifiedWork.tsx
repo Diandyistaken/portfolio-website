@@ -4,7 +4,7 @@ import { useEffect, useRef, useState, type ReactNode } from "react";
 import { Lock, ShieldAlert, ShieldCheck, Unlock, Wrench, Zap } from "lucide-react";
 import { AnimatePresence, m, useReducedMotion } from "framer-motion";
 import { RevealGroup, revealItem } from "./Reveal";
-import { SectionHeading } from "./SectionHeading";
+import { ChapterHeading } from "./ChapterHeading";
 import { useLanguage } from "@/lib/i18n/LanguageProvider";
 import { CONTAINER } from "@/lib/layout";
 import { usePerfLite } from "./SectionBackdrop";
@@ -503,11 +503,11 @@ export function ClassifiedWork() {
   } as const;
 
   return (
-    <section id="classified" className="px-6 py-24 sm:px-10 sm:py-28 3xl:px-16">
+    <section id="classified" className="px-6 py-20 sm:px-10 sm:py-24 3xl:px-16">
       <div className={CONTAINER}>
-        <SectionHeading
-          index="07"
-          kicker={t.classified.kicker}
+        <ChapterHeading
+          step="06.3"
+          label={t.classified.kicker}
           title={t.classified.title}
           description={t.classified.description}
         />

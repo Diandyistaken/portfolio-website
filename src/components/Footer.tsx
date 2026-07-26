@@ -99,7 +99,7 @@ export function Footer() {
 
   const navLinks = [
     { label: t.nav.about, href: "#about" },
-    { label: t.nav.projects, href: "#projects" },
+    { label: t.nav.projects, href: "#work" },
     { label: t.nav.contact, href: "#contact" },
   ];
 

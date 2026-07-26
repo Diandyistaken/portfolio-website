@@ -146,13 +146,6 @@ export default async function RootLayout({
       className={`${geist.variable} ${geistMono.variable} h-full antialiased`}
     >
       <head>
-        {/* first video frame: paints the background before the JS bundle lands */}
-        <link
-          rel="preload"
-          as="image"
-          href="/scrub/000.webp"
-          fetchPriority="high"
-        />
         <script
           type="application/ld+json"
           dangerouslySetInnerHTML={{ __html: JSON.stringify(personJsonLd) }}

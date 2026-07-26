@@ -50,6 +50,19 @@ section[id] {
   scroll-margin-top: 5.5rem;
 }
 
+/* The work archive wraps its chapters in a <div> (not a <section>, so the
+   `main section[id]` observers keep seeing exactly the real sections), so it
+   needs the headroom rule spelled out. Its chapters additionally sit under a
+   sticky jump strip (~3.3rem), hence the taller offset — without this, an
+   anchor lands with the chapter heading hidden behind the strip. */
+#work {
+  scroll-margin-top: 5.5rem;
+}
+
+#work > section[id] {
+  scroll-margin-top: 9rem;
+}
+
 body {
   background: var(--background);
   color: var(--foreground);
@@ -1203,3 +1216,416 @@ html.custom-cursor [role="button"] {
   transition: opacity 0.2s linear;
 }
 .perf-lite .prox-aura::before { display: none; }
+/* ── Robot buddy v3: SVG chibi companion ───────────────────────────────────
+   Geometry lives in RobotArt.tsx (viewBox 0 0 120 152). Two rules:
+   1) CSS animations outrank inline style, so never keyframe a transform on a
+      node framer-motion drives -- `.rbt-patrol .rbt-pupil` is the deliberate
+      exception (the idle scan is meant to beat cursor tracking);
+   2) every animated node gets transform-box: view-box + an explicit px
+      transform-origin in viewBox units. */
+.rbt {
+  overflow: visible;
+}
+
+/* palette ---------------------------------------------------------------- */
+.rbt-shell {
+  stroke: rgb(var(--foreground-rgb) / 0.16);
+  stroke-width: 1.4;
+  filter: drop-shadow(0 8px 18px rgb(0 0 0 / 0.55));
+}
+
+.rbt-rim {
+  fill: none;
+  stroke-width: 1.6;
+  stroke-linecap: round;
+  opacity: 0.7;
+}
+
+.rbt-visor {
+  stroke: rgb(var(--accent-rgb) / 0.24);
+  stroke-width: 1;
+}
+
+.rbt-seam {
+  stroke: rgb(var(--foreground-rgb) / 0.14);
+  stroke-width: 1.2;
+  stroke-linecap: round;
+}
+
+.rbt-limb {
+  fill: rgb(var(--surface));
+  stroke: rgb(var(--foreground-rgb) / 0.16);
+  stroke-width: 1.2;
+}
+
+.rbt-limb-led,
+.rbt-ear-led {
+  fill: rgb(var(--accent-rgb) / 0.7);
+}
+
+.rbt-ear-shell {
+  fill: rgb(var(--surface));
+  stroke: rgb(var(--foreground-rgb) / 0.14);
+  stroke-width: 1.2;
+}
+
+.rbt-link {
+  fill: rgb(var(--accent-rgb) / 0.55);
+}
+
+.rbt-wire {
+  fill: none;
+  stroke: rgb(var(--foreground-rgb) / 0.34);
+  stroke-width: 1.6;
+  stroke-linecap: round;
+}
+
+.rbt-lens {
+  fill: rgb(var(--accent-rgb) / 0.13);
+  stroke: rgb(var(--accent-rgb) / 0.45);
+  stroke-width: 1.1;
+}
+
+/* sleeping / happy / love read as a solid neon glyph, not a hollow lens */
+.rbt[data-eyes="solid"] .rbt-lens {
+  fill: rgb(var(--accent-rgb) / 0.92);
+  stroke: none;
+}
+
+.rbt-pupil-core {
+  fill: var(--accent);
+  filter: drop-shadow(0 0 4px rgb(var(--accent-rgb) / 0.95));
+}
+
+.rbt-pupil-shine {
+  fill: rgb(var(--foreground-rgb) / 0.85);
+}
+
+.rbt-glyph {
+  fill: var(--accent);
+  font-weight: 700;
+}
+
+.rbt-mouth {
+  fill: none;
+  stroke: rgb(var(--accent-rgb) / 0.8);
+  stroke-width: 2.2;
+  stroke-linecap: round;
+}
+
+.rbt-blush {
+  fill: rgb(var(--accent-rgb) / 0.45);
+  opacity: 0;
+  filter: blur(1.5px);
+  transition: opacity 0.3s ease;
+}
+
+.rbt[data-blush="true"] .rbt-blush {
+  opacity: 0.7;
+}
+
+.rbt[data-alert="true"] .rbt-pupil-core,
+.rbt[data-alert="true"] .rbt-bulb {
+  fill: #fbbf24;
+  filter: drop-shadow(0 0 6px rgb(251 191 36 / 0.9));
+}
+
+/* idle float: head layer and torso layer breathe out of phase ------------- */
+.rbt-float,
+.rbt-float-b {
+  transform-box: view-box;
+}
+
+.rbt-float {
+  transform-origin: 60px 60px;
+  animation: rbt-float 4.2s ease-in-out infinite;
+}
+
+.rbt-float-b {
+  transform-origin: 60px 116px;
+  animation: rbt-float-b 4.2s ease-in-out 0.35s infinite;
+}
+
+@keyframes rbt-float {
+  0%, 100% { transform: translateY(0) scale(1); }
+  50%      { transform: translateY(-3.5px) scale(1.015); }
+}
+
+@keyframes rbt-float-b {
+  0%, 100% { transform: translateY(0) scaleX(1); }
+  50%      { transform: translateY(-2px) scaleX(0.985); }
+}
+
+/* asleep = everything slows down */
+.rbt[data-awake="false"] .rbt-float,
+.rbt[data-awake="false"] .rbt-float-b,
+.rbt[data-awake="false"] .rbt-core {
+  animation-duration: 7.5s;
+}
+
+/* blink: two quick lid drops per cycle, only while awake ------------------ */
+.rbt-eye { transform-box: view-box; }
+.rbt-eye--l { transform-origin: 46px 56px; }
+.rbt-eye--r { transform-origin: 74px 56px; }
+
+.rbt[data-awake="true"] .rbt-eye {
+  animation: rbt-blink 5.4s ease-in-out infinite;
+}
+
+@keyframes rbt-blink {
+  0%, 86%, 100% { transform: scaleY(1); }
+  88%, 89.5%    { transform: scaleY(0.08); }
+  91.5%         { transform: scaleY(1); }
+  93%, 94.5%    { transform: scaleY(0.08); }
+  96.5%         { transform: scaleY(1); }
+}
+
+/* idle patrol: deliberately overrides the framer pupil transform ---------- */
+.rbt-patrol .rbt-pupil {
+  animation: rbt-patrol 2.8s ease-in-out infinite;
+}
+
+@keyframes rbt-patrol {
+  0%, 100% { transform: translate(-3px, 0); }
+  25%      { transform: translate(3px, 0.5px); }
+  50%      { transform: translate(-2.5px, 1.5px); }
+  75%      { transform: translate(3px, -0.5px); }
+}
+
+/* antenna ---------------------------------------------------------------- */
+.rbt-bulb {
+  fill: var(--accent);
+  transform-box: view-box;
+  transform-origin: 60px 12px;
+  animation: rbt-bulb 2.6s ease-in-out infinite;
+}
+
+@keyframes rbt-bulb {
+  0%, 100% { opacity: 0.6; transform: scale(0.92); filter: drop-shadow(0 0 3px rgb(var(--accent-rgb) / 0.5)); }
+  50%      { opacity: 1;   transform: scale(1.06); filter: drop-shadow(0 0 9px rgb(var(--accent-rgb) / 0.95)); }
+}
+
+.rbt-signal path {
+  fill: none;
+  stroke: rgb(var(--accent-rgb) / 0.85);
+  stroke-width: 1.6;
+  stroke-linecap: round;
+  transform-box: view-box;
+  transform-origin: 60px 14px;
+  opacity: 0;
+}
+
+.rbt[data-signal="true"] .rbt-signal path {
+  animation: rbt-signal 1.8s ease-out infinite;
+}
+
+.rbt[data-signal="true"] .rbt-signal path:nth-child(2) {
+  animation-delay: 0.45s;
+}
+
+@keyframes rbt-signal {
+  0%   { opacity: 0; transform: scale(0.45); }
+  30%  { opacity: 0.85; }
+  100% { opacity: 0; transform: scale(1.35); }
+}
+
+/* ears: an occasional twitch, not a constant wiggle ----------------------- */
+.rbt-ear { transform-box: view-box; }
+.rbt-ear--l { transform-origin: 19px 58px; animation: rbt-ear-l 6.4s ease-in-out infinite; }
+.rbt-ear--r { transform-origin: 101px 58px; animation: rbt-ear-r 6.4s ease-in-out 2.1s infinite; }
+
+@keyframes rbt-ear-l {
+  0%, 70%, 100% { transform: rotate(0deg); }
+  76% { transform: rotate(-11deg); }
+  82% { transform: rotate(-3deg); }
+  88% { transform: rotate(-8deg); }
+}
+
+@keyframes rbt-ear-r {
+  0%, 70%, 100% { transform: rotate(0deg); }
+  76% { transform: rotate(11deg); }
+  82% { transform: rotate(3deg); }
+  88% { transform: rotate(8deg); }
+}
+
+/* hands + feet ----------------------------------------------------------- */
+.rbt-hand { transform-box: view-box; }
+.rbt-hand--l { transform-origin: 42px 108px; animation: rbt-hand-l 3.6s ease-in-out infinite; }
+.rbt-hand--r { transform-origin: 78px 108px; animation: rbt-hand-r 4.1s ease-in-out infinite; }
+
+@keyframes rbt-hand-l {
+  0%, 100% { transform: rotate(0deg) translateY(0); }
+  50%      { transform: rotate(7deg) translateY(-2px); }
+}
+
+@keyframes rbt-hand-r {
+  0%, 100% { transform: rotate(0deg) translateY(0); }
+  50%      { transform: rotate(-7deg) translateY(-2.5px); }
+}
+
+/* wave wins on specificity (0,2,0) over the idle sway (0,1,0) */
+.rbt-hand--r.rbt-wave {
+  animation: rbt-wave 1.15s ease-in-out 2;
+}
+
+@keyframes rbt-wave {
+  0%   { transform: rotate(0deg); }
+  18%  { transform: rotate(-92deg); }
+  38%  { transform: rotate(-66deg); }
+  58%  { transform: rotate(-96deg); }
+  78%  { transform: rotate(-70deg); }
+  100% { transform: rotate(0deg); }
+}
+
+.rbt-foot { transform-box: view-box; animation: rbt-foot 3.6s ease-in-out infinite; }
+.rbt-foot--l { transform-origin: 49px 144px; }
+.rbt-foot--r { transform-origin: 71px 144px; animation-delay: 0.5s; }
+
+@keyframes rbt-foot {
+  0%, 100% { transform: translateY(0) scaleY(1); }
+  50%      { transform: translateY(-1.5px) scaleY(0.94); }
+}
+
+/* chest core: double thump, then rest ------------------------------------ */
+.rbt-core {
+  fill: var(--accent);
+  transform-box: view-box;
+  transform-origin: 60px 115px;
+  animation: rbt-core 3s ease-in-out infinite;
+  filter: drop-shadow(0 0 6px rgb(var(--accent-rgb) / 0.8));
+}
+
+.rbt-core-ring {
+  fill: none;
+  stroke: rgb(var(--accent-rgb) / 0.3);
+  stroke-width: 1.2;
+}
+
+@keyframes rbt-core {
+  0%, 100% { transform: scale(1);    opacity: 0.8; }
+  10%      { transform: scale(1.25); opacity: 1; }
+  20%      { transform: scale(1);    opacity: 0.8; }
+  30%      { transform: scale(1.14); opacity: 0.95; }
+  42%      { transform: scale(1);    opacity: 0.8; }
+}
+
+/* visor scanline --------------------------------------------------------- */
+.rbt-scan {
+  fill: rgb(var(--accent-rgb) / 0.13);
+  transform-box: view-box;
+  transform-origin: 60px 36px;
+  animation: rbt-scan 4.8s linear infinite;
+}
+
+@keyframes rbt-scan {
+  0%   { transform: translateY(0);    opacity: 0; }
+  12%  { opacity: 1; }
+  88%  { opacity: 1; }
+  100% { transform: translateY(38px); opacity: 0; }
+}
+
+/* ground shadow (html sibling, outside the 3D-tilted head so it stays put) */
+.rbt-ground {
+  background:
+    radial-gradient(50% 100% at 50% 50%, rgb(0 0 0 / 0.6), transparent 70%),
+    radial-gradient(62% 100% at 50% 50%, rgb(var(--accent-rgb) / 0.16), transparent 72%);
+  filter: blur(3px);
+  animation: rbt-ground 4.2s ease-in-out infinite;
+}
+
+@keyframes rbt-ground {
+  0%, 100% { transform: scaleX(1);    opacity: 0.85; }
+  50%      { transform: scaleX(0.88); opacity: 0.6; }
+}
+
+/* fallbacks -------------------------------------------------------------- */
+.perf-lite .rbt,
+.perf-lite .rbt *,
+.perf-lite .rbt-ground {
+  animation: none !important;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .rbt,
+  .rbt *,
+  .rbt-ground {
+    animation: none !important;
+    transition: none !important;
+  }
+
+  .rbt-shell,
+  .rbt-core,
+  .rbt-bulb,
+  .rbt-pupil-core,
+  .rbt-blush,
+  .rbt-ground {
+    filter: none !important;
+  }
+}
+/* ── Maskot devriye şeridi ────────────────────────────────────────────────
+   Robot artık köşede sabit değil; viewport'un altındaki YÜKSEKLİĞİ SIFIR bir
+   şeritte yatay geziniyor. h-0 + inset-x-0 olduğu için ne layout kaydırır,
+   ne CLS üretir, ne yatay scrollbar doğurur. */
+:root { --robot-lane: 1.5rem; }
+@media (min-width: 1280px) { :root { --robot-lane: 1.75rem; } }
+
+/* Şerit içindeki HER ŞEY tıklama-geçirgen; sadece gerçek hit-box geri açılır.
+   :where() 0 özgüllüklü → [data-robot-hit] daima kazanır. */
+.robot-lane :where(*) { pointer-events: none; }
+.robot-lane [data-robot-hit] { pointer-events: auto; }
+
+.robot-roamer {
+  transition: opacity 0.25s ease, filter 0.25s ease;
+  will-change: transform;
+}
+
+/* GHOST: imleç şeride yaklaştığı anda maskot erir ve tıklamayı içeriğe
+   geçirir — asla kullanıcıyla içerik arasına giremez. */
+/* The old "ghost" mode is gone entirely: the lane is already
+   pointer-events:none except for the mascot's own hit area, so content behind
+   it was always reachable. Fading the mascot out solved nothing and its
+   pointer-events rule made the robot unclickable. */
+
+/* Hızlı scroll'a yetişirken arkada bırakılan iz. --robot-dir: 1 | -1 */
+.robot-trail::before {
+  content: "";
+  position: absolute;
+  inset-block: 28% 12%;
+  left: calc(var(--robot-dir, 1) * -36px);
+  width: 32px;
+  border-radius: 999px;
+  background: linear-gradient(to left, rgb(var(--accent-rgb) / 0.3), transparent);
+  filter: blur(3px);
+}
+
+@keyframes robot-footfall {
+  0%   { opacity: 0.5; transform: scale(0.4); }
+  100% { opacity: 0;   transform: scale(1.7) translateY(2px); }
+}
+.robot-footfall {
+  animation: robot-footfall 0.5s ease-out forwards;
+  background: radial-gradient(circle, rgb(var(--accent-rgb) / 0.5), transparent 70%);
+}
+
+.perf-lite .robot-trail::before,
+.perf-lite .robot-footfall { display: none; }
+
+@media (prefers-reduced-motion: reduce) {
+  .robot-eye,
+  .robot-antenna-tip,
+  .robot-body,
+  .robot-arm--wave,
+  .robot-patrol .robot-pupil,
+  .robot-footfall,          /* + eklendi */
+  .redacted-bar::after,
+  .footer-ecg::after,
+  .ken-burns,
+  .radar-ping::before {
+    animation: none !important;
+  }
+
+  /* + eklendi: koşu izi reduced-motion'da hiç çizilmez */
+  .robot-trail::before { display: none; }
+
+  /* ...mevcut blok devam eder... */
+}

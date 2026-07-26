@@ -344,7 +344,7 @@ export function Hero() {
               </MagneticButton>
               <MagneticButton>
                 <a
-                  href="#projects"
+                  href="#work"
                   data-prox
                   data-prox-radius="300"
                   className="prox-aura tap-pop surface-hover relative block rounded-full border border-foreground/12 px-6 py-3 text-sm font-medium text-foreground transition-colors hover:border-accent/50 hover:text-accent"

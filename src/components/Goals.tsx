@@ -216,7 +216,7 @@ export function Goals() {
       <div className={`relative z-10 ${CONTAINER}`}>
         <div className="mx-auto max-w-3xl 3xl:max-w-5xl">
         <SectionHeading
-        index="10"
+        index="08"
           kicker={t.goals.kicker}
           title={t.goals.title}
           description={t.goals.description}

@@ -14,7 +14,7 @@ import {
 import { Eye, Lock, Unlock } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
 import { Lightbox } from "./Lightbox";
-import { SectionHeading } from "./SectionHeading";
+import { ChapterHeading } from "./ChapterHeading";
 import { RevealGroup, revealItem } from "./Reveal";
 import { useAdmin } from "./AdminProvider";
 import { ARENA_APP_PATH, ARENA_PREVIEW_PATH } from "@/lib/arenaPaths";
@@ -330,9 +330,9 @@ export function ShowcaseLab() {
   const allProcessed = showcaseImages.every((image) => analyzed.includes(image.src));
 
   return (
-    <section id="showcase" className="px-6 py-24 sm:px-10 sm:py-28 3xl:px-16">
+    <section id="showcase" className="px-6 py-20 sm:px-10 sm:py-24 3xl:px-16">
       <div className={CONTAINER}>
-        <SectionHeading index="08" kicker={t.showcase.kicker} title={t.showcase.title} description={t.showcase.description} />
+        <ChapterHeading step="06.2" label={t.showcase.kicker} title={t.showcase.title} description={t.showcase.description} />
         <RevealGroup stagger={0.1} className="mt-14 grid gap-5 lg:grid-cols-2 3xl:gap-8">
           {t.showcase.items.map((item) => <ShowcaseCard key={item.id} item={item} pipeline={t.showcase.pipeline} analyzed={analyzed} onOpenScreenshot={setLightboxIndex} />)}
           <Micro1Card />

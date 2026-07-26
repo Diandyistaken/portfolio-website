@@ -32,8 +32,12 @@ export function CommandPalette({ open, onOpenChange, triggerRef }: CommandPalett
   const items = useMemo<PaletteItem[]>(() => {
     const sections = [
       ["about", t.nav.about], ["skills", t.nav.skills], ["services", t.nav.services],
-      ["experience", t.nav.experience], ["education", t.nav.education], ["projects", t.nav.projects],
-      ["showcase", t.nav.showcase], ["freelance", t.nav.freelance], ["goals", t.nav.goals], ["contact", t.nav.contact],
+      ["experience", t.nav.experience], ["education", t.nav.education],
+      // the work archive: umbrella first, then each chapter (arsenal and
+      // classified were never reachable from the palette before)
+      ["work", t.work.kicker], ["arsenal", t.arsenal.kicker], ["showcase", t.showcase.kicker],
+      ["classified", t.classified.kicker], ["projects", t.projects.kicker],
+      ["freelance", t.nav.freelance], ["goals", t.nav.goals], ["contact", t.nav.contact],
     ];
     const cvLocale = locale === "tr" ? "tr" : "en";
     return [

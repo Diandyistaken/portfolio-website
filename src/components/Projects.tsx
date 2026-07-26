@@ -3,7 +3,7 @@
 import { useEffect, useRef, useState } from "react";
 import { ArrowUpRight } from "lucide-react";
 import { RevealGroup, revealItem } from "./Reveal";
-import { SectionHeading } from "./SectionHeading";
+import { ChapterHeading } from "./ChapterHeading";
 import { useLanguage } from "@/lib/i18n/LanguageProvider";
 import { projectsMeta } from "@/lib/data";
 import { AnimatePresence, m, useInView, useReducedMotion, useScroll, useSpring, useTransform } from "framer-motion";
@@ -195,7 +195,7 @@ export function Projects() {
   const canPeek = !reducedMotion && !perfLite;
 
   return (
-    <section id="projects" className="px-6 py-24 sm:px-10 sm:py-28 3xl:px-16">
+    <section id="projects" className="px-6 pt-20 pb-24 sm:px-10 sm:pt-24 sm:pb-28 3xl:px-16">
       {canPeek && (
         <AnimatePresence>
           {peek && (
@@ -224,12 +224,11 @@ export function Projects() {
         </AnimatePresence>
       )}
       <div className={CONTAINER}>
-        <SectionHeading
-        index="06"
-          kicker={t.projects.kicker}
+        <ChapterHeading
+          step="06.4"
+          label={t.projects.kicker}
           title={t.projects.title}
           description={t.projects.description}
-          diffCorrect
         />
 
         {/* #120 rubber-band deck (simplified on purpose — the backlog itself

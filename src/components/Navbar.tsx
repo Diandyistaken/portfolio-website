@@ -175,17 +175,27 @@ export function Navbar() {
     { label: t.nav.services, href: "#services" },
     { label: t.nav.experience, href: "#experience" },
     { label: t.nav.education, href: "#education" },
-    { label: t.nav.projects, href: "#projects" },
+    { label: t.nav.projects, href: "#work" },
     { label: t.nav.showcase, href: "#showcase" },
     { label: t.nav.freelance, href: "#freelance" },
     { label: t.nav.goals, href: "#goals" },
     { label: t.nav.contact, href: "#contact" },
   ];
 
+  // The four work-archive chapters are one nav entry (#work) but four real
+  // sections, so map them to their own kickers — otherwise the HUD reads
+  // blank while scrolling through most of the archive.
+  const chapterLabels: Record<string, string> = {
+    arsenal: t.arsenal.kicker,
+    showcase: t.showcase.kicker,
+    classified: t.classified.kicker,
+    projects: t.projects.kicker,
+  };
+
   const activeLabel =
-    activeSection === "classified"
-      ? t.classified.kicker
-      : navLinks.find((link) => link.href === `#${activeSection}`)?.label ?? null;
+    (activeSection ? chapterLabels[activeSection] : null) ??
+    navLinks.find((link) => link.href === `#${activeSection}`)?.label ??
+    null;
 
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 12);

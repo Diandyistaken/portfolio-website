@@ -39,6 +39,15 @@ export type ShowcaseItemContent = {
   alt: string;
 };
 
+export type ArsenalItemContent = {
+  id: string;
+  title: string;
+  badge: string;
+  description: string;
+  bullets: string[];
+  alt: string;
+};
+
 export type FreelancePlatformId = "freelancer" | "upwork" | "fiverr" | "bionluk";
 
 export type Content = {
@@ -102,6 +111,15 @@ export type Content = {
   robot: {
     label: string;
     dismissLabel: string;
+    menuLabel: string;
+    emotes: {
+      label: string;
+      chat: string;
+      wave: string;
+      come: string;
+      trick: string;
+      sleep: string;
+    };
     introMessage: string;
     messages: string[];
     sleepingMessage: string;
@@ -135,7 +153,16 @@ export type Content = {
     greeting: string;
     chips: string[];
     fallbacks: string[];
-    intents: { id: string; keywords: string[]; responses: string[] }[];
+    intents: {
+      id: string;
+      keywords: string[];
+      /** Response ladder: index 0 is the short answer, later entries deepen. */
+      responses: string[];
+      /** Chips offered after this answer; falls back to `chips` when absent. */
+      followups?: string[];
+      /** When true, each response is split on "||" into separate bubbles. */
+      multi?: boolean;
+    }[];
   };
   hud: {
     levels: string[];
@@ -193,6 +220,13 @@ export type Content = {
     department: string;
     graduationLabel: string;
     graduation: string;
+  };
+  /** Umbrella heading that gathers every "work" section into one archive. */
+  work: {
+    kicker: string;
+    title: string;
+    description: string;
+    jumpLabel: string;
   };
   projects: {
     kicker: string;
@@ -260,6 +294,17 @@ export type Content = {
       unlockedCta: string;
       note: string;
     };
+  };
+  arsenal: {
+    kicker: string;
+    title: string;
+    description: string;
+    badges: { commercial: string; oss: string; live: string };
+    viewSource: string;
+    demoLabel: string;
+    screenshotHint: string;
+    note: string;
+    items: ArsenalItemContent[];
   };
   freelance: {
     kicker: string;

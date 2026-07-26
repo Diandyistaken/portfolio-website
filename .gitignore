@@ -41,3 +41,9 @@ yarn-error.log*
 next-env.d.ts
 
 .vercel
+
+# The real .git / .github are kept renamed locally (_1.g / _1.gith). Without
+# these two lines a plain `git add -A` commits the entire 61 MB object
+# database — and the renamed .github makes ci.yml look deleted.
+_1.g/
+_1.gith/

@@ -12,15 +12,15 @@ export function SectionRail() {
   const { t } = useLanguage();
   const [active, setActive] = useState<string | null>(null);
 
-  const items = [
+  const items: { id: string; label: string; match?: string[] }[] = [
     { id: "about", label: t.nav.about },
     { id: "skills", label: t.nav.skills },
     { id: "services", label: t.nav.services },
     { id: "experience", label: t.nav.experience },
     { id: "education", label: t.nav.education },
-    { id: "projects", label: t.nav.projects },
-    { id: "classified", label: t.classified.kicker },
-    { id: "showcase", label: t.nav.showcase },
+    // One dot for the whole work archive; `match` keeps it lit while any of
+    // its four chapters owns the viewport.
+    { id: "work", label: t.work.kicker, match: ["arsenal", "showcase", "classified", "projects"] },
     { id: "freelance", label: t.nav.freelance },
     { id: "goals", label: t.nav.goals },
     { id: "contact", label: t.nav.contact },
@@ -56,16 +56,18 @@ export function SectionRail() {
       className="fixed right-5 top-1/2 z-40 hidden -translate-y-1/2 lg:block"
     >
       <ul className="flex flex-col items-center gap-3">
-        {items.map((item) => (
+        {items.map((item) => {
+          const isActive = active === item.id || (active !== null && (item.match?.includes(active) ?? false));
+          return (
           <li key={item.id} className="group relative flex items-center">
             <a
               href={`#${item.id}`}
               onClick={() => ping(item.id)}
               aria-label={item.label}
-              aria-current={active === item.id ? "true" : undefined}
+              aria-current={isActive ? "true" : undefined}
               className="flex h-4 w-4 items-center justify-center"
             >
-              <span className={`rail-dot ${active === item.id ? "rail-dot--active" : "group-hover:bg-foreground/50"}`} />
+              <span className={`rail-dot ${isActive ? "rail-dot--active" : "group-hover:bg-foreground/50"}`} />
             </a>
             <span
               aria-hidden="true"
@@ -74,7 +76,8 @@ export function SectionRail() {
               {item.label}
             </span>
           </li>
-        ))}
+          );
+        })}
       </ul>
     </nav>
   );

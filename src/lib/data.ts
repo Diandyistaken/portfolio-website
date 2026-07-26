@@ -66,6 +66,31 @@ export const projectsMeta: Record<string, { url: string; size: "lg" | "md"; tags
   },
 };
 
+// Live "arsenal" cards backed by real (anonymized) screenshots. Non-text fields
+// only — copy lives in i18n. `url` omitted = no public source (commercial or
+// not yet published). Screenshot paths resolve under /public.
+export const arsenalMeta: Record<
+  string,
+  { screenshots: string[]; kind: "commercial" | "oss"; url?: string; tags: string[] }
+> = {
+  detector: {
+    screenshots: ["/showcase/detector-1.webp", "/showcase/detector-2.webp"],
+    kind: "commercial",
+    tags: ["Python", "DSP / ML", "5 katman", "FastAPI"],
+  },
+  "intent-spec": {
+    screenshots: ["/showcase/intent-1.webp", "/showcase/intent-2.webp"],
+    kind: "oss",
+    tags: ["React 19", "TypeScript", "Vite", "Client-side"],
+  },
+  alleye: {
+    screenshots: ["/showcase/alleye-1.webp"],
+    kind: "oss",
+    url: "https://github.com/diandyistaken/all-eye",
+    tags: ["Python", "Windows", "Gemini API", "SQLite"],
+  },
+};
+
 export const goalsMeta: Record<string, { progress: number }> = {
   udemy: { progress: 70 },
   tryhackme: { progress: 45 },

@@ -1,9 +1,10 @@
 "use client";
 
-import { useCallback, useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { AnimatePresence, m, useReducedMotion, useSpring } from "framer-motion";
 import { Send, X } from "lucide-react";
 import { useLanguage } from "@/lib/i18n/LanguageProvider";
+import { compile, createContext, respond, type ChatBrain } from "@/lib/chat/engine";
 
 type ChatMessage = { id: number; from: "bot" | "user"; text: string };
 
@@ -31,9 +32,20 @@ export function RobotChat({ open, onClose }: { open: boolean; onClose: () => voi
   const idRef = useRef(0);
   const typeTimer = useRef<ReturnType<typeof setInterval> | null>(null);
   const moodTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
-  const fallbackIndex = useRef(0);
-  const pickIndex = useRef(0);
-  const [hasSpoken, setHasSpoken] = useState(false);
+
+  // The local brain: scoring + Turkish stemming + conversation memory. Rebuilt
+  // only when the locale changes, never per keystroke.
+  const brain = useMemo<ChatBrain>(
+    () => ({ intents: chat.intents, fallbacks: chat.fallbacks, chips: chat.chips }),
+    [chat.intents, chat.fallbacks, chat.chips],
+  );
+  const compiled = useMemo(() => compile(brain), [brain]);
+  const contextRef = useRef(createContext());
+  // Chips now persist and follow the conversation instead of vanishing after
+  // the first message.
+  const [chips, setChips] = useState<string[]>(chat.chips.slice(0, 4));
+  const queueRef = useRef<string[]>([]);
+  const queueTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
   const listRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLInputElement>(null);
   const panelRef = useRef<HTMLDivElement>(null);
@@ -49,6 +61,7 @@ export function RobotChat({ open, onClose }: { open: boolean; onClose: () => voi
     return () => {
       if (typeTimer.current) clearInterval(typeTimer.current);
       if (moodTimer.current) clearTimeout(moodTimer.current);
+      if (queueTimer.current) clearTimeout(queueTimer.current);
     };
   }, []);
 
@@ -147,36 +160,42 @@ export function RobotChat({ open, onClose }: { open: boolean; onClose: () => voi
     });
   };
 
-  /** The "light intelligence": lowercase per locale, score every intent by
-   *  keyword hits (longer keyword = stronger signal), best score wins. */
-  const answer = (raw: string): string => {
-    const text = raw.toLocaleLowerCase(t.htmlLang);
-    let best: { score: number; responses: string[] } | null = null;
-    for (const intent of chat.intents) {
-      let score = 0;
-      for (const keyword of intent.keywords) {
-        if (text.includes(keyword)) score += keyword.length;
-      }
-      if (score > 0 && (!best || score > best.score)) {
-        best = { score, responses: intent.responses };
-      }
-      if (score > 0 && intent.id === "hack") {
+  /**
+   * Type out a queue of bubbles one after another, so a single answer can
+   * arrive as 2-3 messages instead of one wall of text.
+   */
+  const drainQueue = useCallback(() => {
+    const next = queueRef.current.shift();
+    if (next === undefined) return;
+    botSay(next);
+    if (queueRef.current.length === 0) return;
+    // wait for this bubble to finish typing, then send the next one
+    const wait = reducedMotion ? 220 : next.length * TYPE_MS + 520;
+    if (queueTimer.current) clearTimeout(queueTimer.current);
+    queueTimer.current = setTimeout(drainQueue, wait);
+  }, [botSay, reducedMotion]);
+
+  /** Ask the local engine and stage its bubbles + follow-up chips. */
+  const answer = useCallback(
+    (raw: string) => {
+      const reply = respond(compiled, brain, raw, contextRef.current);
+
+      if (reply.intentId === "hack") {
         window.dispatchEvent(new Event("app:hack-egg"));
         setMoodFor("alert", 2600);
-      }
-      if (score > 0 && (intent.id === "greet" || intent.id === "thanks" || intent.id === "bye")) {
+      } else if (reply.intentId && ["greet", "thanks", "bye", "compliment", "love", "joke"].includes(reply.intentId)) {
         setMoodFor("happy", 2200);
       }
-    }
-    if (best) {
-      // rotate through variants (render-purity rule bans Math.random here)
-      pickIndex.current += 1;
-      return best.responses[pickIndex.current % best.responses.length];
-    }
-    const fallback = chat.fallbacks[fallbackIndex.current % chat.fallbacks.length];
-    fallbackIndex.current += 1;
-    return fallback;
-  };
+
+      setChips(reply.chips);
+      queueRef.current = reply.bubbles.slice();
+      drainQueue();
+    },
+    // setMoodFor is stable enough in practice (defined per render, only reads
+    // refs + setState); listing it would rebuild this callback every render.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    [compiled, brain, drainQueue],
+  );
 
   const submit = (text: string) => {
     const trimmed = text.trim().slice(0, MAX_INPUT);
@@ -197,10 +216,10 @@ export function RobotChat({ open, onClose }: { open: boolean; onClose: () => voi
     push("user", trimmed);
     scrollDown();
     setDraft("");
-    setHasSpoken(true);
     window.dispatchEvent(new Event("app:robot-chat"));
-    const reply = answer(trimmed);
-    setTimeout(() => botSay(reply), reducedMotion ? 0 : 420);
+    if (queueTimer.current) clearTimeout(queueTimer.current);
+    queueRef.current = [];
+    setTimeout(() => answer(trimmed), reducedMotion ? 0 : 420);
   };
 
   const talking = typing !== null;
@@ -216,7 +235,8 @@ export function RobotChat({ open, onClose }: { open: boolean; onClose: () => voi
           animate={{ opacity: 1, y: 0, scale: 1 }}
           exit={reducedMotion ? { opacity: 0 } : { opacity: 0, y: 24, scale: 0.94 }}
           transition={{ type: "spring", stiffness: 280, damping: 24 }}
-          className="terminal-panel fixed bottom-28 right-6 z-50 flex w-[21rem] flex-col overflow-hidden rounded-2xl border border-foreground/15 shadow-[0_30px_90px_rgb(0_0_0/0.65)] sm:w-[23rem]"
+          /* bottom-[10.5rem] clears the taller SVG mascot (133px art + 24px offset) */
+          className="terminal-panel fixed bottom-[10.5rem] right-6 z-50 flex w-[21rem] flex-col overflow-hidden rounded-2xl border border-foreground/15 shadow-[0_30px_90px_rgb(0_0_0/0.65)] sm:w-[23rem]"
         >
           {/* header */}
           <div className="flex items-center gap-2.5 border-b border-foreground/10 px-4 py-2.5">
@@ -345,10 +365,12 @@ export function RobotChat({ open, onClose }: { open: boolean; onClose: () => voi
             )}
           </div>
 
-          {/* quick chips (until the visitor has spoken) */}
-          {!hasSpoken && (
+          {/* Quick chips — these now follow the conversation: each answer
+              proposes its own follow-ups instead of the strip disappearing
+              after the first message. */}
+          {chips.length > 0 && (
             <div className="flex flex-wrap gap-1.5 px-3.5 pb-2">
-              {chat.chips.map((chip) => (
+              {chips.map((chip) => (
                 <button
                   key={chip}
                   type="button"

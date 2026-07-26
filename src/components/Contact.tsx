@@ -422,7 +422,7 @@ export function Contact() {
         <div className="relative">
           <NodeGrid />
           <SectionHeading
-          index="11"
+          index="09"
             kicker={t.contact.kicker}
             title={t.contact.title}
             description={t.contact.description}

@@ -7,7 +7,7 @@ import { Skills } from "@/components/Skills";
 import { Services } from "@/components/Services";
 import { Experience } from "@/components/Experience";
 import { Education } from "@/components/Education";
-import { Projects } from "@/components/Projects";
+import { WorkArchive } from "@/components/WorkArchive";
 import { Goals } from "@/components/Goals";
 import { Contact } from "@/components/Contact";
 import { Footer } from "@/components/Footer";
@@ -16,11 +16,10 @@ import { ScrollProgress } from "@/components/ScrollProgress";
 import { NameMarquee } from "@/components/NameMarquee";
 import { IntroLoader } from "@/components/IntroLoader";
 import { GenerativeDivider } from "@/components/GenerativeDivider";
-import { ClassifiedWork } from "@/components/ClassifiedWork";
 import { ClientChrome } from "@/components/ClientChrome";
 
 // Real content below the fold: keep SSR (SEO), just split out of the main chunk.
-const ShowcaseLab = dynamic(() => import("@/components/ShowcaseLab").then((mod) => mod.ShowcaseLab));
+// ShowcaseLab / LiveArsenal are split the same way inside WorkArchive.
 const FreelanceHub = dynamic(() => import("@/components/FreelanceHub").then((mod) => mod.FreelanceHub));
 
 export default function Home() {
@@ -41,9 +40,7 @@ export default function Home() {
           <Services />
           <Experience />
           <Education />
-          <Projects />
-          <ClassifiedWork />
-          <ShowcaseLab />
+          <WorkArchive />
           <FreelanceHub />
           <Goals />
           <GenerativeDivider quoteId="sunset" />

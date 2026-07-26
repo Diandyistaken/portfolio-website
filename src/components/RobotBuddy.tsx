@@ -6,8 +6,19 @@ import { X } from "lucide-react";
 import { useLanguage } from "@/lib/i18n/LanguageProvider";
 import { usePerfLite } from "./SectionBackdrop";
 import { RobotChat } from "./RobotChat";
+import { RobotArt, type RobotExpression, type RobotMouth } from "./RobotArt";
+import { useRobotRoam, anchorFor, pickWaypoint, BODY_W } from "./useRobotRoam";
+import { RobotEmotes, type EmoteAction } from "./RobotEmotes";
 
 const TRUST_KEY = "mm-trust-v1";
+const DISMISS_KEY = "mm-robot-dismissed-v1";
+
+// pupils morph into a section glyph — the robot visibly reads along
+const MOOD_GLYPH: Record<"classified" | "about" | "goals", string> = {
+  classified: "+",
+  about: ">",
+  goals: "▲",
+};
 
 /**
  * #108 (+#65, merged into ONE drone): a tiny one-eyed drone hovers beside the
@@ -68,6 +79,15 @@ function Drone() {
   );
 }
 
+/** Cursor within this many px of the mascot's centre = "you are reaching for
+ *  me": it stops and waits to be clicked instead of dodging. */
+const REACH_PX = 150;
+/** Shared vertical gate for both "reaching" and "sidestep" — see onMove. */
+const LANE_Y = 0.72;
+/** A sidestep is a single polite hop, not a continuous shove. */
+const DODGE_PX = 64;
+const DODGE_COOLDOWN_MS = 900;
+
 const PATROL_AFTER_MS = 7000;
 const SENTRY_AFTER_MS = 14000;
 const SLEEP_AFTER_MS = 26000;
@@ -88,7 +108,24 @@ export function RobotBuddy() {
   const rootRef = useRef<HTMLDivElement>(null);
 
   const [enabled, setEnabled] = useState(false);
+  // Dismissal sticks across reloads — a visitor who closed the mascot once
+  // should not have to close it again on every page view.
   const [dismissed, setDismissed] = useState(false);
+  useEffect(() => {
+    try {
+      if (localStorage.getItem(DISMISS_KEY) === "1") setDismissed(true);
+    } catch {
+      // storage blocked — mascot simply stays visible
+    }
+  }, []);
+  const dismiss = () => {
+    setDismissed(true);
+    try {
+      localStorage.setItem(DISMISS_KEY, "1");
+    } catch {
+      // ignore
+    }
+  };
   const [sleeping, setSleeping] = useState(false);
   const [patrol, setPatrol] = useState(false);
   const [sentry, setSentry] = useState(false);
@@ -104,7 +141,27 @@ export function RobotBuddy() {
   const [sectionMood, setSectionMood] = useState<"default" | "classified" | "about" | "goals">("default");
   // Eyes widen when the cursor gets close — makes the tracking unmissable.
   const [near, setNear] = useState(false);
+  const [hovered, setHovered] = useState(false);
   const nearRef = useRef(false);
+
+  // Mascot roaming: the robot lives in a zero-height lane pinned to the bottom
+  // of the viewport and walks along it. All motion is driven by motion values
+  // inside the hook, so wandering never triggers a React render.
+  const roamActive = enabled && !dismissed && !reducedMotion && !perfLite;
+  const roam = useRobotRoam(roamActive);
+  // The body is never mirrored with scaleX (that would invert rotateY and
+  // pupilX), but `facing` still drives --robot-dir so the run trail streams
+  // out behind the robot instead of always to the same side.
+  const { x, bobY, lean, mode, modeRef, facing, setMode } = roam;
+  const lastDodge = useRef(0);
+  /** While `performance.now()` is below this, deliberate commands win over the
+   *  cursor-proximity guards. */
+  const commandUntil = useRef(0);
+  const [menuOpen, setMenuOpen] = useState(false);
+  const [trick, setTrick] = useState(0);
+  const sectionRef = useRef<string>("");
+  const sectionTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const chaseTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
   const flinchedRef = useRef(false);
 
   // Head rotation + pupil offset follow the cursor through springs; the
@@ -122,8 +179,11 @@ export function RobotBuddy() {
   const headDY = useSpring(0, { stiffness: 380, damping: 15 });
   const eyeLagX = useSpring(headDX, { stiffness: 130, damping: 10 });
   const eyeLagY = useSpring(headDY, { stiffness: 130, damping: 10 });
-  const jellyX = useTransform([headDX, eyeLagX], (values: number[]) => (values[1] - values[0]) * 0.6);
-  const jellyY = useTransform([headDY, eyeLagY], (values: number[]) => (values[1] - values[0]) * 0.6);
+  // Values feed SVG user units now (~0.875 css px each), so the overshoot is
+  // rescaled: at the old 0.6 a poke threw the pupil ±18 units and it clipped
+  // straight out of the eye lens.
+  const jellyX = useTransform([headDX, eyeLagX], (values: number[]) => (values[1] - values[0]) * 0.22);
+  const jellyY = useTransform([headDY, eyeLagY], (values: number[]) => (values[1] - values[0]) * 0.22);
   const pupilRenderX = useTransform([pupilX, jellyX], (values: number[]) => values[0] + values[1]);
   const pupilRenderY = useTransform([pupilY, jellyY], (values: number[]) => values[0] + values[1]);
   const pokeState = useRef({ active: false, moved: false, startX: 0, startY: 0 });
@@ -161,13 +221,25 @@ export function RobotBuddy() {
           if (!entry.isIntersecting) continue;
           const id = (entry.target as HTMLElement).id;
           setSectionMood(moodMap[id] ?? "default");
+
+          // Walk over to the new section and pause to "read" it. Debounced so
+          // scrolling past ten sections doesn't fire ten walks.
+          if (id === sectionRef.current) continue;
+          sectionRef.current = id;
+          if (!roamActive) continue;
+          if (sectionTimer.current) clearTimeout(sectionTimer.current);
+          sectionTimer.current = setTimeout(() => {
+            const current = modeRef.current;
+            if (current === "chatting" || current === "sleeping" || current === "parked") return;
+            setMode("observe", anchorFor(id));
+          }, 600);
         }
       },
       { rootMargin: "-35% 0px -55% 0px" },
     );
     sections.forEach((section) => observer.observe(section));
     return () => observer.disconnect();
-  }, [enabled, dismissed]);
+  }, [enabled, dismissed, roamActive, modeRef, setMode]);
 
   useEffect(() => {
     if (!enabled || dismissed || reducedMotion || perfLite) return;
@@ -229,14 +301,52 @@ export function RobotBuddy() {
         const distance = Math.hypot(event.clientX - cx, event.clientY - cy);
         const nearRadius = trustRef.current >= 8 ? 340 : 280;
         const gain = distance < nearRadius ? (trustRef.current >= 8 ? 1.9 : 1.6) : 1;
-        pupilX.set(Math.max(-4.5, Math.min(4.5, dx * 14 * gain)));
-        pupilY.set(Math.max(-3.5, Math.min(3.5, dy * 11 * gain)));
+        // lens is 8x10 user units with a r=3.9 pupil — clamp so it kisses the
+        // rim instead of being clipped away
+        pupilX.set(Math.max(-4.2, Math.min(4.2, dx * 14 * gain)));
+        pupilY.set(Math.max(-4.8, Math.min(4.8, dy * 11 * gain)));
 
         const isNear = distance < nearRadius;
         if (isNear !== nearRef.current) {
           nearRef.current = isNear;
           setNear(isNear);
           if (!isNear) flinchedRef.current = false;
+        }
+
+        // Roaming: come stand beside the cursor when it drops into the lane —
+        // but never under it, and go click-through if the visitor is actually
+        // reaching for something the robot is standing on.
+        // Reaching for the mascot must always win. Both branches share ONE
+        // vertical threshold on purpose: when they differed there was a band
+        // where the cursor was already over the robot and it still slid away,
+        // which made it impossible to click.
+        const robotCenter = x.get() + BODY_W / 2;
+        const inLane = event.clientY > window.innerHeight * LANE_Y;
+        const reaching = inLane && Math.abs(event.clientX - robotCenter) < REACH_PX;
+
+        // An explicit command (menu action) outranks both guards for a beat —
+        // otherwise "come here" is instantly cancelled by the proximity park,
+        // because clicking the menu item moves the cursor next to the robot.
+        const commanded = performance.now() < commandUntil.current;
+
+        if (reaching && !commanded) {
+          const current = modeRef.current;
+          if (current !== "chatting" && current !== "parked") {
+            setMode("parked", x.get()); // hold position: it is being aimed at
+          }
+        } else if (inLane && !commanded) {
+          const current = modeRef.current;
+          const now = performance.now();
+          // One-shot sidestep with a cooldown. Re-issuing the target every
+          // frame turned a polite "excuse me" into a continuous shove.
+          if (
+            now - lastDodge.current > DODGE_COOLDOWN_MS &&
+            (current === "idle" || current === "stroll" || current === "observe" || current === "parked")
+          ) {
+            lastDodge.current = now;
+            const side = event.clientX > robotCenter ? -DODGE_PX : DODGE_PX;
+            setMode("follow", x.get() + side);
+          }
         }
         if (distance < 70 && !flinchedRef.current) {
           flinchedRef.current = true;
@@ -439,6 +549,69 @@ export function RobotBuddy() {
     }
   };
 
+  // Wander: chain waypoints on a jittered timer so the idle robot drifts along
+  // the lane instead of standing in one corner forever.
+  useEffect(() => {
+    if (!roamActive) return;
+    let timer: ReturnType<typeof setTimeout>;
+    const schedule = () => {
+      timer = setTimeout(
+        () => {
+          const current = modeRef.current;
+          if (current === "idle" || current === "stroll") {
+            setMode("stroll", pickWaypoint(chatOpen));
+          }
+          schedule();
+        },
+        4200 + Math.random() * 4800,
+      );
+    };
+    schedule();
+    return () => clearTimeout(timer);
+  }, [roamActive, chatOpen, modeRef, setMode]);
+
+  // Fast scrolling: the robot runs to catch up with the section you landed on.
+  useEffect(() => {
+    if (!roamActive) return;
+    let last = window.scrollY;
+    let lastTime = performance.now();
+    const onScroll = () => {
+      const now = performance.now();
+      const dt = Math.max(16, now - lastTime);
+      const speed = (Math.abs(window.scrollY - last) / dt) * 1000;
+      last = window.scrollY;
+      lastTime = now;
+      const current = modeRef.current;
+      if (current === "chatting" || current === "parked") return;
+      if (speed > 900) {
+        setMode("chase", anchorFor(sectionRef.current));
+        if (chaseTimer.current) clearTimeout(chaseTimer.current);
+        chaseTimer.current = setTimeout(() => {
+          if (modeRef.current === "chase") setMode("stroll", pickWaypoint(chatOpen));
+        }, 420);
+      }
+    };
+    window.addEventListener("scroll", onScroll, { passive: true });
+    return () => {
+      window.removeEventListener("scroll", onScroll);
+      if (chaseTimer.current) clearTimeout(chaseTimer.current);
+    };
+  }, [roamActive, chatOpen, modeRef, setMode]);
+
+  // Opening the chat parks the robot beside its panel instead of leaving it
+  // wandering off behind the dialog.
+  useEffect(() => {
+    if (!roamActive) return;
+    if (chatOpen) setMode("chatting", window.innerWidth - BODY_W - 28);
+    else setMode("stroll", pickWaypoint(false));
+  }, [chatOpen, roamActive, setMode]);
+
+  useEffect(() => {
+    return () => {
+      if (sectionTimer.current) clearTimeout(sectionTimer.current);
+    };
+  }, []);
+
   // #19 wave goodbye: when the footer scrolls into view, the robot waves once.
   useEffect(() => {
     if (!enabled || dismissed || reducedMotion || perfLite) return;
@@ -481,12 +654,87 @@ export function RobotBuddy() {
   };
 
 
+  // --robot-dir drives which side the run trail streams from. MotionStyle has
+  // no CSS-variable slot in this framer version, so it is written directly.
+  useEffect(() => {
+    rootRef.current?.style.setProperty("--robot-dir", String(facing));
+  }, [facing]);
+
+  /** Every trick the mascot can do, reachable from the visible menu. */
+  const runEmote = (action: EmoteAction) => {
+    setMenuOpen(false);
+    // hold the proximity guards off long enough for the command to play out
+    commandUntil.current = performance.now() + 2600;
+    switch (action) {
+      case "chat":
+        setChatOpen(true);
+        break;
+      case "wave":
+        setSleeping(false);
+        if (waveTimer.current) clearTimeout(waveTimer.current);
+        setWaving(true);
+        waveTimer.current = setTimeout(() => setWaving(false), 2300);
+        break;
+      case "come": {
+        // walk to the middle of the lane, in front of the reader
+        setSleeping(false);
+        const middle = window.innerWidth / 2 - BODY_W / 2;
+        setMode("chase", middle);
+        break;
+      }
+      case "trick":
+        setSleeping(false);
+        setTrick((n) => n + 1);
+        break;
+      case "sleep":
+        setSleeping(true);
+        setMode("sleeping", x.get());
+        break;
+    }
+  };
+
+  // Face state, most specific first. `bubble === "♥"` is the high-trust heart
+  // blink — the eyes answer it instead of just showing a bubble.
+  const expression: RobotExpression = sleeping
+    ? "sleep"
+    : bubble === "♥"
+      ? "love"
+      : squint || dizzy
+        ? "squint"
+        : waving || chatOpen
+          ? "happy"
+          : near
+            ? "wide"
+            : "normal";
+
+  // The mouth is deliberately decoupled from the eyes: cursor proximity should
+  // widen the eyes without freezing the mouth into a permanent surprised "o".
+  const mouth: RobotMouth = sleeping
+    ? "sleep"
+    : alerted
+      ? "oh"
+      : waving || chatOpen || hovered || expression === "love"
+        ? "happy"
+        : squint || dizzy
+          ? "flat"
+          : "normal";
+
   if (!enabled || dismissed || reducedMotion || perfLite) return null;
 
   return (
     <>
     <RobotChat open={chatOpen} onClose={() => setChatOpen(false)} />
-    <div ref={rootRef} className="group/robot fixed bottom-6 right-6 z-40 hidden lg:block" style={{ perspective: 400 }}>
+    {/* Patrol lane: h-0 so it adds nothing to layout, pointer-events-none so
+        it never swallows a click — only [data-robot-hit] nodes are clickable. */}
+    <div className="robot-lane pointer-events-none fixed inset-x-0 bottom-0 z-40 hidden h-0 lg:block">
+    <m.div
+      ref={rootRef}
+      data-roam-mode={mode}
+      style={{ x, y: bobY, rotate: lean, perspective: 400 }}
+      className={`group/robot robot-roamer absolute bottom-6 left-0 ${
+        mode === "chase" ? "robot-trail" : ""
+      }`}
+    >
       {/* #108 the companion drone */}
       <Drone />
       {sentry && !sleeping && (
@@ -533,106 +781,95 @@ export function RobotBuddy() {
         onPointerMove={onPokeMove}
         onPointerUp={onPokeUp}
         onPointerCancel={onPokeUp}
+        onMouseEnter={() => setHovered(true)}
+        onMouseLeave={() => setHovered(false)}
         aria-label={t.robot.label}
+        data-robot-hit
         initial={{ opacity: 0, y: 46, scale: 0.6 }}
         animate={{ opacity: 1, y: 0, scale: 1 }}
         transition={{ type: "spring", stiffness: 240, damping: 17, delay: 1.4 }}
         style={{ touchAction: "none" }}
-        className="relative block cursor-grab outline-none focus-visible:rounded-2xl active:cursor-grabbing"
+        // cursor-pointer, not grab: "grab" advertises dragging, which is not
+        // what a click does here — visitors read it as "this isn't a button".
+        className="relative block cursor-pointer rounded-2xl outline-none ring-0 transition-[box-shadow] hover:ring-2 hover:ring-accent/40 focus-visible:ring-2 focus-visible:ring-accent/70"
       >
+        {/* 3D tilt stays on the html wrapper: 3D transforms on SVG <g> are not
+            reliable across browsers. Everything inside the svg is 2D. */}
         <m.div
-          style={{ rotateX, rotateY, x: headDX, y: headDY, transformStyle: "preserve-3d" }}
-          animate={alerted ? { x: [0, -3, 3, -3, 3, 0] } : dizzy ? { rotate: [0, -10, 8, -6, 4, 0] } : undefined}
-          transition={alerted ? { duration: 0.45 } : dizzy ? { duration: 0.9 } : undefined}
-          className={`robot-body relative ${patrol && !sleeping ? "robot-patrol" : ""}`}
+          key={trick}
+          style={{ rotateX, rotateY, transformStyle: "preserve-3d" }}
+          animate={
+            trick > 0
+              ? { rotate: [0, -360], y: [0, -34, 0], scaleY: [1, 0.86, 1.08, 1] }
+              : alerted
+                ? { x: [0, -3, 3, -3, 3, 0] }
+                : dizzy
+                  ? { rotate: [0, -10, 8, -6, 4, 0] }
+                  : undefined
+          }
+          transition={
+            trick > 0
+              ? { duration: 0.75, ease: [0.22, 1, 0.36, 1] }
+              : alerted
+                ? { duration: 0.45 }
+                : dizzy
+                  ? { duration: 0.9 }
+                  : undefined
+          }
+          className="relative"
         >
-          {/* antenna */}
-          <span className="absolute -top-3 left-1/2 h-3 w-px -translate-x-1/2 bg-foreground/30" aria-hidden="true" />
-          <span
-            className={`robot-antenna-tip absolute -top-4 left-1/2 h-2 w-2 -translate-x-1/2 rounded-full ${
-              alerted ? "bg-amber-400" : "bg-accent"
-            }`}
-            aria-hidden="true"
+          <RobotArt
+            expression={expression}
+            mouth={mouth}
+            glyph={sectionMood === "default" ? null : MOOD_GLYPH[sectionMood]}
+            alerted={alerted}
+            waving={waving}
+            patrol={patrol && !sleeping}
+            signal={alerted || sentry}
+            headX={headDX}
+            headY={headDY}
+            pupilX={pupilRenderX}
+            pupilY={pupilRenderY}
           />
-
-          {/* arms: right one waves on entry and on click */}
-          <span
-            aria-hidden="true"
-            className="absolute -left-2 top-7 h-5 w-1.5 rounded-full bg-foreground/25"
-          />
-          <span
-            aria-hidden="true"
-            className={`absolute -right-2 top-7 h-5 w-1.5 rounded-full bg-foreground/25 ${
-              waving ? "robot-arm--wave bg-accent/70" : ""
-            }`}
-          />
-
-          {/* head */}
-          <div className="surface relative h-16 w-[4.5rem] rounded-2xl border border-foreground/15 shadow-[0_10px_30px_rgb(0_0_0/0.5)]">
-            {/* face plate */}
-            <div className="absolute inset-1.5 rounded-xl bg-[rgb(var(--background-rgb)/0.85)]">
-              {/* eyes: visible sockets + glowing pupils that chase the cursor */}
-              <div className="absolute inset-x-0 top-1/2 flex -translate-y-1/2 items-center justify-center gap-3">
-                {[0, 1].map((eye) => (
-                  <span
-                    key={eye}
-                    className={`robot-eye relative overflow-hidden rounded-full border border-accent/25 bg-accent/10 transition-all duration-200 ${
-                      sleeping
-                        ? "h-0.5 w-3.5 border-0 bg-accent/70"
-                        : squint
-                          ? "h-1 w-4 border-accent/40"
-                          : near
-                            ? "h-[1.4rem] w-4 border-accent/50"
-                            : "h-[1.15rem] w-3.5"
-                    }`}
-                  >
-                    {!sleeping && sectionMood === "default" && (
-                      <m.span
-                        style={{ x: pupilRenderX, y: pupilRenderY }}
-                        className={`robot-pupil absolute inset-x-0 top-1/2 mx-auto h-2.5 w-2.5 -translate-y-1/2 rounded-full ${
-                          alerted ? "bg-amber-400" : "bg-accent"
-                        } shadow-[0_0_8px_rgb(var(--accent-rgb)/1)]`}
-                      />
-                    )}
-                    {!sleeping && sectionMood !== "default" && (
-                      <m.span
-                        style={{ x: pupilRenderX, y: pupilRenderY }}
-                        className="robot-pupil absolute inset-0 flex items-center justify-center font-mono text-[0.6rem] font-bold text-accent [text-shadow:0_0_8px_rgb(var(--accent-rgb)/1)]"
-                      >
-                        {sectionMood === "classified" ? "+" : sectionMood === "about" ? ">" : "▲"}
-                      </m.span>
-                    )}
-                  </span>
-                ))}
-              </div>
-              {/* mouth: tiny status line, smiles on hover */}
-              <span
-                className="absolute bottom-1.5 left-1/2 h-[2px] w-4 -translate-x-1/2 rounded-full bg-accent/50 transition-all duration-300 group-hover/robot:h-[3px] group-hover/robot:w-5 group-hover/robot:rounded-b-full"
-                aria-hidden="true"
-              />
-            </div>
-          </div>
-
-          {/* neck + shoulders hint */}
-          <div className="mx-auto mt-0.5 h-1.5 w-6 rounded-b-md bg-foreground/15" aria-hidden="true" />
         </m.div>
 
-        {/* ground shadow slides opposite the head tilt — sells the 3D */}
+        {/* ground shadow: outer span takes the framer tilt-slide, inner span
+            owns the CSS breathe — one transform source per node. */}
         <m.span
           aria-hidden="true"
           style={{ x: shadowX }}
-          className="robot-shadow absolute -bottom-2 left-1/2 h-2 w-14 -translate-x-1/2 rounded-full"
-        />
+          className="pointer-events-none absolute -bottom-1 left-1/2 -ml-10 block h-2.5 w-20"
+        >
+          <span className="rbt-ground block h-full w-full rounded-full" />
+        </m.span>
       </m.button>
+
+      {/* Visible command list — the honest answer to "how do I interact with
+          this?". Also the keyboard/AT path to every trick. */}
+      <RobotEmotes open={menuOpen} onAction={runEmote} />
 
       <button
         type="button"
-        onClick={() => setDismissed(true)}
+        onClick={() => setMenuOpen((open) => !open)}
+        aria-label={t.robot.menuLabel}
+        aria-expanded={menuOpen}
+        aria-haspopup="menu"
+        data-robot-hit
+        className="absolute -left-2 -top-1.5 hidden h-5 w-5 items-center justify-center rounded-full border border-accent/40 bg-background font-mono text-[0.6rem] leading-none text-accent transition-colors hover:bg-accent/15 group-hover/robot:flex group-focus-within/robot:flex"
+      >
+        •••
+      </button>
+
+      <button
+        type="button"
+        onClick={dismiss}
         aria-label={t.robot.dismissLabel}
-        className="absolute -right-1.5 -top-1.5 hidden h-5 w-5 items-center justify-center rounded-full border border-foreground/20 bg-background text-muted transition-colors hover:text-foreground group-hover/robot:flex"
+        data-robot-hit
+        className="absolute -right-1.5 -top-1.5 hidden h-5 w-5 items-center justify-center rounded-full border border-foreground/20 bg-background text-muted transition-colors hover:text-foreground group-hover/robot:flex group-focus-within/robot:flex"
       >
         <X size={10} />
       </button>
+    </m.div>
     </div>
     </>
   );
