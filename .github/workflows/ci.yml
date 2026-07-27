@@ -19,6 +19,12 @@ jobs:
 
       - run: npm ci
 
+      # Surface dependency advisories on every push. Fails only on CRITICAL so
+      # the known dev-only / non-exploitable highs (postcss, sharp, brace-
+      # expansion — all build-time or unreachable at runtime) stay visible in
+      # the log without blocking, while a new critical prod vuln stops the build.
+      - run: npm audit --audit-level=critical
+
       - run: npm run lint
 
       - run: npx tsc --noEmit

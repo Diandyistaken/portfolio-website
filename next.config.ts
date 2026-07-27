@@ -6,6 +6,8 @@ import type { NextConfig } from "next";
 // rendering (see the layout's force-dynamic). The static headers below stay
 // here; everything script-execution-related lives with the nonce.
 const nextConfig: NextConfig = {
+  // don't advertise the framework/version in a response header
+  poweredByHeader: false,
   turbopack: {
     root: __dirname,
   },

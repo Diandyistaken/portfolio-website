@@ -919,7 +919,11 @@
       const q = new URLSearchParams(location.search).get("mode");
       if (q === "admin" || q === "visitor") return q;
     } catch (e) {}
-    return "admin"; // tek başına çift-tıkla açılınca: Maksut olarak oyna
+    // Varsayılan ZİYARETÇİ: misafirler Maksut'un kayıt/müfredat ekranını
+    // oynayamasın. "admin" modu sunucu tarafında (proxy.ts) yönetici oturumuna
+    // bağlı; giriş yaptığında sayfa sana ?mode=admin linki verir. Yerelde
+    // Maksut olarak denemek için URL'e ?mode=admin ekle.
+    return "visitor";
   }
   const MODE = detectMode();
 

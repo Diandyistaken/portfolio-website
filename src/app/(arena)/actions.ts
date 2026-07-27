@@ -6,6 +6,7 @@ import { getStoredPasswordHash, setStoredPasswordHash, canPersistPasswordHash } 
 import { hashPassword, verifyCredentials } from "@/lib/auth/credentials";
 import { isMailerConfigured, sendResetEmail } from "@/lib/auth/mailer";
 import { createResetToken, verifyResetToken } from "@/lib/auth/resetToken";
+import { clientIp, rateLimitGuard } from "@/lib/rateLimit";
 import {
   SESSION_COOKIE,
   SESSION_MAX_AGE_SECONDS,
@@ -14,8 +15,16 @@ import {
 
 export type LoginState = { error: string | null };
 
-// flat delay on failure: keeps credential stuffing slow without state
+// flat delay on failure: keeps a single guess slow even when the rate limiter
+// fails open (Redis down). The real throttle is rateLimitGuard below.
 const FAILED_LOGIN_DELAY_MS = 450;
+
+// A uniform reply for every password-reset outcome — sent/blocked/misconfigured
+// all look the same to the caller. Recipients are fixed (owner-only), so there
+// is nothing to enumerate; hiding the branch just avoids leaking SMTP/config
+// state and rate-limit status to an anonymous prober. Real errors are logged.
+const RESET_UNIFORM_MESSAGE =
+  "İşlem alındı. Kayıtlı bir hesap varsa, yenileme bağlantısı e-posta ile gönderildi (30 dk geçerli).";
 
 function safeNextPath(value: FormDataEntryValue | null): string {
   // only same-site absolute paths — never protocol-relative or external URLs
@@ -30,12 +39,32 @@ export async function loginAction(_prev: LoginState, formData: FormData): Promis
   const password = String(formData.get("password") ?? "");
   const nextPath = safeNextPath(formData.get("next"));
 
+  // Throttle BEFORE any expensive work (scrypt + Edge Config read) so a flood
+  // can't be used to burn CPU/egress or to brute-force the password.
+  const ip = clientIp(await headers());
+  const limit = await rateLimitGuard({
+    scope: "login",
+    ip,
+    perIp: { limit: 10, windowSeconds: 15 * 60 },
+    global: { limit: 60, windowSeconds: 15 * 60 },
+  });
+  if (!limit.allowed) {
+    return { error: "Çok fazla deneme yapıldı. Lütfen birkaç dakika sonra tekrar dene." };
+  }
+
   if (!(await verifyCredentials(username, password))) {
     await new Promise((resolve) => setTimeout(resolve, FAILED_LOGIN_DELAY_MS));
     return { error: "Kullanıcı adı veya şifre hatalı." };
   }
 
-  const token = await createSessionToken();
+  // Bind the session to the hash it was minted against so a later reset revokes
+  // it. If the hash vanished between verify and here, refuse rather than mint an
+  // unbindable token.
+  const passwordHash = await getStoredPasswordHash();
+  if (!passwordHash) {
+    return { error: "Oturum başlatılamadı. Lütfen tekrar dene." };
+  }
+  const token = await createSessionToken(passwordHash);
   const cookieStore = await cookies();
   cookieStore.set(SESSION_COOKIE, token, {
     httpOnly: true,
@@ -67,28 +96,38 @@ export async function requestPasswordResetAction(
   _formData: FormData,
 ): Promise<ResetRequestState> {
   await new Promise((resolve) => setTimeout(resolve, FAILED_LOGIN_DELAY_MS));
+
+  // Hard cap the mail-sending endpoint: an anonymous flood otherwise exhausts
+  // the SMTP account's daily quota and takes the recovery channel down.
+  const ip = clientIp(await headers());
+  const limit = await rateLimitGuard({
+    scope: "reset",
+    ip,
+    perIp: { limit: 3, windowSeconds: 60 * 60 },
+    global: { limit: 10, windowSeconds: 60 * 60 },
+  });
+  if (!limit.allowed) {
+    return { ok: true, message: RESET_UNIFORM_MESSAGE };
+  }
+
+  // From here every path returns the same uniform message; details go to logs.
   if (!isMailerConfigured()) {
-    return {
-      ok: false,
-      message: "E-posta servisi henüz yapılandırılmamış (SMTP_USER + SMTP_PASS env değişkenleri gerekli).",
-    };
+    console.error("[reset] mailer not configured (SMTP_USER/SMTP_PASS missing)");
+    return { ok: true, message: RESET_UNIFORM_MESSAGE };
   }
   const storedHash = await getStoredPasswordHash();
   if (!storedHash) {
-    return { ok: false, message: "Şifre kaydı bulunamadı — sunucu yapılandırmasını kontrol et." };
+    console.error("[reset] no stored password hash available");
+    return { ok: true, message: RESET_UNIFORM_MESSAGE };
   }
   try {
     const token = await createResetToken(storedHash);
     const link = `${await currentBaseUrl()}/admin/sifre-yenile?token=${encodeURIComponent(token)}`;
     await sendResetEmail(link);
   } catch (error: unknown) {
-    const detail = error instanceof Error ? error.message : "bilinmeyen hata";
-    return { ok: false, message: `E-posta gönderilemedi: ${detail}` };
+    console.error("[reset] send failed:", error);
   }
-  return {
-    ok: true,
-    message: "Yenileme bağlantısı mo.maksut@gmail.com ve greengamegf@gmail.com adreslerine gönderildi (30 dk geçerli).",
-  };
+  return { ok: true, message: RESET_UNIFORM_MESSAGE };
 }
 
 export type ResetPasswordState = { ok: boolean; message: string | null };
@@ -122,8 +161,9 @@ export async function resetPasswordAction(
   try {
     await setStoredPasswordHash(hashPassword(password));
   } catch (error: unknown) {
-    const detail = error instanceof Error ? error.message : "bilinmeyen hata";
-    return { ok: false, message: `Şifre kaydedilemedi: ${detail}` };
+    // Don't echo the upstream Vercel API response back to the client.
+    console.error("[reset] persist failed:", error);
+    return { ok: false, message: "Şifre kaydedilemedi. Lütfen daha sonra tekrar dene." };
   }
   return { ok: true, message: "Şifren güncellendi — yeni şifrenle giriş yapabilirsin." };
 }

@@ -1,11 +1,14 @@
-// Stateless admin session: `v1.<expMs>.<sig>` where sig is an HMAC-SHA256
-// over the version+expiry, keyed by SESSION_SECRET. Web Crypto only — the
-// same module runs in the proxy (edge runtime) and in server actions.
+// Stateless admin session: `v2.<expMs>.<fp>.<sig>` where fp is a fingerprint of
+// the CURRENT admin password hash and sig is an HMAC-SHA256 over version+expiry+
+// fp, keyed by SESSION_SECRET. Binding the token to the password fingerprint is
+// what lets a password change revoke every outstanding session — the same trick
+// the reset token already uses (see resetToken.ts). Web Crypto only: the same
+// module runs in the proxy (edge runtime) and in server actions.
 
 export const SESSION_COOKIE = "mc_admin";
 export const SESSION_MAX_AGE_SECONDS = 30 * 24 * 60 * 60;
 
-const TOKEN_VERSION = "v1";
+const TOKEN_VERSION = "v2";
 
 function getSecret(secret?: string): string {
   const value = secret ?? process.env.SESSION_SECRET;
@@ -17,6 +20,19 @@ function base64UrlEncode(bytes: Uint8Array): string {
   let binary = "";
   for (const byte of bytes) binary += String.fromCharCode(byte);
   return btoa(binary).replace(/\+/g, "-").replace(/\//g, "_").replace(/=+$/, "");
+}
+
+async function sha256Hex(input: string): Promise<string> {
+  const digest = await crypto.subtle.digest("SHA-256", new TextEncoder().encode(input));
+  return Array.from(new Uint8Array(digest))
+    .map((byte) => byte.toString(16).padStart(2, "0"))
+    .join("");
+}
+
+/** Short fingerprint of the current password hash — changes the moment the
+ *  password does, so every token minted against the old hash stops verifying. */
+async function hashFingerprint(passwordHash: string): Promise<string> {
+  return (await sha256Hex(passwordHash)).slice(0, 16);
 }
 
 async function hmac(payload: string, secret: string): Promise<string> {
@@ -46,29 +62,36 @@ function timingSafeEqualString(a: string, b: string): boolean {
 }
 
 export async function createSessionToken(
+  passwordHash: string,
   maxAgeSeconds: number = SESSION_MAX_AGE_SECONDS,
   secret?: string,
 ): Promise<string> {
   const expiresAt = Date.now() + maxAgeSeconds * 1000;
-  const payload = `${TOKEN_VERSION}.${expiresAt}`;
+  const fingerprint = await hashFingerprint(passwordHash);
+  const payload = `${TOKEN_VERSION}.${expiresAt}.${fingerprint}`;
   const signature = await hmac(payload, getSecret(secret));
   return `${payload}.${signature}`;
 }
 
 export async function verifySessionToken(
   token: string | undefined,
+  passwordHash: string | undefined,
   secret?: string,
 ): Promise<boolean> {
-  if (!token) return false;
+  // No token or no password on record → not an admin. Fail closed.
+  if (!token || !passwordHash) return false;
   const parts = token.split(".");
-  if (parts.length !== 3) return false;
-  const [version, expiresAtRaw, signature] = parts;
+  if (parts.length !== 4) return false;
+  const [version, expiresAtRaw, fingerprint, signature] = parts;
   if (version !== TOKEN_VERSION) return false;
   const expiresAt = Number(expiresAtRaw);
   if (!Number.isFinite(expiresAt) || expiresAt <= Date.now()) return false;
+  // The token is only valid for the password it was minted against.
+  const expectedFingerprint = await hashFingerprint(passwordHash);
+  if (!timingSafeEqualString(fingerprint, expectedFingerprint)) return false;
   let expected: string;
   try {
-    expected = await hmac(`${version}.${expiresAt}`, getSecret(secret));
+    expected = await hmac(`${version}.${expiresAt}.${fingerprint}`, getSecret(secret));
   } catch {
     return false;
   }

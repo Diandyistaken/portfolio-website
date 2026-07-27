@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { SESSION_COOKIE, verifySessionToken } from "@/lib/auth/session";
+import { getStoredPasswordHash } from "@/lib/auth/adminStore";
 
 const ARENA_APP_PREFIX = "/mulakatmicro1/app";
 const ARENA_TR_PREFIX = "/mülakatmicro1"; // hand-typed Turkish URL variant
@@ -7,7 +8,9 @@ const ARENA_TR_PREFIX = "/mülakatmicro1"; // hand-typed Turkish URL variant
 // "Maksut şu an nerede?" — a static canvas game under public/nerede/app with
 // plain <script src> tags. Like the arena it can't run under the nonce/
 // strict-dynamic CSP, so it gets a conservative self-only CSP. Unlike the
-// arena it is PUBLIC (visitors watch the AI Maksut), so no admin gate.
+// arena the VISITOR view is PUBLIC (guests watch the AI Maksut), but the ADMIN
+// mode (?mode=admin — you play as Maksut, through his curriculum records) is
+// gated to a real admin session below.
 const GAME_APP_PREFIX = "/nerede/app";
 
 /**
@@ -30,6 +33,18 @@ const ARENA_APP_CSP = [
 ].join("; ");
 
 /**
+ * Is this request a valid admin session? The session token is bound to the
+ * current password hash, so we read the hash and hand it to the verifier; a
+ * missing hash (store down / not configured) fails closed.
+ */
+async function isAdminSession(request: NextRequest): Promise<boolean> {
+  const token = request.cookies.get(SESSION_COOKIE)?.value;
+  if (!token) return false;
+  const passwordHash = await getStoredPasswordHash();
+  return verifySessionToken(token, passwordHash ?? undefined);
+}
+
+/**
  * Per-request nonce CSP (securityheaders.com A+ requirement: no bare
  * 'unsafe-inline' in script-src). Pattern per Next's CSP guide:
  * - fresh nonce per request, passed via the Content-Security-Policy request
@@ -40,24 +55,47 @@ const ARENA_APP_CSP = [
  * Pages therefore render dynamically (see layout's force-dynamic).
  */
 export async function proxy(request: NextRequest) {
-  const pathname = request.nextUrl.pathname;
+  const rawPath = request.nextUrl.pathname;
 
-  // /mülakatmicro1... → /mulakatmicro1... (browsers send it percent-encoded)
-  let decodedPathname = pathname;
+  // SECURITY: decide every route gate on the DECODED path, not the raw one.
+  // The static-file layer decodes percent-escapes before it looks a file up,
+  // so comparing the still-encoded path let `/mulakatmicro1/%61pp/...` (%61 =
+  // 'a') sail past the admin gate and fetch the file anyway. Decode once here,
+  // and reject anything that still contains a '%' afterwards (double-encoding
+  // like %2561) — fail closed rather than guess.
+  let path: string;
   try {
-    decodedPathname = decodeURIComponent(pathname);
+    path = decodeURIComponent(rawPath);
   } catch {
-    // malformed escape sequence — fall through with the raw path
+    return new NextResponse("Bad Request", { status: 400 });
   }
-  if (decodedPathname.startsWith(ARENA_TR_PREFIX)) {
+  if (path.includes("%")) {
+    return new NextResponse("Bad Request", { status: 400 });
+  }
+  // collapse duplicate slashes so `/mulakatmicro1//app` can't dodge startsWith
+  path = path.replace(/\/{2,}/g, "/");
+
+  // /mülakatmicro1... → /mulakatmicro1... (browsers send it percent-encoded;
+  // decodeURIComponent above has already turned %C3%BC back into ü)
+  if (path.startsWith(ARENA_TR_PREFIX)) {
     const url = request.nextUrl.clone();
-    url.pathname = "/mulakatmicro1" + decodedPathname.slice(ARENA_TR_PREFIX.length);
+    url.pathname = "/mulakatmicro1" + path.slice(ARENA_TR_PREFIX.length);
     return NextResponse.redirect(url, 308);
   }
 
-  // The game is public: give it the conservative static-app CSP (self +
-  // inline for its plain scripts) and let it frame only within our own site.
-  if (pathname.startsWith(GAME_APP_PREFIX)) {
+  // The city game is public in VISITOR mode. ADMIN mode (playing as Maksut,
+  // walking his real curriculum/progress records) is gated: a non-admin asking
+  // for ?mode=admin is bounced to ?mode=visitor before the app ever loads.
+  if (path.startsWith(GAME_APP_PREFIX)) {
+    const isDocument =
+      path === GAME_APP_PREFIX || path === `${GAME_APP_PREFIX}/` || path.endsWith("/index.html");
+    if (isDocument && request.nextUrl.searchParams.get("mode") === "admin") {
+      if (!(await isAdminSession(request))) {
+        const url = request.nextUrl.clone();
+        url.searchParams.set("mode", "visitor");
+        return NextResponse.redirect(url, 307);
+      }
+    }
     const response = NextResponse.next();
     response.headers.set(
       "Content-Security-Policy",
@@ -67,7 +105,7 @@ export async function proxy(request: NextRequest) {
     // cached copy would keep pointing at stale ?v= asset URLs and never pull an
     // update. Force revalidation of the document; the assets carry ?v= and stay
     // cacheable, so this costs one conditional request, not the whole game.
-    if (pathname.endsWith("/index.html") || pathname === GAME_APP_PREFIX) {
+    if (isDocument) {
       response.headers.set("Cache-Control", "no-cache, must-revalidate");
     }
     return response;
@@ -75,10 +113,8 @@ export async function proxy(request: NextRequest) {
 
   // Access gate: the static arena app is admin-only. Everything else under
   // /mulakatmicro1 (the preview page) stays public.
-  if (pathname.startsWith(ARENA_APP_PREFIX)) {
-    const token = request.cookies.get(SESSION_COOKIE)?.value;
-    const isAdmin = await verifySessionToken(token);
-    if (!isAdmin) {
+  if (path.startsWith(ARENA_APP_PREFIX)) {
+    if (!(await isAdminSession(request))) {
       const url = request.nextUrl.clone();
       url.pathname = "/mulakatmicro1";
       url.search = "?erisim=red";
@@ -133,7 +169,7 @@ export const config = {
     // still pass the access gate — no prefetch exception here on purpose
     { source: "/mulakatmicro1/:path*" },
     // the game's static files need the same treatment so index.html (a
-    // dotted path) still receives the conservative game CSP
+    // dotted path) still receives the conservative game CSP and mode gate
     { source: "/nerede/:path*" },
   ],
 };

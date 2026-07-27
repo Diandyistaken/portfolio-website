@@ -1,5 +1,6 @@
 import { NextResponse } from "next/server";
 import { isVisitStoreConfigured, readVisits, recordVisit } from "@/lib/visits";
+import { clientIp, rateLimit } from "@/lib/rateLimit";
 
 export const dynamic = "force-dynamic";
 
@@ -35,6 +36,21 @@ export async function GET() {
 export async function POST(request: Request) {
   if (!isVisitStoreConfigured()) {
     return NextResponse.json({ configured: false }, { status: 200 });
+  }
+
+  // One real page-load records once; this only trips on scripted loops trying
+  // to inflate the counter or drain the Upstash quota. Generous so ordinary
+  // navigation (and honest refreshes) never hit it.
+  const ip = clientIp(request.headers);
+  const limit = await rateLimit(`rl:visits:ip:${ip}`, 30, 60);
+  if (!limit.allowed) {
+    // Don't record, but still hand back the current figures so the UI is happy.
+    try {
+      const stats = await readVisits();
+      return NextResponse.json({ configured: true, ...stats });
+    } catch {
+      return NextResponse.json({ configured: false }, { status: 200 });
+    }
   }
 
   const cookieHeader = request.headers.get("cookie") ?? "";
