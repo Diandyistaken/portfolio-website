@@ -25,7 +25,7 @@ const geistMono = Geist_Mono({
   display: "swap",
 });
 
-const siteUrl = "https://maksutcakmaktas.com";
+const siteUrl = "https://www.maksutcakmaktas.com";
 const ogLocaleMap: Record<Locale, string> = { tr: "tr_TR", en: "en_US", de: "de_DE" };
 
 type Params = { locale?: string[] };

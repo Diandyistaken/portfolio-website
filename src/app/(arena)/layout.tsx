@@ -21,7 +21,7 @@ const geistMono = Geist_Mono({
 export const dynamic = "force-dynamic";
 
 export const metadata: Metadata = {
-  metadataBase: new URL("https://maksutcakmaktas.com"),
+  metadataBase: new URL("https://www.maksutcakmaktas.com"),
   robots: { index: false, follow: false },
 };
 

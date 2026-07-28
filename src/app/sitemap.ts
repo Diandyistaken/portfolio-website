@@ -1,6 +1,6 @@
 import type { MetadataRoute } from "next";
 
-const siteUrl = "https://maksutcakmaktas.com";
+const siteUrl = "https://www.maksutcakmaktas.com";
 
 const languages = {
   tr: siteUrl,
