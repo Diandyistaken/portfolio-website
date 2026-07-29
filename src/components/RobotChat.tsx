@@ -46,6 +46,8 @@ export function RobotChat({ open, onClose }: { open: boolean; onClose: () => voi
   const [chips, setChips] = useState<string[]>(chat.chips.slice(0, 4));
   const queueRef = useRef<string[]>([]);
   const queueTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
+  /** Latest `drainQueue`, so the chained timeout can re-arm itself. */
+  const drainRef = useRef<(() => void) | null>(null);
   const listRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLInputElement>(null);
   const panelRef = useRef<HTMLDivElement>(null);
@@ -172,8 +174,14 @@ export function RobotChat({ open, onClose }: { open: boolean; onClose: () => voi
     // wait for this bubble to finish typing, then send the next one
     const wait = reducedMotion ? 220 : next.length * TYPE_MS + 520;
     if (queueTimer.current) clearTimeout(queueTimer.current);
-    queueTimer.current = setTimeout(drainQueue, wait);
+    // via ref: the callback cannot reference its own binding before it exists
+    queueTimer.current = setTimeout(() => drainRef.current?.(), wait);
   }, [botSay, reducedMotion]);
+
+  // keep the self-scheduling drain pointed at the current callback
+  useEffect(() => {
+    drainRef.current = drainQueue;
+  }, [drainQueue]);
 
   /** Ask the local engine and stage its bubbles + follow-up chips. */
   const answer = useCallback(

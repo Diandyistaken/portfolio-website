@@ -20,12 +20,27 @@ describe("rateLimit", () => {
     vi.unstubAllEnvs();
   });
 
-  it("fails OPEN when Upstash is not configured", async () => {
+  it("falls back to an in-process counter when Upstash is not configured", async () => {
     vi.stubEnv("UPSTASH_REDIS_REST_URL", "");
     vi.stubEnv("UPSTASH_REDIS_REST_TOKEN", "");
     const { rateLimit } = await import("./rateLimit");
-    const result = await rateLimit("rl:test", 5, 60);
-    expect(result.allowed).toBe(true);
+    for (let i = 1; i <= 3; i++) {
+      expect((await rateLimit("rl:mem", 3, 60)).allowed).toBe(true);
+    }
+    // 4th hit in the same window is blocked even with no Redis behind it
+    expect((await rateLimit("rl:mem", 3, 60)).allowed).toBe(false);
+  });
+
+  it("starts a fresh in-process window once the old one expires", async () => {
+    vi.stubEnv("UPSTASH_REDIS_REST_URL", "");
+    vi.stubEnv("UPSTASH_REDIS_REST_TOKEN", "");
+    const { rateLimit } = await import("./rateLimit");
+    expect((await rateLimit("rl:exp", 1, 60)).allowed).toBe(true);
+    expect((await rateLimit("rl:exp", 1, 60)).allowed).toBe(false);
+    vi.useFakeTimers();
+    vi.setSystemTime(Date.now() + 61_000);
+    expect((await rateLimit("rl:exp", 1, 60)).allowed).toBe(true);
+    vi.useRealTimers();
   });
 
   it("blocks once the count exceeds the limit", async () => {

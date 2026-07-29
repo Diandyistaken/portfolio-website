@@ -1,11 +1,18 @@
 /**
- * Fixed-window rate limiter on Upstash Redis (the same store the visit counter
- * already uses), driven over its REST API with a plain `fetch` — no extra
- * dependency, works from every Vercel runtime.
+ * Fixed-window rate limiter.
  *
- * Fails OPEN: when Redis is unconfigured or unreachable the call is allowed.
- * A limiter must never be the thing that locks the owner out of their own site
- * over a transient store hiccup; its job is to blunt abuse, not to gate access.
+ * Preferred backend is Upstash Redis (the same store the visit counter uses),
+ * driven over its REST API with a plain `fetch` — no extra dependency, works
+ * from every Vercel runtime, and shared across instances.
+ *
+ * When Upstash is NOT configured it falls back to an in-process counter rather
+ * than giving up. That fallback is per-instance, so a distributed flood can
+ * outrun it — but Vercel reuses warm instances heavily, so it still blunts the
+ * single-source floods these limits actually exist to stop (mail bombing, login
+ * brute force). Some limiting beats none; provision Upstash for a real cap.
+ *
+ * Fails OPEN on a store ERROR: the limiter must never be the thing that locks
+ * the owner out of their own site over a transient Redis hiccup.
  */
 
 const URL_ENV = process.env.UPSTASH_REDIS_REST_URL;
@@ -20,6 +27,24 @@ export type RateLimitResult = {
 
 const ALLOW = (limit: number): RateLimitResult => ({ allowed: true, remaining: limit });
 
+/** Per-instance fallback window, used only when Upstash is unconfigured. */
+const memory = new Map<string, { count: number; resetAt: number }>();
+
+function memoryLimit(key: string, limit: number, windowSeconds: number): RateLimitResult {
+  const now = Date.now();
+  // opportunistic sweep so an attacker cycling keys can't grow the map forever
+  if (memory.size > 5000) {
+    for (const [k, v] of memory) if (v.resetAt <= now) memory.delete(k);
+  }
+  const hit = memory.get(key);
+  if (!hit || hit.resetAt <= now) {
+    memory.set(key, { count: 1, resetAt: now + windowSeconds * 1000 });
+    return { allowed: true, remaining: limit - 1 };
+  }
+  hit.count += 1;
+  return { allowed: hit.count <= limit, remaining: Math.max(0, limit - hit.count) };
+}
+
 /**
  * Count one hit against `key` and report whether it is still within `limit`
  * for the rolling `windowSeconds`. INCR + EXPIRE in a single pipeline; the
@@ -31,7 +56,7 @@ export async function rateLimit(
   limit: number,
   windowSeconds: number,
 ): Promise<RateLimitResult> {
-  if (!URL_ENV || !TOKEN_ENV) return ALLOW(limit);
+  if (!URL_ENV || !TOKEN_ENV) return memoryLimit(key, limit, windowSeconds);
   try {
     const response = await fetch(`${URL_ENV}/pipeline`, {
       method: "POST",

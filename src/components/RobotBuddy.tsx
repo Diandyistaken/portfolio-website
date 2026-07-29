@@ -110,14 +110,17 @@ export function RobotBuddy() {
   const [enabled, setEnabled] = useState(false);
   // Dismissal sticks across reloads — a visitor who closed the mascot once
   // should not have to close it again on every page view.
-  const [dismissed, setDismissed] = useState(false);
-  useEffect(() => {
+  // Read straight into the initial state: this component is mounted with
+  // `dynamic(..., { ssr: false })`, so there is no server render to mismatch,
+  // and doing it here avoids the mascot flashing in before an effect hides it.
+  const [dismissed, setDismissed] = useState(() => {
     try {
-      if (localStorage.getItem(DISMISS_KEY) === "1") setDismissed(true);
+      return localStorage.getItem(DISMISS_KEY) === "1";
     } catch {
       // storage blocked — mascot simply stays visible
+      return false;
     }
-  }, []);
+  });
   const dismiss = () => {
     setDismissed(true);
     try {

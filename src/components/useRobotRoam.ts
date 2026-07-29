@@ -73,8 +73,13 @@ export function useRobotRoam(active: boolean) {
   const rafRef = useRef(0);
   const lastRef = useRef(0);
   const s = useRef({ pos: 0, vel: 0, phase: 0, still: 0 });
+  /** Latest `tick`, so the rAF loop can re-schedule itself without the
+   *  callback having to reference its own binding before it exists. */
+  const tickRef = useRef<((now: number) => void) | null>(null);
 
-  activeRef.current = active;
+  useEffect(() => {
+    activeRef.current = active;
+  }, [active]);
 
   const tick = useCallback((now: number) => {
     rafRef.current = 0;
@@ -111,8 +116,13 @@ export function useRobotRoam(active: boolean) {
       st.still = 0;
     }
 
-    rafRef.current = requestAnimationFrame(tick);
+    rafRef.current = requestAnimationFrame((next) => tickRef.current?.(next));
   }, [x, bobY, lean, speed]);
+
+  // keep the self-scheduling loop pointed at the current tick
+  useEffect(() => {
+    tickRef.current = tick;
+  }, [tick]);
 
   const kick = useCallback(() => {
     if (rafRef.current || !activeRef.current || document.hidden) return;
