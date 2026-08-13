@@ -4,8 +4,8 @@ Bu dosyayı yeni bir Fable oturumuna yapıştır. Amaç: aşağıdaki fikirleri
 docs/delight-backlog.md sırasına göre 20'şerli partiler halinde siteye eklemek.
 
 ## PROJE
-- Yol: C:/dev/Projeler/Benim Web Sitem/portfolio
-- Branch: redesign-quiet-machine (main'e merge edilir). Next.js 16 App Router,
+- Yol: yerel proje kökü (portfolio)
+- Branch: çalışma dalı (main'e merge edilir). Next.js 16 App Router,
   React 19, Tailwind 4, framer-motion (import { m } from "framer-motion"), TS strict.
 - Tasarım "Quiet Machine": near-black zemin, TEK accent #5ec8ff = rgb(var(--accent-rgb)),
   mono/terminal estetiği. Yeni renk/font YOK, yeni npm bağımlılığı YOK.

@@ -84,11 +84,20 @@ export async function logoutAction(): Promise<void> {
 
 export type ResetRequestState = { ok: boolean; message: string | null };
 
+// The reset link must never follow an attacker-controlled Host header: only
+// the site's own hosts are echoed back, everything else falls to the canonical
+// URL (the token still works there — same store behind both).
+const ALLOWED_LINK_HOSTS = new Set(["maksutcakmaktas.com", "www.maksutcakmaktas.com"]);
+const CANONICAL_BASE_URL = "https://www.maksutcakmaktas.com";
+
 async function currentBaseUrl(): Promise<string> {
   const headerStore = await headers();
-  const host = headerStore.get("x-forwarded-host") ?? headerStore.get("host") ?? "maksutcakmaktas.com";
-  const proto = headerStore.get("x-forwarded-proto") ?? (host.startsWith("localhost") ? "http" : "https");
-  return `${proto}://${host}`;
+  const host = headerStore.get("x-forwarded-host") ?? headerStore.get("host") ?? "";
+  if (ALLOWED_LINK_HOSTS.has(host)) return `https://${host}`;
+  if (host === "localhost" || host.startsWith("localhost:") || host.startsWith("127.0.0.1")) {
+    return `http://${host}`;
+  }
+  return CANONICAL_BASE_URL;
 }
 
 export async function requestPasswordResetAction(
