@@ -15,8 +15,10 @@
  * the owner out of their own site over a transient Redis hiccup.
  */
 
-const URL_ENV = process.env.UPSTASH_REDIS_REST_URL;
-const TOKEN_ENV = process.env.UPSTASH_REDIS_REST_TOKEN;
+// The Vercel Marketplace install may inject the credentials under KV_* names
+// instead of UPSTASH_*; accept either so provisioning "just works".
+const URL_ENV = process.env.UPSTASH_REDIS_REST_URL ?? process.env.KV_REST_API_URL;
+const TOKEN_ENV = process.env.UPSTASH_REDIS_REST_TOKEN ?? process.env.KV_REST_API_TOKEN;
 
 export type RateLimitResult = {
   /** false once the window's request count has exceeded `limit`. */
